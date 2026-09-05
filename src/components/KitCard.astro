@@ -1,0 +1,18 @@
+---
+import type { Kit } from '../lib/catalogue';
+import Cover from './Cover.astro';
+import { categoryLabel } from '../lib/catalogue';
+const { kit } = Astro.props as { kit: Kit };
+---
+<article class="card" data-cat={kit.cat} data-min={kit.ages.min} data-max={kit.ages.max}>
+  {kit.status !== 'available' && <span class="ribbon">Coming soon</span>}
+  <a class="card-media" href={`/kits/${kit.id}`}>
+    {kit.cover ? <img src={kit.cover} alt={`${kit.title} cover`} loading="lazy" /> : kit.realCover ? <img src="/covers/seedoils.png" alt={`${kit.title} cover`} loading="lazy" /> : <Cover kit={kit} />}
+  </a>
+  <div class="card-body">
+    <p class="meta">{categoryLabel(kit.cat)} · Ages {kit.ages.min}–{kit.ages.max}</p>
+    <h3><a href={`/kits/${kit.id}`}>{kit.title}</a></h3>
+    <p class="desc">{kit.blurb}</p>
+    {kit.status === 'available' ? <button class="btn sm add-kit" data-kit={kit.id}>Add to cart</button> : <button class="btn ghost sm notify-kit" data-kit={kit.id}>Notify me</button>}
+  </div>
+</article>

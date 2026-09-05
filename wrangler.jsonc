@@ -1,0 +1,26 @@
+{
+  "name": "raising-noble",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./dist/_worker.js/index.js",
+  "assets": { "directory": "./dist", "binding": "ASSETS" },
+  "observability": { "enabled": true },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "raising-noble",
+    "database_id": "343d4d33-b750-4ca0-b9b0-5fb03705a07e",
+    "migrations_dir": "migrations"
+  }],
+  "kv_namespaces": [
+    { "binding": "KV", "id": "9dd6871e55f64b37b19a1fb480467793" },
+    { "binding": "CATALOGUE_KV", "id": "0e9e2b0d817e408eb008d37ce81defab" }
+  ],
+  "r2_buckets": [{ "binding": "KITS", "bucket_name": "raising-noble-kits" }],
+  "triggers": { "crons": ["*/10 * * * *"] },
+  "vars": {
+    "SITE_URL": "https://raisingnoble.com",
+    "FROM_EMAIL": "Raising Noble <orders@raisingnoble.com>",
+    "ORDERS_EMAIL": "orders@raisingnoble.com",
+    "CONTACT_TO_EMAIL": "hello@raisingnoble.com"
+  }
+}

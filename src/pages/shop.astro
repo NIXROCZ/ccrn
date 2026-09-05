@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import KitCard from '../components/KitCard.astro';
+import { getKits } from '../lib/catalogue';
+import { categories, ageBands } from '../data/collections';
+const kits = getKits();
+const selectedCategory = Astro.url.searchParams.get('c') ?? 'all';
+const selectedAge = Astro.url.searchParams.get('age') ?? '';
+---
+<Layout title="Shop family education kits | Raising Noble">
+  <section class="phero"><img src="/images/shop-hero.webp" alt="Wooden blocks in afternoon light"><div class="phero-in"><h1>Shop All</h1><p>Thoughtful resources for connected families</p></div></section>
+  <section class="wrap sec-s"><div class="filters"><a class:list={['filter', { on: selectedCategory === 'all' }]} href="/shop">Shop all</a>{categories.map((category) => <a class:list={['filter', { on: selectedCategory === category.id }]} href={`/shop?c=${category.id}`}>{category.label}</a>)}</div><div class="filters">{ageBands.map((band) => <a class:list={['filter', { on: selectedAge === band.id }]} href={`/shop?${selectedCategory !== 'all' ? `c=${selectedCategory}&` : ''}age=${band.id}`}>Ages {band.label}</a>)}</div><p class="muted">{kits.length} kits</p><div class="cards">{kits.map((kit) => <KitCard kit={kit} />)}</div></section>
+</Layout>

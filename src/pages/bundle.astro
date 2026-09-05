@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { bundle, formatAud } from '../lib/catalogue';
+const offer = bundle();
+---
+<Layout title="Complete Bundle | Raising Noble">
+  <section class="wrap sec center"><p class="kicker">Complete Bundle</p><h1 class="h1">Every available kit, together.</h1><p class="lede narrow center">Take the complete collection at 30% off the individual kit price. No subscription.</p>{offer.count ? <><p class="price">{formatAud(offer.priceCents)} <del class="muted">{formatAud(offer.wasCents)}</del></p><p>{offer.count} available kits</p><a class="btn" href="/cart?bundle=1">Add bundle to cart</a></> : <div class="callout narrow">Every kit is being finished and uploaded one by one. Join the list and we'll email you when the first one is ready.</div>}</section>
+</Layout>

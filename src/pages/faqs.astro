@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+const faqs = [
+  ['What do I receive?', 'A zip file containing a presentation, printable activities, a parent and carer guide and a viewing guide. The download link appears after payment confirmation and arrives by email.'],
+  ['How does payment work?', 'Stripe handles your card details, so we never see card numbers. Card, Apple Pay, Google Pay and Link. Prices in AUD.'],
+  ['What does the bundle include?', 'Every currently available kit at 30% less than buying them individually. It is a one-off payment.'],
+  ['What if a file will not open?', 'Contact us and we will supply the files directly or fix the problem.'],
+  ['How do gift cards work?', 'Choose an amount and send it by email. Gift cards do not expire and any remaining balance stays on the card.'],
+  ['What ages are the kits for?', 'Most kits are for ages five to twelve, with each product page showing its age range.'],
+  ['Can I share a kit?', 'Kits are for personal, single-household use. Sharing files is not permitted.'],
+  ['Is this medical advice?', 'No. These are educational materials, not medical or professional advice.'],
+  ['How do I reach someone?', 'Email hello@raisingnoble.com or use our contact page. We aim to reply within a few days.'],
+];
+---
+<Layout title="FAQs | Raising Noble">
+  <section class="wrap sec"><div class="phead"><p class="kicker">Questions</p><h1 class="h1">FAQs</h1><p class="lede narrow center">We aim to reply within a few days.</p></div><div class="narrow">{faqs.map(([question, answer]) => <details class="faq"><summary>{question}</summary><p>{answer}</p></details>)}</div></section>
+</Layout>

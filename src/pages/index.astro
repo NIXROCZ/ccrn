@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import KitCard from '../components/KitCard.astro';
+import { getKits } from '../lib/catalogue';
+const kits = getKits();
+---
+<Layout title="Raising Noble — for the conversations that matter">
+  <section class="hero"><video autoplay muted loop playsinline poster="/images/hero-poster.webp"><source src="/video/hero.mp4" type="video/mp4" /></video><div class="hero-in"><h1>For the conversations that matter</h1><p>Thoughtful resources for curious families</p><a class="btn light" href="/shop">Shop now</a></div></section>
+  <section class="wrap sec"><div class="narrow center"><p class="kicker">Raising curious thinkers</p><h2 class="h1">Building connected <em>families</em>.</h2><hr class="rule mid"><p class="lede">Simple, thoughtful resources to help you turn everyday topics into meaningful family moments.</p><p class="muted">Each kit gives you a presentation to watch together, printable activities and a parent guide with background and conversation prompts.</p><p><a class="tlink" href="/about">Our story</a></p></div></section>
+  <section class="panel"><img src="/images/home-children.webp" alt="Children painting together" loading="lazy"><div class="panel-txt"><p class="kicker">New collection</p><h2 class="h2">Safe &amp; <em>Strong</em></h2><p>Thoughtful resources to help children speak up, set boundaries and stay safe.</p><a class="btn light" href="/shop?c=safety">Explore the collection</a></div></section>
+  <section class="wrap sec"><p class="kicker center">Coming soon</p><h2 class="h2 center">Every kit is being finished one by one.</h2><p class="lede narrow center">Join the list and we'll email you when the first one is ready.</p><div class="prods">{kits.slice(0, 3).map((kit) => <KitCard kit={kit} />)}</div></section>
+  <section class="wrap sec center"><h2 class="h1">We believe some of the most important lessons begin with a conversation.</h2><hr class="rule mid"><p class="lede narrow">We're a couple in Wollongong who kept running out of good answers. So we started writing them down.</p><a class="tlink" href="/about">Read more about us</a></section>
+</Layout>

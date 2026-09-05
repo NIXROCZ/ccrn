@@ -1,0 +1,7 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { GIFT_PRESETS_CENTS } from '../lib/pricing';
+---
+<Layout title="Gift cards | Raising Noble">
+  <section class="wrap sec"><div class="phead"><p class="kicker">A thoughtful gift</p><h1 class="h1">Give a Raising Noble gift card.</h1><p class="lede narrow center">Choose an amount and send it by email, or send it to yourself.</p></div><form class="form-grid" id="gift-form"><div class="amounts">{GIFT_PRESETS_CENTS.map((amount) => <button type="button" class="filter gift-amount" data-amount={amount}>{amount / 100}</button>)}</div><div class="field"><label for="amount">Custom amount (A$10–A$500)</label><input id="amount" name="amountCents" type="number" min="10" max="500" step="1" required></div><div class="field"><label for="recipientName">Recipient name (optional)</label><input id="recipientName" name="recipientName"></div><div class="field"><label for="recipientEmail">Recipient email (optional)</label><input id="recipientEmail" name="recipientEmail" type="email"></div><div class="field"><label for="message">Message (optional)</label><textarea id="message" name="message"></textarea></div><button class="btn" type="submit">Add gift card</button></form><div class="narrow sec-s"><h2 class="h2">Check a balance</h2><form class="form-grid" data-endpoint="/api/gift/check"><div class="field"><label for="giftCode">Gift card code</label><input id="giftCode" name="code" required></div><button class="btn" type="submit">Check balance</button></form></div></section>
+</Layout>
