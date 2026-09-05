@@ -1,6 +1,7 @@
 /// <reference types="astro/client" />
+import type { Runtime } from '@astrojs/cloudflare';
 
-interface Env {
+export interface Env {
   DB: D1Database;
   KV: KVNamespace;
   CATALOGUE_KV: KVNamespace;
@@ -20,6 +21,8 @@ interface Env {
   PUBLIC_CF_BEACON_TOKEN?: string;
 }
 
-declare namespace App {
-  interface Locals { runtime: { env: Env } }
+declare global {
+  namespace App {
+    interface Locals { runtime: Runtime<Env>['runtime'] }
+  }
 }

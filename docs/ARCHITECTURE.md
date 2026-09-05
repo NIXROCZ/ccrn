@@ -3,8 +3,8 @@
 Raising Noble sells downloadable family-education kits (AUD $35 each) from Wollongong, Australia.
 Everything runs on one Cloudflare Worker: Astro prerenders the catalogue to static HTML, and the same
 Worker serves the API (Stripe Checkout, Stripe webhooks, gift-card ledger, magic-link download access,
-watermarked downloads, Resend email, contact + newsletter) and a cron that redeploys the site when a
-new kit is uploaded to R2.
+watermarked downloads, Resend email, contact + newsletter). Catalogue changes are checked through an
+authenticated sync endpoint rather than a Cloudflare Cron Trigger.
 
 ## Stack
 
@@ -46,8 +46,11 @@ its `[ages.min, ages.max]` range overlaps the band.
 ### Auto-publish pipeline ("rebuild on upload")
 
 1. Owner uploads `kits/<slug>/kit.zip` and `kits/<slug>/kit.json` (and optionally `cover.webp`) to R2.
-2. The Worker cron (`*/10 * * * *`) lists `kits/` in R2, hashes `(key, etag)` pairs, compares with `KV:catalogue:manifest-hash`.
-   On change it stores the new hash and POSTs the Workers Builds deploy hook (`DEPLOY_HOOK_URL` secret).
+2. An external scheduler calls `POST /api/internal/sync` with the Bearer token derived from
+   `SITE_PEPPER`. The endpoint lists `kits/` in R2, hashes `(key, etag)` pairs, compares with
+   `KV:catalogue:manifest-hash`, and on change stores the new hash and POSTs the Workers Builds
+   deploy hook (`DEPLOY_HOOK_URL` secret). Cloudflare Cron Triggers are intentionally not used.
+   The owner can also trigger a rebuild from Workers Builds after an upload.
 3. The build (`npm run build`) runs `scripts/sync-catalogue.mjs` first. With `CLOUDFLARE_API_TOKEN` +
    `CLOUDFLARE_ACCOUNT_ID` in build env it lists the bucket through the Cloudflare REST API, downloads every
    `kit.json` (and covers to `public/covers/<slug>.webp`), merges onto `kits.base.json` and writes

@@ -16,7 +16,6 @@
     { "binding": "CATALOGUE_KV", "id": "006ec100a9e648a09343de0944f0fdbf" }
   ],
   "r2_buckets": [{ "binding": "KITS", "bucket_name": "raising-noble-kits" }],
-  "triggers": { "crons": ["*/10 * * * *"] },
   "vars": {
     "SITE_URL": "https://raisingnoble.com",
     "FROM_EMAIL": "Raising Noble <orders@raisingnoble.com>",

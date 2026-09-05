@@ -5,6 +5,7 @@ const emptyCart = (): Cart => ({ kits: [], gifts: [], giftCodes: [] });
 const readCart = (): Cart => { try { return { ...emptyCart(), ...JSON.parse(localStorage.getItem('rn_cart_v1') ?? '{}') }; } catch { return emptyCart(); } };
 const saveCart = (cart: Cart) => { localStorage.setItem('rn_cart_v1', JSON.stringify(cart)); window.dispatchEvent(new CustomEvent('rn:cart')); };
 const toast = (message: string) => { const el = document.querySelector<HTMLElement>('#toast'); if (!el) return; el.textContent = message; el.classList.add('on'); window.setTimeout(() => el.classList.remove('on'), 2600); };
+let giftCreditCents = 0;
 const updateCount = () => { const count = readCart().kits.length + readCart().gifts.length; document.querySelectorAll('#cart-count').forEach((el) => { el.textContent = String(count); }); };
 
 document.querySelector('#burger')?.addEventListener('click', () => {
@@ -16,9 +17,12 @@ document.querySelectorAll<HTMLElement>('.add-kit').forEach((button) => button.ad
   if (!id || cart.kits.includes(id)) return toast('That kit is already in your cart.');
   cart.kits.push(id); saveCart(cart); toast('Added to your cart.');
 }));
-document.querySelectorAll<HTMLElement>('.notify-kit').forEach((button) => button.addEventListener('click', () => {
+document.querySelectorAll<HTMLElement>('.notify-kit').forEach((button) => button.addEventListener('click', async () => {
   const email = window.prompt('What email should we notify?'); if (!email || !button.dataset.kit) return;
-  fetch('/api/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, kitId: button.dataset.kit }) }).catch(() => undefined);
+  const response = await fetch('/api/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, kitId: button.dataset.kit }) }).catch(() => undefined);
+  if (!response) return toast('Please try again in a moment.');
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) return toast(data.error ?? 'Please try again in a moment.');
   toast('Thanks — we will let you know when it is ready.');
 }));
 const params = new URLSearchParams(window.location.search);
@@ -35,13 +39,14 @@ document.querySelectorAll<HTMLElement>('.filter').forEach((button) => button.add
 }));
 document.querySelectorAll<HTMLFormElement>('form[data-endpoint]:not(#gift-code-form)').forEach((form) => form.addEventListener('submit', async (event) => {
   event.preventDefault(); const endpoint = form.dataset.endpoint; if (!endpoint) return;
-  const payload = Object.fromEntries(new FormData(form)); const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-  toast(response.ok ? 'Thanks — your message has been sent.' : 'Please try again in a moment.');
+  const payload = Object.fromEntries(new FormData(form)); const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const data = await response.json().catch(() => ({}));
+  toast(response.ok ? (data.message ?? 'Thanks — your message has been sent.') : (data.error ?? 'Please try again in a moment.'));
 }));
 document.querySelectorAll<HTMLFormElement>('#checkout-form').forEach((form) => form.addEventListener('submit', async (event) => {
   event.preventDefault(); const confirmed = form.querySelector<HTMLInputElement>('[name=au]')?.checked; if (!confirmed) return toast('Please confirm you are purchasing from Australia.');
-  const response = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(readCart()) }); const data = await response.json().catch(() => ({}));
-  if (response.ok && data.url) window.location.href = data.url; else toast('Checkout will be available when payments are connected.');
+  const email = form.querySelector<HTMLInputElement>('[name=email]')?.value.trim(); if (!email) return toast('Enter your email for delivery.');
+  const response = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...readCart(), email }) }); const data = await response.json().catch(() => ({}));
+  if (response.ok && data.url) window.location.href = data.url; else toast(data.error ?? 'Checkout could not be started.');
 }));
 document.querySelectorAll<HTMLElement>('.gift-amount').forEach((button) => button.addEventListener('click', () => {
   const input = document.querySelector<HTMLInputElement>('#amount');
@@ -81,7 +86,8 @@ const renderCart = () => {
       giftLines.append(line);
     });
   }
-  const values: Record<string, number> = { '#cart-subtotal': totals.kitSubtotal + totals.giftSubtotal, '#cart-discount': totals.bundleDiscount, '#cart-total': totals.total };
+  const credit = Math.min(giftCreditCents, totals.total);
+  const values: Record<string, number> = { '#cart-subtotal': totals.kitSubtotal + totals.giftSubtotal, '#cart-discount': totals.bundleDiscount, '#cart-credit': credit, '#cart-total': totals.total - credit };
   Object.entries(values).forEach(([selector, value]) => { const el = document.querySelector(selector); if (el) el.textContent = formatAud(value); });
 };
 renderCart();
@@ -94,8 +100,10 @@ document.querySelector<HTMLFormElement>('#gift-code-form')?.addEventListener('su
   if (!code || cart.giftCodes.includes(code)) return toast('Enter a new gift card code.');
   if (cart.giftCodes.length >= 3) return toast('You can apply up to three gift codes.');
   const response = await fetch('/api/gift/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) });
-  if (!response.ok) return toast('We could not check that gift card yet.');
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.valid) return toast(data.error ?? 'We could not check that gift card yet.');
   cart.giftCodes.push(code);
+  giftCreditCents += Number(data.balanceCents) || 0;
   saveCart(cart);
   form.reset();
   toast('Gift card applied.');
