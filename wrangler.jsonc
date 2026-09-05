@@ -1,0 +1,48 @@
+{
+  "name": "raising-noble",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./dist/_worker.js/index.js",
+  "assets": { "directory": "./dist", "binding": "ASSETS" },
+  "observability": { "enabled": true },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "raising-noble",
+    "database_id": "5a99511d-8046-43a4-9a26-c94c77354baa",
+    "migrations_dir": "migrations"
+  }],
+  "kv_namespaces": [
+    { "binding": "KV", "id": "513fec7d089d45f8961addde1f6161db" },
+    { "binding": "CATALOGUE_KV", "id": "006ec100a9e648a09343de0944f0fdbf" }
+  ],
+  "r2_buckets": [{ "binding": "KITS", "bucket_name": "raising-noble-kits" }],
+  "vars": {
+    "SITE_URL": "https://raisingnoble.com",
+    "FROM_EMAIL": "Raising Noble <orders@raisingnoble.com>",
+    "ORDERS_EMAIL": "orders@raisingnoble.com",
+    "CONTACT_TO_EMAIL": "hello@raisingnoble.com"
+  },
+  "env": {
+    "preview": {
+      "name": "raising-noble-preview",
+      "d1_databases": [{
+        "binding": "DB",
+        "database_name": "raising-noble",
+        "database_id": "5a99511d-8046-43a4-9a26-c94c77354baa",
+        "migrations_dir": "migrations"
+      }],
+      "kv_namespaces": [
+        { "binding": "KV", "id": "513fec7d089d45f8961addde1f6161db" },
+        { "binding": "CATALOGUE_KV", "id": "006ec100a9e648a09343de0944f0fdbf" }
+      ],
+      "r2_buckets": [{ "binding": "KITS", "bucket_name": "raising-noble-kits" }],
+      "assets": { "directory": "./dist", "binding": "ASSETS" },
+      "vars": {
+        "SITE_URL": "https://raising-noble-preview.nishi2nix.workers.dev",
+        "FROM_EMAIL": "Raising Noble <orders@raisingnoble.com>",
+        "ORDERS_EMAIL": "orders@raisingnoble.com",
+        "CONTACT_TO_EMAIL": "hello@raisingnoble.com"
+      }
+    }
+  }
+}

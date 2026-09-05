@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Cover from '../../components/Cover.astro';
+import { getKits, categoryLabel } from '../../lib/catalogue';
+export function getStaticPaths() { return getKits().map((kit) => ({ params: { id: kit.id }, props: { kit } })); }
+const { kit } = Astro.props;
+---
+<Layout title={`${kit.title} | Raising Noble`} description={kit.blurb}>
+  <section class="wrap sec"><div class="pdp"><div class="cover">{kit.cover ? <img src={kit.cover} alt={`${kit.title} cover`} /> : kit.realCover ? <img src="/covers/seedoils.png" alt={`${kit.title} cover`} /> : <Cover kit={kit} />}</div><div><p class="kicker">{categoryLabel(kit.cat)} · Ages {kit.ages.min}–{kit.ages.max}</p><h1>{kit.title}</h1><p class="lede">{kit.blurb}</p><p class="price">A$35</p>{kit.status === 'available' ? <button class="btn add-kit" data-kit={kit.id}>Add to cart</button> : <button class="btn ghost notify-kit" data-kit={kit.id}>Notify me</button>}<h2 class="h3">What you'll learn</h2><dl class="learn">{kit.learn.map(([title, text]) => <div><dt>{title}</dt><dd>{text}</dd></div>)}</dl><h2 class="h3">What's in the kit</h2><ul class="file-list">{kit.files.map((file) => <li>{file}</li>)}</ul>{kit.sensitive && <div class="support"><strong>If a child discloses something</strong><p>Listen calmly and reassure them they did the right thing by telling you. Call 000 in an emergency. Kids Helpline 1800 55 1800, Parentline NSW 1300 1300 52, and 1800RESPECT 1800 737 732 can also help.</p></div>}</div></div></section>
+</Layout>

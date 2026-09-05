@@ -1,0 +1,19 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+const { title, description = 'Thoughtful resources for curious families. Downloadable kits for meaningful family conversations.', canonical } = Astro.props;
+const url = canonical ?? Astro.url.href;
+---
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    <meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={url} /><meta property="og:type" content="website" /><meta property="og:image" content="https://raisingnoble.com/images/about-hero.webp" />
+  </head>
+  <body><Header /><main><slot /></main><Footer /><div class="toast" id="toast" role="status"></div><script src="../scripts/site.ts"></script></body>
+</html>

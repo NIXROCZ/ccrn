@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { dbAll } from '../lib/server/db';
+import { sessionEmail } from '../lib/server/session';
+import { getKit } from '../lib/catalogue';
+export const prerender = false;
+const env = Astro.locals.runtime.env;
+const email = await sessionEmail(env, Astro.cookies.get('__Host-rn_session')?.value);
+const grants = email ? await dbAll<{ kit_id: string; order_number: string; downloaded: number }>(env, 'SELECT g.kit_id, o.order_number, (SELECT COUNT(*) FROM downloads d WHERE d.grant_id = g.id AND d.downloaded_at >= datetime("now", "-30 days")) as downloaded FROM download_grants g JOIN orders o ON o.id = g.order_id WHERE g.customer_email = ? AND g.revoked = 0 AND o.status = ?', email, 'paid') : [];
+const cards = email ? await dbAll<{ code_last4: string; balance_cents: number }>(env, 'SELECT code_last4, balance_cents FROM gift_cards WHERE purchaser_email = ? AND disabled = 0', email) : [];
+---
+<Layout title="Downloads | Raising Noble"><section class="wrap sec"><div class="phead"><p class="kicker">Your kits</p><h1 class="h1">Downloads</h1>{email ? <p class="lede narrow center">Signed in as {email}.</p> : <p class="lede narrow center">Enter your order email and we'll send a secure magic link.</p>}</div>{email ? <><div class="cards">{grants.map((grant) => { const kit = getKit(grant.kit_id); return <article class="card"><div class="card-body"><p class="kicker">Order {grant.order_number}</p><h2 class="h3">{kit?.title ?? grant.kit_id}</h2><p class="muted">{grant.downloaded} of 10 downloads used in the last 30 days.</p><a class="btn" href={`/api/download/${grant.kit_id}`}>Download kit</a></div></article> })}</div>{cards.length > 0 && <div class="narrow sec-s"><h2 class="h2">Gift card balances</h2>{cards.map((card) => <p>•••• {card.code_last4} · A${(card.balance_cents / 100).toFixed(2)}</p>)}</div>}<form method="post" action="/api/logout"><button class="btn ghost" type="submit">Sign out</button></form></> : <form class="form-grid" data-endpoint="/api/magic-link"><div class="field"><label for="email">Order email</label><input id="email" name="email" type="email" required></div><button class="btn" type="submit">Email my link</button></form>}</section></Layout>
