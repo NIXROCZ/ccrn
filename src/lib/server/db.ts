@@ -11,8 +11,10 @@ export async function dbFirst<T>(env: DbEnv, sql: string, ...args: unknown[]): P
   return (await env.DB.prepare(sql).bind(...args).first<T>()) ?? null;
 }
 
-export async function dbRun(env: DbEnv, sql: string, ...args: unknown[]): Promise<{ success: boolean }> {
-  return env.DB.prepare(sql).bind(...args).run();
+export type DbRunResult = { success: boolean; meta?: { changes?: number } };
+
+export async function dbRun(env: DbEnv, sql: string, ...args: unknown[]): Promise<DbRunResult> {
+  return env.DB.prepare(sql).bind(...args).run() as Promise<DbRunResult>;
 }
 
 export function id(): string {

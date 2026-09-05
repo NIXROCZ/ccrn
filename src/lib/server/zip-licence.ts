@@ -1,6 +1,7 @@
 type RangeBody = { body: ReadableStream<Uint8Array> | null };
 type R2Like = { size: number; body: ReadableStream<Uint8Array> | null };
-type R2BucketLike = { get(key: string, options?: { range?: { offset: number; length: number } }): Promise<R2Like | RangeBody | null> };
+type R2Range = { offset: number; length: number } | { suffix: number };
+type R2BucketLike = { get(key: string, options?: { range?: R2Range }): Promise<R2Like | RangeBody | null> };
 
 const EOCD = 0x06054b50;
 const CENTRAL = 0x02014b50;
@@ -53,27 +54,26 @@ async function bytesFrom(body: ReadableStream<Uint8Array> | null): Promise<Uint8
   return result;
 }
 
-function concat(...chunks: Uint8Array[]): Uint8Array {
-  const result = new Uint8Array(chunks.reduce((sum, chunk) => sum + chunk.length, 0));
-  let offset = 0;
-  chunks.forEach((chunk) => { result.set(chunk, offset); offset += chunk.length; });
-  return result;
-}
-
 async function range(bucket: R2BucketLike, key: string, offset: number, length: number): Promise<Uint8Array> {
   const object = await bucket.get(key, { range: { offset, length } });
   return bytesFrom(object?.body ?? null);
 }
 
-function streamBytes(bytes: Uint8Array): ReadableStream<Uint8Array> {
-  return new ReadableStream({ start(controller) { controller.enqueue(bytes); controller.close(); } });
+async function pipeBody(controller: ReadableStreamDefaultController<Uint8Array>, body: ReadableStream<Uint8Array> | null): Promise<void> {
+  if (!body) return;
+  const reader = body.getReader();
+  while (true) {
+    const next = await reader.read();
+    if (next.done) return;
+    controller.enqueue(next.value);
+  }
 }
 
 export async function appendLicence(bucket: R2BucketLike, key: string, licence: string): Promise<{ body: ReadableStream<Uint8Array>; size: number; zip64: boolean }> {
-  const object = await bucket.get(key);
+  const object = await bucket.get(key, { range: { suffix: 65557 } });
   if (!object?.body || !('size' in object)) throw new Error('Kit archive not found');
   const tailLength = Math.min(object.size, 65557);
-  const tail = await range(bucket, key, object.size - tailLength, tailLength);
+  const tail = await bytesFrom(object.body);
   let eocdOffset = -1;
   for (let index = tail.length - 22; index >= 0; index--) {
     if (u32(tail, index) === EOCD) { eocdOffset = index; break; }
@@ -84,8 +84,31 @@ export async function appendLicence(bucket: R2BucketLike, key: string, licence: 
   const centralSize = u32(eocd, 12);
   const centralOffset = u32(eocd, 16);
   const zip64 = count === 0xffff || centralSize === 0xffffffff || centralOffset === 0xffffffff || u32(tail, eocdOffset - 20) === 0x06064b50;
-  if (zip64) return { body: object.body, size: object.size, zip64: true };
-  const central = await range(bucket, key, centralOffset, centralSize);
+  if (zip64) {
+    const prefixLength = object.size - tailLength;
+    return {
+      body: new ReadableStream({
+        async start(controller) {
+          try {
+            if (prefixLength > 0) {
+              const prefix = await bucket.get(key, { range: { offset: 0, length: prefixLength } });
+              await pipeBody(controller, prefix?.body ?? null);
+            }
+            controller.enqueue(tail);
+            controller.close();
+          } catch (error) {
+            controller.error(error);
+          }
+        },
+      }),
+      size: object.size,
+      zip64: true,
+    };
+  }
+  const centralStart = object.size - tailLength;
+  const central = centralOffset >= centralStart && centralOffset + centralSize <= object.size
+    ? tail.slice(centralOffset - centralStart, centralOffset - centralStart + centralSize)
+    : await range(bucket, key, centralOffset, centralSize);
   const licenceBytes = textEncoder.encode(licence);
   const licenceName = textEncoder.encode('LICENCE.txt');
   const local = new Uint8Array(30 + licenceName.length);
@@ -98,7 +121,26 @@ export async function appendLicence(bucket: R2BucketLike, key: string, licence: 
   put16(centralEntry, 28, licenceName.length); put16(centralEntry, 30, 0); put16(centralEntry, 32, 0); put16(centralEntry, 34, 0); put16(centralEntry, 36, 0); put32(centralEntry, 38, 0); put32(centralEntry, 42, centralOffset); centralEntry.set(licenceName, 46);
   const newEocd = eocd.slice();
   put16(newEocd, 8, count + 1); put16(newEocd, 10, count + 1); put32(newEocd, 12, centralSize + centralEntry.length); put32(newEocd, 16, centralOffset + local.length + licenceBytes.length);
-  const prefix = await range(bucket, key, 0, centralOffset);
-  const output = concat(prefix, local, licenceBytes, central, centralEntry, newEocd);
-  return { body: streamBytes(output), size: output.length, zip64: false };
+  const prefixLength = centralOffset;
+  const outputSize = prefixLength + local.length + licenceBytes.length + central.length + centralEntry.length + newEocd.length;
+  return {
+    body: new ReadableStream({
+      async start(controller) {
+        try {
+          const prefix = await bucket.get(key, { range: { offset: 0, length: prefixLength } });
+          await pipeBody(controller, prefix?.body ?? null);
+          controller.enqueue(local);
+          controller.enqueue(licenceBytes);
+          controller.enqueue(central);
+          controller.enqueue(centralEntry);
+          controller.enqueue(newEocd);
+          controller.close();
+        } catch (error) {
+          controller.error(error);
+        }
+      },
+    }),
+    size: outputSize,
+    zip64: false,
+  };
 }

@@ -4,7 +4,8 @@
 
 1. Connect this repository in Workers Builds.
 2. Set the build command to `npm run build`.
-3. Set the deploy command to `npx wrangler deploy`.
+3. Set the deploy command to `npx wrangler deploy`. Preview deploys use
+   `npx wrangler deploy --env preview`; production deploys use `npx wrangler deploy`.
 4. Set build variables `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 5. Enable R2 and create the `raising-noble-kits` bucket. Upload each kit under
    `kits/<slug>/kit.zip` with its `kit.json` (and optional `cover.webp`).
@@ -12,8 +13,7 @@
 7. Add `raisingnoble.com` as the Worker custom domain. Later, change the Squarespace
    nameservers when the domain is ready to move.
 8. Configure an external scheduler such as cron-job.org to call
-   `POST https://raisingnoble.com/api/internal/sync` with the Bearer token derived from
-   `SITE_PEPPER`.
+   `POST https://raisingnoble.com/api/internal/sync` with `Authorization: Bearer <SYNC_TOKEN>`.
 
 Set Worker secrets with:
 
@@ -22,6 +22,7 @@ wrangler secret put STRIPE_SECRET_KEY
 wrangler secret put STRIPE_WEBHOOK_SECRET
 wrangler secret put RESEND_API_KEY
 wrangler secret put SITE_PEPPER
+wrangler secret put SYNC_TOKEN
 wrangler secret put DEPLOY_HOOK_URL
 wrangler secret put TURNSTILE_SECRET_KEY
 ```

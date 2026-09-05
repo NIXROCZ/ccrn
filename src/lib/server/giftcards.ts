@@ -32,8 +32,10 @@ export async function findGiftCard(env: Env, code: string): Promise<GiftCardRow 
 export async function reserveGiftCodes(env: Env, codes: string[], requiredCents: number, orderId: string): Promise<{ appliedCents: number; reservations: Reservation[] }> {
   const rows: (GiftCardRow & { code: string })[] = [];
   for (const code of codes) {
+    const normalised = normaliseGiftCode(code);
     const card = await findGiftCard(env, code);
-    if (card && !card.disabled) rows.push({ ...card, code });
+    if (!card || card.disabled) throw new Error(`Gift code ${normalised.slice(-4)} not recognised`);
+    rows.push({ ...card, code: normalised });
   }
   rows.sort((a, b) => b.balance_cents - b.reserved_cents - (a.balance_cents - a.reserved_cents) || a.code.localeCompare(b.code));
   let remaining = requiredCents;
@@ -43,19 +45,16 @@ export async function reserveGiftCodes(env: Env, codes: string[], requiredCents:
     const amount = Math.min(remaining, row.balance_cents - row.reserved_cents);
     if (amount <= 0) continue;
     const result = await dbRun(env, 'UPDATE gift_cards SET reserved_cents = reserved_cents + ? WHERE id = ? AND disabled = 0 AND balance_cents - reserved_cents >= ?', amount, row.id, amount);
-    if (!result.success) {
-      await releaseReservations(env, reservations, orderId);
-      throw new Error('Gift card balance changed');
-    }
+    if (result.meta?.changes !== 1) continue;
     await dbRun(env, 'INSERT INTO gift_redemptions (id, gift_card_id, order_id, amount_cents, status) VALUES (?, ?, ?, ?, ?)', id(), row.id, orderId, amount, 'reserved');
     reservations.push({ cardId: row.id, amountCents: amount, code: row.code });
     remaining -= amount;
   }
-  if (remaining > 0) {
+  if (reservations.length === 0) {
     await releaseReservations(env, reservations, orderId);
     throw new Error('Gift card balance is insufficient');
   }
-  return { appliedCents: requiredCents, reservations };
+  return { appliedCents: requiredCents - remaining, reservations };
 }
 
 export async function releaseReservations(env: Env, reservations: Reservation[], orderId: string): Promise<void> {

@@ -1,12 +1,20 @@
 import type { APIRoute } from 'astro';
-import { sha256, jsonResponse, errorResponse } from '../../../lib/server/db';
+import { jsonResponse, errorResponse, sha256 } from '../../../lib/server/db';
 
 export const prerender = false;
 
+function constantTimeEqual(left: string, right: string): boolean {
+  const a = new TextEncoder().encode(left);
+  const b = new TextEncoder().encode(right);
+  let difference = a.length ^ b.length;
+  for (let index = 0; index < Math.max(a.length, b.length); index += 1) difference |= (a[index % (a.length || 1)] ?? 0) ^ (b[index % (b.length || 1)] ?? 0);
+  return difference === 0;
+}
+
 export const POST: APIRoute = async ({ request, locals }) => {
   const env = locals.runtime.env;
-  const expected = await sha256(`${env.SITE_PEPPER}:catalogue-sync`);
-  if (request.headers.get('Authorization') !== `Bearer ${expected}`) return errorResponse('Unauthorized', 401);
+  const provided = request.headers.get('Authorization')?.replace(/^Bearer\s+/i, '') ?? '';
+  if (!constantTimeEqual(provided, env.SYNC_TOKEN)) return errorResponse('Unauthorized', 401);
   const objects: { key: string; etag?: string }[] = [];
   let cursor: string | undefined;
   do {

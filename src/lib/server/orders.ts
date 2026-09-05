@@ -66,6 +66,7 @@ function lineItems(cart: Cart, totals: ReturnType<typeof priceCart>): Record<str
 export async function checkoutSession(env: Env, order: OrderRow, cart: OrderItem, reservations: Awaited<ReturnType<typeof reserveGiftCodes>> | null): Promise<{ url: string }> {
   const parsed = validateCart(cart);
   if (reservations && reservations.appliedCents > 0 && parsed.totals.total <= reservations.appliedCents) {
+    await dbRun(env, 'UPDATE orders SET gift_applied_cents = ?, total_cents = ? WHERE id = ?', reservations.appliedCents, 0, order.id);
     await finalisePaidOrder(env, order.id, undefined);
     const token = await createOneTimeSuccessToken(env, order.customer_email, order.id);
     return { url: `${env.SITE_URL}/checkout/success?order=${encodeURIComponent(order.id)}&t=${encodeURIComponent(token)}` };
@@ -107,21 +108,22 @@ export async function consumeSuccessToken(env: Env, token: string): Promise<{ em
 
 export async function finalisePaidOrder(env: Env, orderId: string, session: StripeCheckoutSession | undefined): Promise<OrderRow | null> {
   const order = await dbFirst<OrderRow>(env, 'SELECT * FROM orders WHERE id = ?', orderId);
-  if (!order || order.status === 'paid') return order;
+  if (!order || order.status === 'paid' || order.status === 'refunded_non_au') return order;
   const cart = JSON.parse(order.items_json) as Cart;
   const country = session?.customer_details?.address?.country ?? order.billing_country ?? null;
+  const paymentIntent = typeof session?.payment_intent === 'string' ? session.payment_intent : session?.payment_intent?.id;
   if (country && country !== 'AU') {
-    const paymentIntent = typeof session?.payment_intent === 'string' ? session.payment_intent : session?.payment_intent?.id;
+    const claimed = await dbRun(env, 'UPDATE orders SET status = ?, billing_country = ?, stripe_payment_intent = ? WHERE id = ? AND status = ?', 'refunded_non_au', country, paymentIntent ?? null, orderId, 'pending');
+    if (claimed.meta?.changes !== 1) return dbFirst<OrderRow>(env, 'SELECT * FROM orders WHERE id = ?', orderId);
     if (paymentIntent) await stripeRequest(env, '/refunds', { payment_intent: paymentIntent });
     const reservations = await dbAll<{ gift_card_id: string; amount_cents: number }>(env, 'SELECT gift_card_id, amount_cents FROM gift_redemptions WHERE order_id = ? AND status = ?', orderId, 'reserved');
     await releaseReservations(env, reservations.map((row) => ({ cardId: row.gift_card_id, amountCents: row.amount_cents, code: '' })), orderId);
-    await dbRun(env, 'UPDATE orders SET status = ?, billing_country = ?, stripe_payment_intent = ? WHERE id = ?', 'refunded_non_au', country, paymentIntent ?? null, orderId);
     await sendEmail(env, { ...simpleNoticeEmail('Your Raising Noble order was refunded', 'Orders are currently available in Australia only.'), to: order.customer_email }).catch(() => undefined);
     return dbFirst<OrderRow>(env, 'SELECT * FROM orders WHERE id = ?', orderId);
   }
+  const claimed = await dbRun(env, 'UPDATE orders SET status = ?, billing_country = ?, stripe_payment_intent = ?, paid_at = CURRENT_TIMESTAMP WHERE id = ? AND status = ?', 'paid', country, paymentIntent ?? null, orderId, 'pending');
+  if (claimed.meta?.changes !== 1) return dbFirst<OrderRow>(env, 'SELECT * FROM orders WHERE id = ?', orderId);
   await applyReservations(env, orderId);
-  const paymentIntent = typeof session?.payment_intent === 'string' ? session.payment_intent : session?.payment_intent?.id;
-  await dbRun(env, 'UPDATE orders SET status = ?, billing_country = ?, stripe_payment_intent = ?, paid_at = CURRENT_TIMESTAMP WHERE id = ?', 'paid', country, paymentIntent ?? null, orderId);
   for (const kitId of cart.kits) {
     await dbRun(env, 'INSERT OR IGNORE INTO download_grants (id, order_id, customer_email, kit_id) VALUES (?, ?, ?, ?)', id(), orderId, order.customer_email, kitId);
   }
@@ -130,7 +132,21 @@ export async function finalisePaidOrder(env: Env, orderId: string, session: Stri
     const recipient = gift.recipientEmail || order.customer_email;
     await sendEmail(env, { ...giftCardEmail({ code: card.displayCode, amount: formatAud(gift.amountCents), recipientName: gift.recipientName, message: gift.message }), to: recipient }).then(() => undefined).catch(() => undefined);
   }
-  await sendEmail(env, { ...orderReceiptEmail({ orderNumber: order.order_number, email: order.customer_email, downloadUrl: `${env.SITE_URL}/downloads` }), to: order.customer_email }).catch(() => undefined);
+  const totals = priceCart(cart, availableKits().map((kit) => kit.id));
+  await sendEmail(env, {
+    ...orderReceiptEmail({
+      orderNumber: order.order_number,
+      email: order.customer_email,
+      downloadUrl: `${env.SITE_URL}/downloads`,
+      date: new Date().toISOString().slice(0, 10),
+      kits: cart.kits.map((kitId) => ({ title: getKit(kitId)?.title ?? kitId, amount: formatAud(totals.isBundle ? 2450 : 3500) })),
+      gifts: cart.gifts.map((gift) => formatAud(gift.amountCents)),
+      bundleDiscount: totals.bundleDiscount ? formatAud(totals.bundleDiscount) : null,
+      giftApplied: order.gift_applied_cents ? formatAud(order.gift_applied_cents) : null,
+      total: formatAud(order.total_cents),
+    }),
+    to: order.customer_email,
+  }).catch(() => undefined);
   return dbFirst<OrderRow>(env, 'SELECT * FROM orders WHERE id = ?', orderId);
 }
 

@@ -15,6 +15,7 @@ export interface Env {
   STRIPE_WEBHOOK_SECRET: string;
   RESEND_API_KEY: string;
   SITE_PEPPER: string;
+  SYNC_TOKEN: string;
   DEPLOY_HOOK_URL: string;
   TURNSTILE_SECRET_KEY?: string;
   PUBLIC_TURNSTILE_SITE_KEY?: string;

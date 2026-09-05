@@ -46,8 +46,8 @@ its `[ages.min, ages.max]` range overlaps the band.
 ### Auto-publish pipeline ("rebuild on upload")
 
 1. Owner uploads `kits/<slug>/kit.zip` and `kits/<slug>/kit.json` (and optionally `cover.webp`) to R2.
-2. An external scheduler calls `POST /api/internal/sync` with the Bearer token derived from
-   `SITE_PEPPER`. The endpoint lists `kits/` in R2, hashes `(key, etag)` pairs, compares with
+2. An external scheduler calls `POST /api/internal/sync` with the `SYNC_TOKEN` secret as a
+   Bearer token. The endpoint lists `kits/` in R2, hashes `(key, etag)` pairs, compares with
    `KV:catalogue:manifest-hash`, and on change stores the new hash and POSTs the Workers Builds
    deploy hook (`DEPLOY_HOOK_URL` secret). Cloudflare Cron Triggers are intentionally not used.
    The owner can also trigger a rebuild from Workers Builds after an upload.
@@ -143,5 +143,5 @@ non-AU refund notice.
 ## Environment
 
 Vars (wrangler.jsonc `vars`): `SITE_URL`, `FROM_EMAIL`, `ORDERS_EMAIL`, `CONTACT_TO_EMAIL`, `PUBLIC_TURNSTILE_SITE_KEY?`, `PUBLIC_CF_BEACON_TOKEN?`.
-Secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, `SITE_PEPPER`, `DEPLOY_HOOK_URL`, `TURNSTILE_SECRET_KEY?`.
+Secrets: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, `SITE_PEPPER`, `SYNC_TOKEN`, `DEPLOY_HOOK_URL`, `TURNSTILE_SECRET_KEY?`.
 Build env (Workers Builds → Variables): `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
