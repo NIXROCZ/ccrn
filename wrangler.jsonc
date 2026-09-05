@@ -8,12 +8,12 @@
   "d1_databases": [{
     "binding": "DB",
     "database_name": "raising-noble",
-    "database_id": "343d4d33-b750-4ca0-b9b0-5fb03705a07e",
+    "database_id": "5a99511d-8046-43a4-9a26-c94c77354baa",
     "migrations_dir": "migrations"
   }],
   "kv_namespaces": [
-    { "binding": "KV", "id": "9dd6871e55f64b37b19a1fb480467793" },
-    { "binding": "CATALOGUE_KV", "id": "0e9e2b0d817e408eb008d37ce81defab" }
+    { "binding": "KV", "id": "513fec7d089d45f8961addde1f6161db" },
+    { "binding": "CATALOGUE_KV", "id": "006ec100a9e648a09343de0944f0fdbf" }
   ],
   "r2_buckets": [{ "binding": "KITS", "bucket_name": "raising-noble-kits" }],
   "triggers": { "crons": ["*/10 * * * *"] },

@@ -23,9 +23,9 @@ new kit is uploaded to R2.
 
 | Resource | Binding | Name | ID |
 | --- | --- | --- | --- |
-| D1 | `DB` | `raising-noble` | `343d4d33-b750-4ca0-b9b0-5fb03705a07e` |
-| KV | `KV` | `raising-noble-kv` | `9dd6871e55f64b37b19a1fb480467793` |
-| KV | `CATALOGUE_KV` | `raising-noble-catalogue` | `0e9e2b0d817e408eb008d37ce81defab` |
+| D1 | `DB` | `raising-noble` | `5a99511d-8046-43a4-9a26-c94c77354baa` |
+| KV | `KV` | `raising-noble-kv` | `513fec7d089d45f8961addde1f6161db` |
+| KV | `CATALOGUE_KV` | `raising-noble-catalogue` | `006ec100a9e648a09343de0944f0fdbf` |
 | R2 | `KITS` | `raising-noble-kits` | R2 must be enabled in the dashboard first, then create this bucket |
 
 ## Catalogue model
