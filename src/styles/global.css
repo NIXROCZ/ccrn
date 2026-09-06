@@ -1449,16 +1449,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .gift-form { margin-top: 1.5rem; }
 .text-control {
   background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--sage-deep);
+  border: 1px solid var(--line);
   color: var(--sage-deep);
   cursor: pointer;
   font-size: 0.68rem;
   letter-spacing: 0.16em;
   margin-top: 1.1rem;
-  padding: 0.3rem 0;
+  padding: 1em 0.5em;
+  text-align: center;
   text-transform: uppercase;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  width: 100%;
 }
+.text-control:hover { border-color: var(--sage-deep); }
 .gift-quantity {
   align-items: center;
   border: 1px solid var(--line);
@@ -1493,7 +1496,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .gift-meaning-copy h2 { color: var(--sage-dark); font-size: clamp(2rem, 3.5vw, 3rem); margin: 0.55rem 0 1rem; }
 .gift-meaning-copy p:not(.kicker) { max-width: 42ch; }
 .gift-meaning-copy .btn { margin-top: 1.6rem; }
-.faq-hero { background: var(--sage-mid); color: #fff; padding: clamp(4rem, 9vw, 7rem) var(--pad); }
+.faq-hero {
+  align-items: center;
+  background: var(--sage-mid);
+  color: #fff;
+  display: flex;
+  min-height: 34vh;
+  padding: clamp(4rem, 9vw, 7rem) var(--pad);
+}
+.faq-hero .wrap { text-align: center; width: 100%; }
 .faq-hero .kicker { color: rgba(255, 255, 255, 0.9); }
 .faq-hero h1 { color: #fff; font-size: clamp(2.5rem, 5vw, 4.4rem); font-style: italic; margin-top: 0.7rem; }
 .faq-hero .faq-subtitle { color: rgba(255, 255, 255, 0.92); font-size: 1rem; margin-top: 0.8rem; }

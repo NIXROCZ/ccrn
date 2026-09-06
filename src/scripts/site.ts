@@ -45,6 +45,8 @@ document.querySelectorAll<HTMLFormElement>('#checkout-form').forEach((form) => f
 document.querySelectorAll<HTMLElement>('.gift-amount').forEach((button) => button.addEventListener('click', () => {
   const input = document.querySelector<HTMLInputElement>('#amount');
   document.querySelectorAll<HTMLElement>('.gift-amount').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+  document.getElementById('custom-amount')?.setAttribute('hidden', '');
+  document.querySelector<HTMLButtonElement>('#custom-amount-toggle')?.setAttribute('aria-expanded', 'false');
   if (input) input.value = String(Number(button.dataset.amount) / 100);
 }));
 document.querySelector<HTMLButtonElement>('#custom-amount-toggle')?.addEventListener('click', (event) => {
@@ -52,6 +54,7 @@ document.querySelector<HTMLButtonElement>('#custom-amount-toggle')?.addEventList
   const field = document.getElementById('custom-amount');
   const open = !field?.hasAttribute('hidden');
   field?.toggleAttribute('hidden', open);
+  if (!open) document.querySelectorAll<HTMLElement>('.gift-amount').forEach((item) => item.setAttribute('aria-pressed', 'false'));
   button.setAttribute('aria-expanded', String(!open));
 });
 document.querySelector<HTMLButtonElement>('#gift-toggle')?.addEventListener('click', (event) => {
@@ -235,6 +238,7 @@ const shopCount = document.getElementById('shop-count');
 
 if (shopGrid && shopCount) {
   const cards = Array.from(shopGrid.querySelectorAll<HTMLElement>('.card'));
+  const originalOrder = [...cards];
   const collectionButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.filter[data-facet="cat"]'));
   const ageInputs = Array.from(document.querySelectorAll<HTMLInputElement>('input[data-facet="age"]'));
   const empty = document.getElementById('shop-empty');
@@ -284,10 +288,10 @@ if (shopGrid && shopCount) {
   });
   document.getElementById('shop-sort')?.addEventListener('change', (event) => {
     const select = event.currentTarget as HTMLSelectElement;
-    if (select.value === 'az') {
-      cards.sort((a, b) => (a.querySelector('.card-title')?.textContent ?? '').localeCompare(b.querySelector('.card-title')?.textContent ?? ''));
-      cards.forEach((card) => shopGrid.append(card));
-    }
+    const ordered = select.value === 'az'
+      ? [...cards].sort((a, b) => (a.querySelector('.card-title')?.textContent ?? '').localeCompare(b.querySelector('.card-title')?.textContent ?? ''))
+      : originalOrder;
+    ordered.forEach((card) => shopGrid.append(card));
     applyFilters(false);
   });
   applyFilters(false);
