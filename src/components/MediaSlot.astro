@@ -1,0 +1,63 @@
+---
+/**
+ * A photo or film in a fixed-ratio frame.
+ *
+ * The ratio lives on the figure, and the media fills it with object-fit, so
+ * nothing shifts while an image loads — no width/height attributes needed and
+ * no layout shift when a slot is swapped for a different photograph.
+ *
+ * Films are muted, looping and silent by design, and every one gets a pause
+ * button: WCAG 2.2.2 requires a control for anything that moves for more than
+ * five seconds. `autoplay` is omitted entirely when the visitor has asked for
+ * reduced motion — the poster shows instead.
+ */
+interface Props {
+  src?: string;
+  video?: string;
+  poster?: string;
+  alt: string;
+  ratio?: 'default' | 'tall' | 'wide' | 'square' | 'pano' | 'fill';
+  zoom?: boolean;
+  eager?: boolean;
+  class?: string;
+}
+
+const {
+  src,
+  video,
+  poster,
+  alt,
+  ratio = 'default',
+  zoom = false,
+  eager = false,
+  class: extra = '',
+} = Astro.props;
+
+const ratioClass = ratio === 'default' || ratio === 'fill' ? '' : ratio;
+const classes = ['ph', ratioClass, zoom ? 'zoom' : '', extra].filter(Boolean).join(' ');
+---
+<figure class={classes}>
+  {
+    video ? (
+      <video
+        src={video}
+        poster={poster}
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-label={alt}
+        data-film
+      />
+    ) : src ? (
+      <img
+        src={src}
+        alt={alt}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        fetchpriority={eager ? 'high' : 'auto'}
+      />
+    ) : null
+  }
+  <slot />
+</figure>
