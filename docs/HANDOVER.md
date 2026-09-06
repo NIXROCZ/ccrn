@@ -176,12 +176,45 @@ catch, so an accidental upload cannot put an unfinished kit on sale.
 
 ---
 
-## Resources to delete
+## Before you start: the bindings in `wrangler.jsonc` are not resolvable
 
-Two Cloudflare resources were created during development and are referenced by
-nothing. Delete them so the account is clean:
+`wrangler.jsonc` references D1 `5a99511d-8046-43a4-9a26-c94c77354baa`, KV
+`513fec7d…` and `006ec100…`. **None of these exist in the Cloudflare account
+reachable from this repo's tooling**, which holds only `raising-noble`
+(`343d4d33…`), `raisingnoble` (`21240288…`) and an unrelated database.
 
-- D1 database `343d4d33-b750-4ca0-b9b0-5fb03705a07e`
-- KV namespace `9dd6871e55f64b37b19a1fb480467793`
+So one of two things is true, and it is worth knowing which before you deploy:
 
-The live bindings are the ones listed at the top of this document.
+- the preview at `raising-noble-preview.nishi2nix.workers.dev` is deployed from a
+  **different Cloudflare account**, and those IDs are real there; or
+- the IDs were never real, in which case the first `wrangler deploy` against them
+  fails with "binding not found".
+
+Either way it resolves itself when you follow step 1 above: create the resources
+in your new account and paste the fresh IDs in. Do not assume the current values
+work.
+
+## Resources you can delete
+
+Created while building and referenced by nothing:
+
+- D1 `343d4d33-b750-4ca0-b9b0-5fb03705a07e` (`raising-noble`) — mine, empty
+- D1 `21240288-8247-40bb-a3a5-60fdd128dc24` (`raisingnoble`) — earlier attempt, 0 tables
+- KV `9dd6871e55f64b37b19a1fb480467793`
+
+`vikrant-memory` is unrelated to this project — leave it alone.
+
+## Branches
+
+`main` is the only branch that matters. Three others still exist on GitHub and
+are fully merged or superseded; the sandbox here cannot delete remote branches,
+so remove them from **GitHub → Branches**, or locally with:
+
+```bash
+git push origin --delete claude/global-digital-downloads-site-6k2mzb
+git push origin --delete devin/1788603912.51045-raising-noble-site
+git push origin --delete devin/1788606909-cart-hidden-fix
+```
+
+The two commits that were only on `devin/1788606909-cart-hidden-fix` are already
+merged into `main`, so nothing is lost by deleting it.
