@@ -1,7 +1,105 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import KitCard from '../components/KitCard.astro';
 import { GIFT_PRESETS_CENTS } from '../lib/pricing';
+import { getKits } from '../lib/catalogue';
+
+const related = getKits().slice(0, 4);
 ---
 <Layout title="Gift cards | Raising Noble">
-  <section class="wrap sec"><div class="phead"><p class="kicker">A thoughtful gift</p><h1 class="h1">Give a Raising Noble gift card.</h1><p class="lede narrow center">Choose an amount and send it by email, or send it to yourself.</p></div><form class="form-grid" id="gift-form"><div class="amounts">{GIFT_PRESETS_CENTS.map((amount) => <button type="button" class="filter gift-amount" data-amount={amount}>{amount / 100}</button>)}</div><div class="field"><label for="amount">Custom amount (A$10–A$500)</label><input id="amount" name="amountCents" type="number" min="10" max="500" step="1" required></div><div class="field"><label for="recipientName">Recipient name (optional)</label><input id="recipientName" name="recipientName"></div><div class="field"><label for="recipientEmail">Recipient email (optional)</label><input id="recipientEmail" name="recipientEmail" type="email"></div><div class="field"><label for="message">Message (optional)</label><textarea id="message" name="message"></textarea></div><button class="btn" type="submit">Add gift card</button></form><div class="narrow sec-s"><h2 class="h2">Check a balance</h2><form class="form-grid" data-endpoint="/api/gift/check"><div class="field"><label for="giftCode">Gift card code</label><input id="giftCode" name="code" required></div><button class="btn" type="submit">Check balance</button></form></div></section>
+  <section class="wrap sec-t gift-product">
+    <div class="gift-product-grid">
+      <div class="giftcard giftcard-large">
+        <img src="/images/logo-white-on-sage.png" alt="Raising Noble" />
+        <span class="gc-sub">Gift Card</span>
+      </div>
+      <div class="gift-product-copy">
+        <p class="pdp-collection">Gift Card</p>
+        <h1 class="pdp-title">E-Gift Card</h1>
+        <form class="gift-form" id="gift-form">
+          <div class="amounts">
+            {GIFT_PRESETS_CENTS.map((amount, index) => (
+              <button type="button" class="gift-amount" data-amount={amount} aria-pressed={index === 0 ? 'true' : 'false'}>
+                ${amount / 100}
+              </button>
+            ))}
+          </div>
+          <button class="text-control" id="custom-amount-toggle" type="button" aria-expanded="false" aria-controls="custom-amount">
+            Choose amount
+          </button>
+          <div class="field custom-amount-field" id="custom-amount" hidden>
+            <label for="amount">Custom amount (A$10–A$500)</label>
+            <input id="amount" name="amountCents" type="number" min="10" max="500" step="1" value="35" required />
+          </div>
+          <div class="gift-quantity" aria-label="Quantity: one gift card">
+            <button type="button" disabled aria-label="Decrease quantity">−</button>
+            <output>1</output>
+            <button type="button" disabled aria-label="Increase quantity">+</button>
+          </div>
+          <button class="btn full" type="submit">Add to cart</button>
+          <button class="gift-toggle" id="gift-toggle" type="button" aria-expanded="false" aria-controls="gift-fields">Send as a gift</button>
+          <div id="gift-fields" class="gift-fields" data-gift-fields hidden>
+            <div class="field"><label for="recipientName">Recipient name (optional)</label><input id="recipientName" name="recipientName" maxlength="120" /></div>
+            <div class="field"><label for="recipientEmail">Recipient email (optional)</label><input id="recipientEmail" name="recipientEmail" type="email" maxlength="254" /></div>
+            <div class="field"><label for="message">Message (optional)</label><textarea id="message" name="message"></textarea></div>
+          </div>
+        </form>
+        <div class="tabs gift-tabs" data-tabs role="tablist" aria-label="Gift card details" data-needs-js>
+          <button role="tab" id="tab-gift-desc" aria-controls="panel-gift-desc" aria-selected="true">Description</button>
+          <button role="tab" id="tab-gift-incl" aria-controls="panel-gift-incl" aria-selected="false" tabindex="-1">What's included</button>
+          <button role="tab" id="tab-gift-inst" aria-controls="panel-gift-inst" aria-selected="false" tabindex="-1">Instructions</button>
+        </div>
+        <div class="tabbody">
+          <div id="panel-gift-desc" role="tabpanel" aria-labelledby="tab-gift-desc" tabindex="0">
+            <p>Give them the freedom to choose something meaningful to explore, learn and enjoy together. Choose your own amount or select from our set amounts to find the perfect gift.</p>
+          </div>
+          <div id="panel-gift-incl" role="tabpanel" aria-labelledby="tab-gift-incl" tabindex="0">
+            <ul class="file-list">
+              <li>Digital Raising Noble gift card</li>
+              <li>Your chosen gift amount</li>
+              <li>Delivered by email</li>
+              <li>Balance never expires</li>
+              <li>Personalised gift message (optional)</li>
+              <li>Redeemable across Raising Noble resources</li>
+            </ul>
+          </div>
+          <div id="panel-gift-inst" role="tabpanel" aria-labelledby="tab-gift-inst" tabindex="0">
+            <h4>How to use your gift card</h4>
+            <ol>
+              <li>Choose an amount or enter your own.</li>
+              <li>Enter the recipient details.</li>
+              <li>Add your personal message, if you wish.</li>
+              <li>Send your gift.</li>
+              <li>The gift card will be delivered digitally by email with redemption instructions.</li>
+            </ol>
+            <h4>Ready to redeem?</h4>
+            <p class="muted">Enter your code below to check its remaining balance.</p>
+            <form class="balance-form" data-endpoint="/api/gift/check">
+              <label class="sr-only" for="giftCode">Gift card code</label>
+              <input id="giftCode" name="code" placeholder="Gift card code" required />
+              <button class="btn ghost" type="submit">Check balance</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="feature-blocks">
+      <article class="feature-block">
+        <div class="feature-image"><img src="/images/family-time.webp" alt="A family spending meaningful time together." /></div>
+        <div><h2>More Than Just Family Time</h2><p>Move beyond passive entertainment and make screen-time meaningful and creative. Create moments to connect, learn and grow together.</p></div>
+      </article>
+      <article class="feature-block reverse">
+        <div class="feature-image"><img src="/images/library-what.webp" alt="Family learning materials arranged on a table." /></div>
+        <div><h2>Tools &amp; Memories to Keep</h2><p>Give children the knowledge and confidence to navigate the world, while creating meaningful moments together along the way.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap sec-b">
+    <p class="section-title center">Discover more together</p>
+    <div class="cards">{related.map((kit) => <KitCard kit={kit} />)}</div>
+  </section>
 </Layout>

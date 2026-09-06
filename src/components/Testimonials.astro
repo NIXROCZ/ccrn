@@ -1,0 +1,30 @@
+---
+import Stars from './Stars.astro';
+
+interface Props {
+  title?: string;
+  class?: string;
+}
+
+const { title = 'Loved by curious families', class: extra = '' } = Astro.props;
+const testimonials = [
+  { quote: 'The kits gave us a gentle way to start conversations we had been putting off.', name: 'Crystal & Nishant' },
+  { quote: 'Simple, thoughtful and easy to bring into an ordinary afternoon.', name: 'Dean' },
+  { quote: 'The prompts helped us listen more and lecture less.', name: 'Jenny' },
+  { quote: 'A lovely resource for making family conversations feel natural.', name: 'Bo' },
+];
+---
+<section class={`testimonials sec ${extra}`}>
+  <div class="wrap">
+    <p class="kicker center mb-md">{title}</p>
+    <div class="quotes">
+      {testimonials.map((item) => (
+        <figure class="quote" data-reveal>
+          <blockquote>{item.quote}</blockquote>
+          <figcaption class="who">{item.name}</figcaption>
+          <Stars />
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>

@@ -2,48 +2,23 @@
 import Layout from '../layouts/Layout.astro';
 import KitCard from '../components/KitCard.astro';
 import MediaSlot from '../components/MediaSlot.astro';
-import Stars from '../components/Stars.astro';
+import Testimonials from '../components/Testimonials.astro';
 import { getKits, bundle } from '../lib/catalogue';
 import { categories } from '../data/collections';
 
 const kits = getKits();
-
-/* Show what is buyable first, then fill the row with what is coming, so the
-   shelf never looks empty while the catalogue is still being written. */
-const shelf = [...kits].sort((a, b) => {
-  const rank = (kit: typeof a) => (kit.status === 'available' ? 0 : kit.best ? 1 : 2);
-  return rank(a) - rank(b);
-}).slice(0, 4);
-
+const shelf = [...kits]
+  .sort((a, b) => Number(b.status === 'available') - Number(a.status === 'available'))
+  .slice(0, 4);
 const safeStrong = categories.find((category) => category.id === 'safety');
 const offer = bundle();
-
-const kitContents = [
-  { title: 'Presentation (PPT)', note: 'Designed for viewing together on a TV, computer or tablet.' },
-  { title: 'PDF version', note: 'An easy-to-view alternative to the PowerPoint, for any device.' },
-  { title: 'Printable activities × 2', note: "Hands-on activities that reinforce what you've just watched." },
-  { title: 'Parent & carer guide', note: 'Background, conversation prompts and practical tips.' },
-  { title: 'Viewing guide', note: 'Simple tips to help you get started and get the most from it.' },
-];
-
-const testimonials = [
-  { quote: 'The kits gave us a gentle way to start conversations we had been putting off.', name: 'Crystal & Nishant' },
-  { quote: 'Simple, thoughtful and easy to bring into an ordinary afternoon.', name: 'Dean' },
-  { quote: 'The prompts helped us listen more and lecture less.', name: 'Jenny' },
-  { quote: 'A lovely resource for making family conversations feel natural.', name: 'Bo' },
-];
 ---
 <Layout title="Raising Noble — for the conversations that matter">
   <section class="hero">
-    <MediaSlot
-      video="/video/hero.mp4"
-      poster="/images/hero-poster.webp"
-      alt="Sunlight moving through green leaves."
-      ratio="fill"
-    />
+    <MediaSlot video="/video/hero.mp4" poster="/images/hero-poster.webp" alt="Sunlight moving through green leaves." ratio="fill" />
     <div class="hero-in">
+      <p class="kicker">Thoughtful resources for curious families</p>
       <h1>For the conversations that matter</h1>
-      <p>Thoughtful resources for curious families</p>
       <a class="btn light" href="/shop">Shop now</a>
     </div>
     <button class="film-ctrl" type="button" data-film-toggle=".hero" data-needs-js>Pause</button>
@@ -51,10 +26,7 @@ const testimonials = [
 
   <section class="shelf sec">
     <div class="wrap">
-      <div class="shelf-head">
-        <p class="kicker">The collection</p>
-        <a class="tlink" href="/shop">Shop all</a>
-      </div>
+      <p class="kicker center mb-md">Bestsellers</p>
       <div class="cards">
         {shelf.map((kit, index) => <KitCard kit={kit} eager={index < 2} />)}
       </div>
@@ -64,139 +36,71 @@ const testimonials = [
   <section class="wrap sec">
     <div class="split narrowL">
       <div>
-        <h2 class="h1">Raising curious <em>thinkers</em>.<br />Building connected <em>families</em>.</h2>
+        <h2 class="curious-heading">Raising curious <em>thinkers</em>.<br />Building connected <em>families</em>.</h2>
         <hr class="rule" />
         <p class="lede">
-          Simple, thoughtful resources to help you turn everyday topics and life skills into
-          meaningful family moments.
+          Simple, thoughtful resources to help you turn everyday topics and life skills into meaningful family moments.
         </p>
         <p class="muted note">
-          Each kit takes one subject a child will eventually ask about, and gives you a
-          presentation to watch together, printable activities, and a parent guide with the
-          background and the conversation prompts.
+          Each kit takes one subject a child will eventually ask about and gives you a presentation to watch together,
+          printable activities and a parent guide with useful background and conversation prompts.
         </p>
         <p class="mt-lg"><a class="tlink" href="/about">Our story</a></p>
       </div>
-      <MediaSlot
-        class="art"
-        src="/images/home-children.webp"
-        alt="Children painting a large mural on a white wall."
-        zoom
-      />
+      <MediaSlot class="art" src="/images/home-children.webp" alt="Children painting a large mural on a white wall." ratio="square" zoom />
     </div>
   </section>
 
-  <section class="filmband">
-    <MediaSlot
-      video="/video/family.mp4"
-      poster="/images/family-poster.webp"
-      alt="A family together at the shore as the sun goes down."
-      ratio="pano"
-    />
-    <button class="film-ctrl" type="button" data-film-toggle=".filmband" data-needs-js>Pause</button>
-  </section>
-
-  <section class="wrap sec">
-    <p class="kicker center mb-md">Loved by curious families</p>
-    <div class="quotes">
-      {
-        testimonials.map((item, index) => (
-          <figure class="quote" data-reveal >
-            <blockquote>{item.quote}</blockquote>
-            <figcaption class="who">{item.name}</figcaption>
-            <Stars />
-          </figure>
-        ))
-      }
-    </div>
-  </section>
+  <Testimonials title="Loved by curious families" />
 
   {
     safeStrong && (
-      <section class="panel">
+      <section class="panel collection-band">
         <MediaSlot src="/images/home-child.webp" alt="A child laughing in sunlight." ratio="fill" />
         <div class="panel-txt">
-          <p class="kicker">The collection</p>
-          <h2 class="h2">
-            Safe &amp; <em>Strong</em>
-          </h2>
-          <p>
-            Bodies, boundaries, feelings and the online world. Staged gently by age, built on
-            practice rather than warnings.
-          </p>
-          <a class="btn light" href="/shop?c=safety">
-            Explore the collection
-          </a>
+          <p class="kicker">New collection</p>
+          <h2 class="h2">Safe &amp; <em>Strong</em></h2>
+          <p>Bodies, boundaries, feelings and the online world. Staged gently by age, built on practice rather than warnings.</p>
+          <a class="btn outline-light" href="/shop?c=safety">Explore the collection</a>
         </div>
       </section>
     )
   }
 
-  <section class="wrap sec">
+  <section class="conversation-band">
     <div class="narrow center">
-      <h2 class="h1">We believe some of the most important lessons begin with a conversation.</h2>
-      <hr class="rule mid" />
-      <p class="lede mx-auto">
-        We are a couple in Wollongong who kept running out of good answers. So we started writing
-        them down — the background, the questions worth asking, and something to do together
-        afterwards.
-      </p>
-      <p class="mt-lg"><a class="tlink" href="/about">Read more about us</a></p>
-    </div>
-  </section>
-
-  <section class="shelf sec">
-    <div class="wrap">
-      <p class="kicker center mb-sm">In every kit</p>
-      <h2 class="h2 center mb-lg">Five pieces, ready to use</h2>
-      <div class="four five">
-        {
-          kitContents.map((item, index) => (
-            <div class="item" data-reveal >
-              <h4>{item.title}</h4>
-              <p>{item.note}</p>
-            </div>
-          ))
-        }
-      </div>
-      <p class="center muted mt-xl text-xs">
-        Delivered as a single zip file, immediately after checkout.
+      <h2>We believe some of the most important lessons begin with a conversation.</h2>
+      <p>
+        We are a couple in Wollongong who kept running out of good answers. So we started writing them down — the
+        background, the questions worth asking and something to do together afterwards.
       </p>
     </div>
   </section>
 
   <section class="wrap sec">
-    <div class="feats">
-      <div class="feat">
-        <MediaSlot src="/images/feat-bundle.webp" alt="A crate of tomatoes and peppers in a garden." ratio="fill" />
-        <div class="feat-in">
-          <h3><a href="/bundle">Bundle and <em>Save</em></a></h3>
-          <p>
-            {
-              offer.count >= 2
-                ? 'Take every published kit in one payment and save 30% on the collection.'
-                : 'Every kit in one payment, at 30% off, as soon as the first ones are published.'
-            }
-          </p>
-        </div>
-      </div>
-      <div class="feat">
-        <MediaSlot src="/images/feat-gift.webp" alt="Wooden steps leading through greenery." ratio="fill" />
-        <div class="feat-in">
-          <h3><a href="/gift-card">Give a <em>Gift Card</em></a></h3>
-          <p>Let them choose their own. Delivered by email, and it never expires.</p>
-        </div>
-      </div>
+    <div class="home-offers">
+      <a class="offer-card offer-bundle" href="/bundle">
+        <p class="kicker">Build your collection and save</p>
+        <h2>Bundle and <em>Save</em></h2>
+        <p>{offer.count >= 2 ? 'Take every published kit in one payment and save 30% on the collection.' : 'Every kit in one payment, at 30% off, as soon as the first ones are published.'}</p>
+        <span class="tlink">Explore the bundle</span>
+      </a>
+      <a class="offer-card offer-gift" href="/gift-card">
+        <MediaSlot src="/images/feat-gift.webp" alt="Wooden steps leading through greenery." ratio="square" />
+        <span class="offer-card-copy">
+          <p class="kicker">A thoughtful gift</p>
+          <h2>Give a <em>Gift Card</em></h2>
+          <span class="tlink">Give a gift card</span>
+        </span>
+      </a>
     </div>
   </section>
 
   <section class="shelf sec">
     <div class="wrap center">
       <p class="kicker mb-sm">Keep in touch</p>
-      <h2 class="h2">New kits,<br />thoughtful notes.</h2>
-      <p class="lede lede-centred">
-        A conversation starter, one small activity, and whatever we have learned that month.
-      </p>
+      <h2 class="h2">Join Monthly Moments</h2>
+      <p class="lede lede-centred">Simple tips, thoughtful conversations &amp; a little family activity, delivered each month.</p>
       <form class="inline-form mt-lg" data-endpoint="/api/newsletter">
         <label class="sr-only" for="home-newsletter-email">Email</label>
         <input id="home-newsletter-email" name="email" type="email" placeholder="Your email" required />

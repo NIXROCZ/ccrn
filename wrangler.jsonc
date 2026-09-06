@@ -1,5 +1,6 @@
 {
   "name": "raising-noble",
+  "account_id": "2169dc0161029967a7114bbf9df96854",
   "compatibility_date": "2026-08-01",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./dist/_worker.js/index.js",

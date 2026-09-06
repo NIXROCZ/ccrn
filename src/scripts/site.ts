@@ -44,8 +44,23 @@ document.querySelectorAll<HTMLFormElement>('#checkout-form').forEach((form) => f
 }));
 document.querySelectorAll<HTMLElement>('.gift-amount').forEach((button) => button.addEventListener('click', () => {
   const input = document.querySelector<HTMLInputElement>('#amount');
+  document.querySelectorAll<HTMLElement>('.gift-amount').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
   if (input) input.value = String(Number(button.dataset.amount) / 100);
 }));
+document.querySelector<HTMLButtonElement>('#custom-amount-toggle')?.addEventListener('click', (event) => {
+  const button = event.currentTarget as HTMLButtonElement;
+  const field = document.getElementById('custom-amount');
+  const open = !field?.hasAttribute('hidden');
+  field?.toggleAttribute('hidden', open);
+  button.setAttribute('aria-expanded', String(!open));
+});
+document.querySelector<HTMLButtonElement>('#gift-toggle')?.addEventListener('click', (event) => {
+  const button = event.currentTarget as HTMLButtonElement;
+  const fields = document.querySelector<HTMLElement>('[data-gift-fields]');
+  const open = !fields?.hasAttribute('hidden');
+  fields?.toggleAttribute('hidden', open);
+  button.setAttribute('aria-expanded', String(!open));
+});
 document.querySelector<HTMLFormElement>('#gift-form')?.addEventListener('submit', (event) => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(event.currentTarget as HTMLFormElement));
@@ -220,67 +235,60 @@ const shopCount = document.getElementById('shop-count');
 
 if (shopGrid && shopCount) {
   const cards = Array.from(shopGrid.querySelectorAll<HTMLElement>('.card'));
-  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.filter[data-facet]'));
+  const collectionButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.filter[data-facet="cat"]'));
+  const ageInputs = Array.from(document.querySelectorAll<HTMLInputElement>('input[data-facet="age"]'));
   const empty = document.getElementById('shop-empty');
-
-  const shopParams = new URLSearchParams(window.location.search);
-  let activeCat = shopParams.get('c') ?? 'all';
-  let activeAge = shopParams.get('age') ?? 'all';
-
-  const known = (facet: string, value: string) =>
-    value === 'all' || chips.some((chip) => chip.dataset.facet === facet && chip.dataset.value === value);
-  if (!known('cat', activeCat)) activeCat = 'all';
-  if (!known('age', activeAge)) activeAge = 'all';
+  const params = new URLSearchParams(window.location.search);
+  let activeCat = params.get('c') ?? 'all';
+  let activeAge = params.get('a') ?? 'all';
 
   const applyFilters = (pushUrl: boolean) => {
-    const band = chips.find((chip) => chip.dataset.facet === 'age' && chip.dataset.value === activeAge);
+    const band = ageInputs.find((input) => input.value === activeAge);
     const bandMin = Number(band?.dataset.min ?? 0);
     const bandMax = Number(band?.dataset.max ?? 99);
     let shown = 0;
-
     for (const card of cards) {
       const inCat = activeCat === 'all' || card.dataset.cat === activeCat;
-      const min = Number(card.dataset.min);
-      const max = Number(card.dataset.max);
-      // A kit matches a band when their age ranges overlap at all.
-      const inAge = activeAge === 'all' || (min <= bandMax && max >= bandMin);
-      const visible = inCat && inAge;
-      card.hidden = !visible;
-      if (visible) shown += 1;
+      const inAge = activeAge === 'all' || (Number(card.dataset.min) <= bandMax && Number(card.dataset.max) >= bandMin);
+      card.hidden = !(inCat && inAge);
+      if (inCat && inAge) shown += 1;
     }
-
-    for (const chip of chips) {
-      const current = chip.dataset.facet === 'cat' ? activeCat : activeAge;
-      chip.setAttribute('aria-pressed', String(chip.dataset.value === current));
-    }
-
+    collectionButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.value === activeCat)));
+    ageInputs.forEach((input) => { input.checked = input.value === activeAge; });
     shopCount.textContent = `${shown} ${shown === 1 ? 'kit' : 'kits'}`;
     shopCount.hidden = shown === 0;
     if (empty) empty.hidden = shown > 0;
-
     if (pushUrl) {
       const next = new URLSearchParams();
       if (activeCat !== 'all') next.set('c', activeCat);
-      if (activeAge !== 'all') next.set('age', activeAge);
+      if (activeAge !== 'all') next.set('a', activeAge);
       const query = next.toString();
       window.history.replaceState(null, '', query ? `/shop?${query}` : '/shop');
     }
   };
 
-  for (const chip of chips) {
-    chip.addEventListener('click', () => {
-      const value = chip.dataset.value!;
-      if (chip.dataset.facet === 'cat') activeCat = value;
-      else activeAge = value;
-      applyFilters(true);
-    });
-  }
-
-  document.getElementById('shop-clear')?.addEventListener('click', () => {
-    activeCat = 'all';
-    activeAge = 'all';
+  collectionButtons.forEach((button) => button.addEventListener('click', () => {
+    activeCat = button.dataset.value ?? 'all';
     applyFilters(true);
+  }));
+  ageInputs.forEach((input) => input.addEventListener('change', () => {
+    activeAge = input.value;
+    applyFilters(true);
+  }));
+  document.getElementById('filter-toggle')?.addEventListener('click', (event) => {
+    const button = event.currentTarget as HTMLButtonElement;
+    const panel = document.getElementById('age-panel');
+    const open = !panel?.classList.contains('open');
+    panel?.classList.toggle('open', open);
+    button.setAttribute('aria-expanded', String(open));
   });
-
+  document.getElementById('shop-sort')?.addEventListener('change', (event) => {
+    const select = event.currentTarget as HTMLSelectElement;
+    if (select.value === 'az') {
+      cards.sort((a, b) => (a.querySelector('.card-title')?.textContent ?? '').localeCompare(b.querySelector('.card-title')?.textContent ?? ''));
+      cards.forEach((card) => shopGrid.append(card));
+    }
+    applyFilters(false);
+  });
   applyFilters(false);
 }

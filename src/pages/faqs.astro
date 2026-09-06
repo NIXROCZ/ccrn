@@ -1,18 +1,79 @@
 ---
 import Layout from '../layouts/Layout.astro';
-const faqs = [
-  ['What do I receive?', 'A zip file containing a presentation, printable activities, a parent and carer guide and a viewing guide. The download link appears after payment confirmation and arrives by email.'],
-  ['How does payment work?', 'Stripe handles your card details, so we never see card numbers. Card, Apple Pay, Google Pay and Link. Prices in AUD.'],
-  ['What does the bundle include?', 'Every currently available kit at 30% less than buying them individually. It is a one-off payment.'],
-  ['What if a file will not open?', 'Contact us and we will supply the files directly or fix the problem.'],
-  ['How do gift cards work?', 'Choose an amount and send it by email. Gift cards do not expire and any remaining balance stays on the card.'],
-  ['What ages are the kits for?', 'Most kits are for ages five to twelve, with each product page showing its age range.'],
-  ['Can I share a kit?', 'Kits are for personal, single-household use. Sharing files is not permitted.'],
-  ['Is this medical advice?', 'No. These are educational materials, not medical or professional advice.'],
-  ['What if a child discloses something difficult?', 'Listen calmly and reassure them they did the right thing by telling you. Call 000 in an emergency. Kids Helpline is 1800 55 1800, Parentline NSW is 1300 1300 52, and 1800RESPECT is 1800 737 732.'],
-  ['How do I reach someone?', 'Email hello@raisingnoble.com or use our contact page. We aim to reply within a few days.'],
+
+const groups = [
+  {
+    title: 'Choosing Your Resources',
+    items: [
+      ['What age are the resources suitable for?', 'Age recommendations vary between resources. You’ll find the suggested age range clearly listed on each product page.'],
+      ['What is included with each resource?', 'Each resource is different, but many include a child-friendly presentation, Parent Guide and printable activities. You can find the complete list under What’s Included on each product page.'],
+      ['Can I use a resource with more than one child?', 'Absolutely. Our resources are designed to be enjoyed together and can be used with siblings or children within the recommended age range.'],
+      ['Do I need to be a teacher or homeschooler to use them?', 'Not at all. No teaching experience is needed. Our resources give parents a simple, engaging way to introduce a topic and start a conversation.'],
+    ],
+  },
+  {
+    title: 'Who are the Resources For?',
+    items: [
+      ['Who are the resources designed for?', 'Our resources are designed for families with children across different ages and stages. Each product includes a recommended age range to help you find the right fit.'],
+      ['Are they suitable for homeschooling?', 'Yes. They can be used as part of family learning or simply as an engaging way to explore new topics together at home.'],
+      ['Can I use them on a TV or tablet?', 'Yes. Presentations can be viewed on a computer, tablet or TV, making it easy to explore them together as a family. A Viewing Guide is included with your purchase.'],
+      ['What format are the resources in?', 'Depending on the resource, files may be provided as PDF and/or PowerPoint. The formats included are listed on each product page.'],
+    ],
+  },
+  {
+    title: 'Using Your Resources',
+    items: [
+      ['Are the resources printable?', 'Where printable activities are included, they can be printed at home and used alongside the presentation and family conversations.'],
+      ['How do I access my purchase?', 'After purchasing, you’ll receive an email with instructions for accessing your digital resources.'],
+      ['What if I have trouble downloading my resources?', 'If you have any trouble accessing your purchase, please get in touch with us. We’re happy to help get everything working.'],
+      ['How do I redeem a gift card?', 'Enter your gift card code at checkout. Your gift card email also includes redemption instructions, and you can check a remaining balance on the gift card page.'],
+    ],
+  },
+  {
+    title: 'Gifting',
+    items: [
+      ['Can I purchase a gift card?', 'Absolutely. Choose from one of our set amounts or enter your own. Gift cards are delivered digitally by email.'],
+      ['How long are gift cards valid for?', 'Raising Noble gift cards never expire. Any remaining balance is tracked automatically.'],
+      ['Can I send a gift card to myself?', 'Yes. Leave the optional recipient fields blank and the gift card will be sent to the buyer email used at checkout.'],
+    ],
+  },
+  {
+    title: 'Purchases & Policies',
+    items: [
+      ['Can I share or resell the resources?', 'Raising Noble resources are for personal and single-household use only. They may not be copied, reproduced, shared, uploaded or resold without written permission.'],
+      ['Can I get a refund?', 'There are no change-of-mind refunds for digital products once delivered. If a file is faulty, won’t open, or is missing, contact us and we will supply the files directly or fix the problem. Our goods come with guarantees that cannot be excluded under the Australian Consumer Law. You are entitled to a replacement or refund for a major failure and compensation for any other reasonably foreseeable loss or damage. You are also entitled to have the goods repaired or replaced if the goods fail to be of acceptable quality and the failure does not amount to a major failure.'],
+      ['Is this medical advice?', 'No. These are educational materials, not medical or professional advice.'],
+      ['What if a child discloses something difficult?', 'Listen calmly and reassure them they did the right thing by telling you. Call 000 in an emergency. Kids Helpline is 1800 55 1800, Parentline NSW is 1300 1300 52, and 1800RESPECT is 1800 737 732.'],
+    ],
+  },
+  {
+    title: 'Support',
+    items: [
+      ['How do I reach someone?', 'Email hello@raisingnoble.com or use our contact page. We aim to reply within a few days.'],
+    ],
+  },
 ];
 ---
-<Layout title="FAQs | Raising Noble">
-  <section class="wrap sec"><div class="phead"><p class="kicker">Questions</p><h1 class="h1">FAQs</h1><p class="lede narrow center">We aim to reply within a few days.</p></div><div class="narrow">{faqs.map(([question, answer]) => <details class="faq"><summary>{question}</summary><p>{answer}</p></details>)}</div></section>
+<Layout title="Frequently Asked Questions | Raising Noble">
+  <section class="faq-hero">
+    <div class="wrap">
+      <h1>Frequently Asked Questions</h1>
+      <p class="faq-subtitle">You asked. We've answered.</p>
+    </div>
+  </section>
+  <section class="wrap sec faq-page">
+    {groups.map((group) => (
+      <section class="faq-group-list">
+        <h2>{group.title}</h2>
+        <div class="faq-items">
+          {group.items.map(([question, answer]) => (
+            <article class="faq-item">
+              <h3>{question}</h3>
+              <p>{answer}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+  </section>
 </Layout>

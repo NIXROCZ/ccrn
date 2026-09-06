@@ -1,8 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Cover from '../../components/Cover.astro';
-import MediaSlot from '../../components/MediaSlot.astro';
 import KitCard from '../../components/KitCard.astro';
+import Testimonials from '../../components/Testimonials.astro';
 import { getKits, categoryLabel } from '../../lib/catalogue';
 import { formatAud, KIT_PRICE_CENTS } from '../../lib/pricing';
 
@@ -13,20 +13,18 @@ export function getStaticPaths() {
 const { kit } = Astro.props;
 const available = kit.status === 'available';
 const related = getKits().filter((other) => other.id !== kit.id).slice(0, 4);
-
 const pillars = [
-  { title: 'Simple & engaging', body: 'Written in the gentle, educational style of Raising Noble, so learning stays simple, warm and genuinely interesting.' },
-  { title: 'Fact over fear', body: 'No complicated rules and no fear-based messaging. Honest, practical guidance that builds understanding rather than alarm.' },
-  { title: 'Learn, then do', body: 'Reflection exercises and activities that bring a family closer while teaching something that carries into everyday life.' },
+  { title: 'Simple & Engaging', body: 'Created in the gentle, educational style of Raising Noble, this guide makes learning simple, fun and engaging.' },
+  { title: 'Fun over Fear', body: 'No complicated rules and no fear-based messaging. Just honest, practical guidance that builds critical thinking and understanding.' },
+  { title: 'Learn then Do Approach', body: 'Discover reflection exercises and activities that bring your family closer while teaching life-applicable lessons.' },
 ];
-
 const instructions = [
-  'Unzip the file.',
-  'Read the parent and carer guide first.',
-  'Watch the presentation together, as a PowerPoint or a PDF.',
-  'Talk through the ideas and the questions.',
+  'Unzip the zip file.',
+  'Read the Parent Guide first.',
+  'Watch the PPT or PDF presentation together.',
+  'Talk through the ideas and questions.',
   'Print and complete the activities together.',
-  'Keep returning to it in everyday family life.',
+  'Keep exploring the topic in everyday family life.',
 ];
 ---
 <Layout title={`${kit.title} | Raising Noble`} description={kit.blurb}>
@@ -34,60 +32,58 @@ const instructions = [
     <div class="pdp">
       <div class="pdp-media">
         <figure class="cover">
-          {
-            kit.cover ? <img src={kit.cover} alt={`${kit.title} cover`} />
-            : kit.realCover ? <img src="/covers/seedoils.jpg" alt={`${kit.title} cover`} />
-            : <Cover kit={kit} />
-          }
+          {kit.cover ? <img src={kit.cover} alt={`${kit.title} cover`} /> : kit.realCover ? <img src="/covers/seedoils.jpg" alt={`${kit.title} cover`} /> : <Cover kit={kit} />}
         </figure>
       </div>
-
       <div>
-        <p class="pdp-collection"><em>Collection:</em> <a class="inline-link" href={`/shop?c=${kit.cat}`}>{categoryLabel(kit.cat)}</a></p>
+        <p class="pdp-collection">{categoryLabel(kit.cat)}</p>
         <h1>{kit.title}</h1>
-
-        <div class="pdp-meta">
-          <span class="pill">Ages {kit.ages.min}–{kit.ages.max}</span>
-          <span class="pill">{kit.files.length} files</span>
-          {!available && <span class="pill">Coming soon</span>}
-        </div>
-
+        <p class="product-age">Ages {kit.ages.min}–{kit.ages.max}</p>
         {
           available ? (
             <>
               <div class="pdp-price"><span class="amt">{formatAud(KIT_PRICE_CENTS)} AUD</span></div>
-              <div class="pdp-buy"><button class="btn add-kit" data-kit={kit.id}>Add to cart</button></div>
+              <div class="pdp-buy">
+                <div class="qty" title="One licence per household">
+                  <button type="button" disabled aria-label="Decrease quantity">−</button>
+                  <output aria-label="Quantity">1</output>
+                  <button type="button" disabled aria-label="Increase quantity">+</button>
+                </div>
+                <button class="btn add-kit" data-kit={kit.id} aria-label="Add to cart — one licence per household">Add to cart</button>
+              </div>
             </>
           ) : (
             <div class="soon-note">
               <strong>This kit is still being written.</strong>
-              <p class="mt-sm">
-                We publish a kit when it is finished and checked, not to a schedule.
-              </p>
-              <p class="mt-md">
-                <button class="btn ghost sm notify-kit" data-kit={kit.id}>Notify me when it is ready</button>
-              </p>
+              <p class="mt-sm">We publish a kit when it is finished and checked, not to a schedule.</p>
+              <p class="mt-md"><button class="btn ghost sm notify-kit" data-kit={kit.id}>Notify me when it is ready</button></p>
             </div>
           )
         }
-
         <div class="tabs" data-tabs role="tablist" aria-label="Kit details" data-needs-js>
           <button role="tab" id="tab-desc" aria-controls="panel-desc" aria-selected="true">Description</button>
           <button role="tab" id="tab-incl" aria-controls="panel-incl" aria-selected="false" tabindex="-1">What's included</button>
           <button role="tab" id="tab-inst" aria-controls="panel-inst" aria-selected="false" tabindex="-1">Instructions</button>
         </div>
-
         <div class="tabbody">
           <div id="panel-desc" role="tabpanel" aria-labelledby="tab-desc" tabindex="0">
             <p>{kit.blurb}</p>
-            <p class="mt-md">
-              Written in the gentle, educational style of Raising Noble: no complicated rules and no
-              fear-based messaging, just honest, practical guidance that builds understanding.
-            </p>
+            <p class="mt-md">With engaging activities designed to be explored together, it transforms an everyday topic into a meaningful family moment.</p>
+            <ul class="feature-list">
+              <li>Instant download</li><li>Thoughtfully designed for families</li><li>Child-friendly presentation</li><li>Includes printable activities</li><li>Learn together, at your own pace</li>
+            </ul>
           </div>
           <div id="panel-incl" role="tabpanel" aria-labelledby="tab-incl" tabindex="0">
             <h4>This kit includes</h4>
-            <ul class="file-list">{kit.files.map((file) => <li>{file}</li>)}</ul>
+            <ul class="file-list">
+              <li>Presentation (PPT)</li><li>PDF version</li><li>Printable activities x2</li><li>Parent &amp; Carer Guide</li><li>Viewing Guide</li>
+            </ul>
+            <h4>More information on what's inside</h4>
+            <p><strong>Presentation (PPT):</strong> Designed for viewing together on a TV, computer or tablet.</p>
+            <p><strong>PDF version:</strong> An easy-to-view alternative to the PowerPoint.</p>
+            <p><strong>Printable activities:</strong> Hands-on activities to reinforce learning.</p>
+            <p><strong>Parent &amp; Carer Guide:</strong> Background information, conversation prompts and practical tips.</p>
+            <p><strong>Viewing Guide:</strong> Simple tips to help you get started.</p>
           </div>
           <div id="panel-inst" role="tabpanel" aria-labelledby="tab-inst" tabindex="0">
             <h4>How to use your kit</h4>
@@ -99,14 +95,28 @@ const instructions = [
   </section>
 
   <section class="wrap sec">
-    <div class="learn-split">
-      <MediaSlot src="/images/family-time.webp" alt="A parent and toddler sorting fruit together." ratio="square" zoom />
-      <div>
-        <h2 class="h2 mb-sm">What you'll learn</h2>
-        <dl class="learn">
-          {kit.learn.map(([title, text]) => (<><dt>{title}</dt><dd>{text}</dd></>))}
-        </dl>
-      </div>
+    <div class="center mb-lg"><p class="kicker">What you'll learn</p><h2 class="h2">What You'll Learn</h2></div>
+    <div class="product-learn">
+      {kit.learn.map(([title, text]) => <article><h3>{title}</h3><p>{text}</p></article>)}
+    </div>
+  </section>
+
+  <section class="sage-pillars">
+    <div class="pillars">
+      {pillars.map((pillar) => <article class="pillar"><div class="body"><h4>{pillar.title}</h4><p>{pillar.body}</p></div></article>)}
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="feature-blocks">
+      <article class="feature-block">
+        <div class="feature-image"><img src="/images/family-time.webp" alt="A family spending meaningful time together." /></div>
+        <div><h2>More Than Just Family Time</h2><p>Move beyond passive entertainment and make screen-time meaningful and creative. Create moments to connect, learn and grow together.</p></div>
+      </article>
+      <article class="feature-block reverse">
+        <div class="feature-image"><img src="/images/library-what.webp" alt="Family learning materials arranged on a table." /></div>
+        <div><h2>Tools &amp; Memories to Keep</h2><p>Give children the knowledge and confidence to navigate the world, while creating meaningful moments together along the way.</p></div>
+      </article>
     </div>
   </section>
 
@@ -132,25 +142,9 @@ const instructions = [
     )
   }
 
+  <Testimonials title="What families are saying" />
   <section class="wrap sec-b">
-    <div class="pillars">
-      {
-        pillars.map((pillar, index) => (
-          <div class="pillar" data-reveal >
-            <div class="body">
-              <h4>{pillar.title}</h4>
-              <p>{pillar.body}</p>
-            </div>
-          </div>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="wrap sec-b">
-    <p class="section-title center">
-      Discover more together
-    </p>
+    <p class="section-title center">Discover more together</p>
     <div class="cards">{related.map((other) => <KitCard kit={other} />)}</div>
   </section>
 </Layout>
