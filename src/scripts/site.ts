@@ -25,15 +25,9 @@ document.querySelectorAll<HTMLElement>('.notify-kit').forEach((button) => button
   if (!response.ok) return toast(data.error ?? 'Please try again in a moment.');
   toast('Thanks — we will let you know when it is ready.');
 }));
-const params = new URLSearchParams(window.location.search);
-const category = params.get('c'); const age = params.get('age')?.split('-').map(Number);
-document.querySelectorAll<HTMLElement>('[data-cat][data-min][data-max]').forEach((card) => {
-  const matchesCategory = !category || category === 'all' || card.dataset.cat === category;
-  const min = Number(card.dataset.min); const max = Number(card.dataset.max);
-  const matchesAge = !age || (min <= age[1] && max >= age[0]);
-  card.hidden = !(matchesCategory && matchesAge);
-});
-document.querySelectorAll<HTMLElement>('.filter').forEach((button) => button.addEventListener('click', () => {
+/* Shop filtering moved to the client-side chip handler further down, which
+   reads the same URL parameters but does not reload the page per click. */
+document.querySelectorAll<HTMLElement>('.filter[data-filter-key]').forEach((button) => button.addEventListener('click', () => {
   const next = new URL(window.location.href); const key = button.dataset.filterKey; const value = button.dataset.filterValue;
   if (key && value) next.searchParams.set(key, value); window.location.href = next.toString();
 }));
@@ -57,7 +51,12 @@ document.querySelector<HTMLFormElement>('#gift-form')?.addEventListener('submit'
   const data = Object.fromEntries(new FormData(event.currentTarget as HTMLFormElement));
   const amountCents = Math.round(Number(data.amountCents) * 100);
   if (!Number.isFinite(amountCents) || amountCents < 1000 || amountCents > 50000) return toast('Choose an amount between A$10 and A$500.');
-  const cart = readCart(); cart.gifts.push({ amountCents, recipientName: String(data.recipientName || ''), recipientEmail: String(data.recipientEmail || ''), message: String(data.message || '') }); saveCart(cart); toast('Gift card added to your cart.');
+  const cart = readCart();
+  // Send undefined rather than "" for untouched fields, so the server's
+  // optional-email validation is not tripped by an empty string.
+  const optional = (value: FormDataEntryValue | undefined) => { const text = String(value ?? '').trim(); return text ? text : undefined; };
+  cart.gifts.push({ amountCents, recipientName: optional(data.recipientName), recipientEmail: optional(data.recipientEmail), message: optional(data.message) });
+  saveCart(cart); toast('Gift card added to your cart.');
 });
 const renderCart = () => {
   const cart = readCart(); const ids = availableKits().map((kit) => kit.id); const totals = priceCart(cart, ids);
@@ -113,3 +112,175 @@ document.querySelectorAll<HTMLElement>('[data-cart-line]').forEach((line) => lin
 }));
 window.addEventListener('rn:cart', updateCount); updateCount();
 void formatAud; void priceCart; void availableKits;
+
+/* ==========================================================================
+   PRESENTATION
+   Added alongside the existing cart and checkout behaviour, not replacing it.
+   Everything here is progressive: the page is complete before it runs, and the
+   <noscript> block in the layout covers the case where it never does.
+   ========================================================================== */
+
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ── Scroll reveals ─────────────────────────────────────────────────────── */
+
+const revealTargets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+if (reducedMotion || !('IntersectionObserver' in window)) {
+  // No observer, or motion is unwelcome: show everything at once. Content must
+  // never be left permanently invisible because a browser lacked an API.
+  revealTargets.forEach((element) => element.classList.add('in'));
+} else {
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          revealObserver.unobserve(entry.target);
+        }
+      }
+    },
+    { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
+  );
+  revealTargets.forEach((element) => revealObserver.observe(element));
+}
+
+/* ── Films ──────────────────────────────────────────────────────────────── */
+
+/* Autoplay is started here rather than with the attribute, so a reduced-motion
+   visitor gets a still poster and never a moving background. */
+document.querySelectorAll<HTMLVideoElement>('video[data-film]').forEach((video) => {
+  if (reducedMotion) return;
+  video.autoplay = true;
+  void video.play().catch(() => undefined);
+});
+
+/* WCAG 2.2.2: anything moving for more than five seconds needs a control. */
+document.querySelectorAll<HTMLButtonElement>('[data-film-toggle]').forEach((button) => {
+  const scope = document.querySelector(button.dataset.filmToggle ?? '');
+  const video = scope?.querySelector('video');
+  if (!(video instanceof HTMLVideoElement)) {
+    button.hidden = true;
+    return;
+  }
+  const paint = () => {
+    button.textContent = video.paused ? 'Play' : 'Pause';
+    button.setAttribute('aria-label', video.paused ? 'Play the film' : 'Pause the film');
+  };
+  button.addEventListener('click', () => {
+    if (video.paused) void video.play().catch(() => undefined);
+    else video.pause();
+    paint();
+  });
+  video.addEventListener('play', paint);
+  video.addEventListener('pause', paint);
+  paint();
+});
+
+/* ── Tabs (WAI-ARIA pattern) ────────────────────────────────────────────── */
+
+document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+  const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+  const panels = tabs
+    .map((tab) => document.getElementById(tab.getAttribute('aria-controls') ?? ''))
+    .filter((panel): panel is HTMLElement => panel !== null);
+  if (tabs.length === 0 || tabs.length !== panels.length) return;
+
+  const select = (index: number, focus = true) => {
+    tabs.forEach((tab, i) => {
+      const active = i === index;
+      tab.setAttribute('aria-selected', String(active));
+      tab.tabIndex = active ? 0 : -1;
+      panels[i]!.hidden = !active;
+    });
+    if (focus) tabs[index]!.focus();
+  };
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => select(index, false));
+    tab.addEventListener('keydown', (event) => {
+      const last = tabs.length - 1;
+      let next: number | null = null;
+      if (event.key === 'ArrowRight') next = index === last ? 0 : index + 1;
+      if (event.key === 'ArrowLeft') next = index === 0 ? last : index - 1;
+      if (event.key === 'Home') next = 0;
+      if (event.key === 'End') next = last;
+      if (next !== null) { event.preventDefault(); select(next); }
+    });
+  });
+  select(0, false);
+});
+
+/* ── Shop filtering ─────────────────────────────────────────────────────── */
+
+/* Cards are already in the DOM; this only toggles visibility and keeps the URL
+   in step, so a filtered view can be shared or reached with the back button.
+   Without JavaScript the page still lists every kit, which is what matters. */
+const shopGrid = document.getElementById('shop-grid');
+const shopCount = document.getElementById('shop-count');
+
+if (shopGrid && shopCount) {
+  const cards = Array.from(shopGrid.querySelectorAll<HTMLElement>('.card'));
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('.filter[data-facet]'));
+  const empty = document.getElementById('shop-empty');
+
+  const shopParams = new URLSearchParams(window.location.search);
+  let activeCat = shopParams.get('c') ?? 'all';
+  let activeAge = shopParams.get('age') ?? 'all';
+
+  const known = (facet: string, value: string) =>
+    value === 'all' || chips.some((chip) => chip.dataset.facet === facet && chip.dataset.value === value);
+  if (!known('cat', activeCat)) activeCat = 'all';
+  if (!known('age', activeAge)) activeAge = 'all';
+
+  const applyFilters = (pushUrl: boolean) => {
+    const band = chips.find((chip) => chip.dataset.facet === 'age' && chip.dataset.value === activeAge);
+    const bandMin = Number(band?.dataset.min ?? 0);
+    const bandMax = Number(band?.dataset.max ?? 99);
+    let shown = 0;
+
+    for (const card of cards) {
+      const inCat = activeCat === 'all' || card.dataset.cat === activeCat;
+      const min = Number(card.dataset.min);
+      const max = Number(card.dataset.max);
+      // A kit matches a band when their age ranges overlap at all.
+      const inAge = activeAge === 'all' || (min <= bandMax && max >= bandMin);
+      const visible = inCat && inAge;
+      card.hidden = !visible;
+      if (visible) shown += 1;
+    }
+
+    for (const chip of chips) {
+      const current = chip.dataset.facet === 'cat' ? activeCat : activeAge;
+      chip.setAttribute('aria-pressed', String(chip.dataset.value === current));
+    }
+
+    shopCount.textContent = `${shown} ${shown === 1 ? 'kit' : 'kits'}`;
+    shopCount.hidden = shown === 0;
+    if (empty) empty.hidden = shown > 0;
+
+    if (pushUrl) {
+      const next = new URLSearchParams();
+      if (activeCat !== 'all') next.set('c', activeCat);
+      if (activeAge !== 'all') next.set('age', activeAge);
+      const query = next.toString();
+      window.history.replaceState(null, '', query ? `/shop?${query}` : '/shop');
+    }
+  };
+
+  for (const chip of chips) {
+    chip.addEventListener('click', () => {
+      const value = chip.dataset.value!;
+      if (chip.dataset.facet === 'cat') activeCat = value;
+      else activeAge = value;
+      applyFilters(true);
+    });
+  }
+
+  document.getElementById('shop-clear')?.addEventListener('click', () => {
+    activeCat = 'all';
+    activeAge = 'all';
+    applyFilters(true);
+  });
+
+  applyFilters(false);
+}

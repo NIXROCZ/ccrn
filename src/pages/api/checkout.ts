@@ -8,7 +8,18 @@ import { checkoutSession, createPendingOrder, type OrderItem } from '../../lib/s
 export const prerender = false;
 const schema = z.object({
   kits: z.array(z.string()).max(50),
-  gifts: z.array(z.object({ amountCents: z.number(), recipientName: z.string().optional(), recipientEmail: z.string().email().optional(), message: z.string().max(1000).optional() })).max(20),
+  gifts: z.array(z.object({
+    amountCents: z.number(),
+    recipientName: z.string().max(120).optional(),
+    /* An untouched optional field arrives as "", which z.string().email()
+       rejects — so a gift card with no recipient blocked the whole checkout.
+       Normalise empty to undefined before validating. */
+    recipientEmail: z.preprocess(
+      (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
+      z.string().email().optional(),
+    ),
+    message: z.string().max(1000).optional(),
+  })).max(20),
   giftCodes: z.array(z.string()).max(3),
   email: z.string().email(),
 });

@@ -2,18 +2,64 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
-const { title, description = 'Thoughtful resources for curious families. Downloadable kits for meaningful family conversations.', canonical } = Astro.props;
+
+const {
+  title,
+  description = 'Thoughtful resources for curious families. Downloadable kits for meaningful family conversations.',
+  canonical,
+  noindex = false,
+} = Astro.props;
+
 const url = canonical ?? Astro.url.href;
+
+const organisation = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Raising Noble',
+  url: 'https://raisingnoble.com',
+  description,
+  address: { '@type': 'PostalAddress', addressLocality: 'Wollongong', addressRegion: 'NSW', addressCountry: 'AU' },
+  contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', url: 'https://raisingnoble.com/contact' },
+};
+
+/* Injected with set:html, so it must not be able to close its own script tag. */
+const jsonLd = JSON.stringify(organisation).replace(/</g, '\\u003c');
 ---
 <!doctype html>
 <html lang="en-AU">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#F9F8F4" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={url} />
-    <meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={url} /><meta property="og:type" content="website" /><meta property="og:image" content="https://raisingnoble.com/images/about-hero.webp" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Raising Noble" />
+    <meta property="og:locale" content="en_AU" />
+    <meta property="og:image" content="https://raisingnoble.com/images/about-hero.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={jsonLd} />
+
+    <noscript>
+      <style>
+        [data-reveal] { opacity: 1 !important; transform: none !important; }
+        [data-needs-js] { display: none !important; }
+      </style>
+    </noscript>
   </head>
-  <body><Header /><main><slot /></main><Footer /><div class="toast" id="toast" role="status"></div><script src="../scripts/site.ts"></script></body>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1"><slot /></main>
+    <Footer />
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="../scripts/site.ts"></script>
+  </body>
 </html>

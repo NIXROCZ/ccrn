@@ -1,18 +1,53 @@
 ---
+/**
+ * A kit in a grid.
+ *
+ * Only the title is a real link; a pseudo-element stretches it over the tile.
+ * That keeps one link per card in the accessibility tree instead of three,
+ * while the whole card stays clickable with a mouse.
+ *
+ * The data attributes carry the filter facets so the shop can filter cards that
+ * are already in the DOM, with no page reload.
+ */
 import type { Kit } from '../lib/catalogue';
 import Cover from './Cover.astro';
 import { categoryLabel } from '../lib/catalogue';
-const { kit } = Astro.props as { kit: Kit };
+import { formatAud, KIT_PRICE_CENTS } from '../lib/pricing';
+
+const { kit, eager = false } = Astro.props as { kit: Kit; eager?: boolean };
+const available = kit.status === 'available';
 ---
-<article class="card" data-cat={kit.cat} data-min={kit.ages.min} data-max={kit.ages.max}>
-  {kit.status !== 'available' && <span class="ribbon">Coming soon</span>}
-  <a class="card-media" href={`/kits/${kit.id}`}>
-    {kit.cover ? <img src={kit.cover} alt={`${kit.title} cover`} loading="lazy" /> : kit.realCover ? <img src="/covers/seedoils.png" alt={`${kit.title} cover`} loading="lazy" /> : <Cover kit={kit} />}
+<article
+  class="card"
+  data-reveal
+  data-cat={kit.cat}
+  data-min={kit.ages.min}
+  data-max={kit.ages.max}
+>
+  <a class="card-media" href={`/kits/${kit.id}`} tabindex="-1" aria-hidden="true">
+    {!available && <span class="ribbon">Coming soon</span>}
+    {
+      kit.cover ? (
+        <img src={kit.cover} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+      ) : kit.realCover ? (
+        <img src="/covers/seedoils.jpg" alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+      ) : (
+        <Cover kit={kit} />
+      )
+    }
   </a>
+
   <div class="card-body">
-    <p class="meta">{categoryLabel(kit.cat)} · Ages {kit.ages.min}–{kit.ages.max}</p>
+    <p class="meta">{categoryLabel(kit.cat)}</p>
     <h3><a href={`/kits/${kit.id}`}>{kit.title}</a></h3>
-    <p class="desc">{kit.blurb}</p>
-    {kit.status === 'available' ? <button class="btn sm add-kit" data-kit={kit.id}>Add to cart</button> : <button class="btn ghost sm notify-kit" data-kit={kit.id}>Notify me</button>}
+    <p class="ages">Ages {kit.ages.min}–{kit.ages.max}</p>
+    <p class="desc">{available ? formatAud(KIT_PRICE_CENTS) : 'In development'}</p>
+    {
+      available ? (
+        <button class="btn ghost sm add-kit" data-kit={kit.id}>Add to cart</button>
+      ) : (
+        <a class="btn ghost sm" href={`/kits/${kit.id}`}>Read more</a>
+      )
+    }
   </div>
 </article>
