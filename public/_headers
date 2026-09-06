@@ -4,5 +4,23 @@
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Permissions-Policy: accelerometer=(), autoplay=(self), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), interest-cohort=()
   Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+
+/images/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/video/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/downloads
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/cart
+  Cache-Control: no-store
+
+/api/*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow

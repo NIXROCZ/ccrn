@@ -1,13 +1,81 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import KitCard from '../components/KitCard.astro';
+import MediaSlot from '../components/MediaSlot.astro';
 import { getKits } from '../lib/catalogue';
 import { categories, ageBands } from '../data/collections';
+
+/**
+ * Every kit is rendered into the page and the chips filter them on the client.
+ * With fifteen kits that beats a page load per click, it survives the back
+ * button, and the whole catalogue stays in the HTML for crawlers whichever
+ * filter a visitor arrives on.
+ */
 const kits = getKits();
-const selectedCategory = Astro.url.searchParams.get('c') ?? 'all';
-const selectedAge = Astro.url.searchParams.get('age') ?? '';
+const countFor = (id: string) => kits.filter((kit) => kit.cat === id).length;
+const countForAge = (min: number, max: number) =>
+  kits.filter((kit) => kit.ages.min <= max && kit.ages.max >= min).length;
 ---
 <Layout title="Shop family education kits | Raising Noble">
-  <section class="phero"><img src="/images/shop-hero.webp" alt="Wooden blocks in afternoon light"><div class="phero-in"><h1>Shop All</h1><p>Thoughtful resources for connected families</p></div></section>
-  <section class="wrap sec-s"><div class="filters"><a class:list={['filter', { on: selectedCategory === 'all' }]} href="/shop">Shop all</a>{categories.map((category) => <a class:list={['filter', { on: selectedCategory === category.id }]} href={`/shop?c=${category.id}`}>{category.label}</a>)}</div><div class="filters">{ageBands.map((band) => <a class:list={['filter', { on: selectedAge === band.id }]} href={`/shop?${selectedCategory !== 'all' ? `c=${selectedCategory}&` : ''}age=${band.id}`}>Ages {band.label}</a>)}</div><p class="muted">{kits.length} kits</p><div class="cards">{kits.map((kit) => <KitCard kit={kit} />)}</div></section>
+  <section class="phero">
+    <MediaSlot src="/images/shop-hero.webp" alt="Mesh produce bags with limes and ginger." ratio="fill" eager />
+    <div class="phero-in">
+      <h1>Shop All</h1>
+      <p>Thoughtful resources for connected families</p>
+    </div>
+  </section>
+
+  <div class="filterbar">
+    <div class="wrap filterbar-in">
+      <div class="filters" role="group" aria-label="Filter by collection">
+        <span class="filter-label">Collection</span>
+        <button class="filter" type="button" data-facet="cat" data-value="all" aria-pressed="true">
+          All<span class="n">{kits.length}</span>
+        </button>
+        {
+          categories.map((category) => (
+            <button class="filter" type="button" data-facet="cat" data-value={category.id} aria-pressed="false">
+              {category.collection}
+              <span class="n">{countFor(category.id)}</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="filters" role="group" aria-label="Filter by age">
+        <span class="filter-label">Age</span>
+        <button class="filter" type="button" data-facet="age" data-value="all" aria-pressed="true">Any age</button>
+        {
+          ageBands.map((band) => (
+            <button
+              class="filter"
+              type="button"
+              data-facet="age"
+              data-value={band.id}
+              data-min={band.min}
+              data-max={band.max}
+              aria-pressed="false"
+            >
+              {band.label}
+              <span class="n">{countForAge(band.min, band.max)}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <section class="wrap">
+    <p class="count-line" id="shop-count" role="status">{kits.length} kits</p>
+    <div class="cards" id="shop-grid">
+      {kits.map((kit, index) => <KitCard kit={kit} eager={index < 4} />)}
+    </div>
+    <div class="no-results" id="shop-empty" hidden>
+      <span class="sk">Nothing matches that combination</span>
+      <p class="muted">Try a wider age range, or clear the collection filter.</p>
+      <p class="mt-md"><button class="btn ghost sm" type="button" id="shop-clear">Clear filters</button></p>
+    </div>
+  </section>
+
+  <section class="sec-b"></section>
 </Layout>
