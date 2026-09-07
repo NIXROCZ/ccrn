@@ -1,7 +1,8 @@
 export const categories = [
-  { id: 'food', label: 'Food & Nutrition', collection: 'Nourishing With Knowledge' },
-  { id: 'safety', label: 'Safety & Wellbeing', collection: 'Safe & Strong' },
-  { id: 'home', label: 'Home & Environment', collection: 'Hidden Home Influences' },
+  { id: 'food', label: 'Nourishing With Knowledge', collection: 'Nourishing With Knowledge' },
+  { id: 'home', label: 'Hidden Home Influences', collection: 'Hidden Home Influences' },
+  { id: 'safety', label: 'Safe & Strong', collection: 'Safe & Strong' },
+  { id: 'life', label: 'Life Skills', collection: 'Ready For The World' },
 ] as const;
 export const ageBands = [
   { id: '0-3', label: '0–3', min: 0, max: 3 },

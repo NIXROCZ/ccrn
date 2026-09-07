@@ -1,8 +1,78 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { bundle, formatAud } from '../lib/catalogue';
+import KitCard from '../components/KitCard.astro';
+import MediaSlot from '../components/MediaSlot.astro';
+import { availableKits, bundle, formatAud } from '../lib/catalogue';
+import { BUNDLE_SIZE, KIT_PRICE_CENTS } from '../lib/pricing';
+
 const offer = bundle();
+const kits = availableKits();
+/* Worked examples beat a percentage: the saving compounds per complete three. */
+const examples = [3, 6, 9].map((count) => ({
+  count,
+  was: count * KIT_PRICE_CENTS,
+  now: count * KIT_PRICE_CENTS - Math.floor(count / BUNDLE_SIZE) * (BUNDLE_SIZE * KIT_PRICE_CENTS - offer.priceCents),
+}));
+const included = [
+  'A child-friendly presentation for each kit',
+  'Two printable activities per kit',
+  'A Parent and Carer Guide',
+  'A Viewing Guide for watching together',
+];
 ---
-<Layout title="Complete Bundle | Raising Noble">
-  <section class="wrap sec center"><p class="kicker">Complete Bundle</p><h1 class="h1">Every available kit, together.</h1><p class="lede narrow center">Take the complete collection at 30% off the individual kit price. No subscription.</p>{offer.count ? <><p class="price">{formatAud(offer.priceCents)} <del class="muted">{formatAud(offer.wasCents)}</del></p><p>{offer.count} available kits</p><a class="btn" href="/cart?bundle=1">Add bundle to cart</a></> : <div class="callout narrow">Every kit is being finished and uploaded one by one. Join the list and we'll email you when the first one is ready.</div>}</section>
+<Layout title="Build a bundle — any three kits for A$89 | Raising Noble">
+  <section class="phero">
+    <MediaSlot src="/images/bundle-hero.webp" alt="Every kit laid out together: guides, activity sheets and presentations." ratio="fill" eager />
+    <div class="phero-in">
+      <h1>Any three kits,<br>one <em>price</em></h1>
+      <p>Choose the three conversations your family is ready for. No subscription, no account.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="offer">
+      <MediaSlot src="/images/bundle-band.webp" alt="A family reading together at a kitchen table." ratio="fill" />
+      <div class="offer-body">
+        <p class="kicker">Build your bundle</p>
+        <h2 class="h2">Bundle and <em>Save</em></h2>
+        <p>Pick any three kits and the third effectively pays for itself. Mix collections freely — food, home, safety, whatever matters this month.</p>
+        <div class="prices">
+          <span class="now">{formatAud(offer.priceCents)}</span>
+          <span class="was">{formatAud(offer.wasCents)}</span>
+          <span class="save">Save {formatAud(offer.saveCents)}</span>
+        </div>
+        <p class="sub">Every complete group of three is priced the same way, so six kits is {formatAud(examples[1].now)} and nine is {formatAud(examples[2].now)}.</p>
+        <ul>
+          {included.map((line) => <li>{line}</li>)}
+        </ul>
+        <a class="btn light" href="/shop">Choose your three kits</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="phead">
+      <p class="kicker">How it adds up</p>
+      <h2 class="h2">No code, no cart trick.</h2>
+      <p class="lede narrow center">The discount applies itself the moment a third kit lands in your cart.</p>
+    </div>
+    <div class="ladder">
+      {examples.map((row) => (
+        <div class="rung reveal">
+          <p class="rung-n">{row.count} kits</p>
+          <p class="rung-now">{formatAud(row.now)}</p>
+          <p class="rung-was">{formatAud(row.was)}</p>
+          <p class="rung-save">You save {formatAud(row.was - row.now)}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap sec-s">
+    <div class="phead"><p class="kicker">Choose from</p><h2 class="h2">{offer.count} kits, ready now.</h2></div>
+    <div class="cards">
+      {kits.map((kit, index) => <KitCard kit={kit} eager={index < 4} order={index} />)}
+    </div>
+    <p class="center muted mt-md">Delivered as a zip file per kit, immediately after checkout.</p>
+  </section>
 </Layout>

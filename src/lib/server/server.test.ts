@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { hashGiftCode, normaliseGiftCode, reserveGiftCodes } from './giftcards';
+import { giftCardExpiry, hashGiftCode, normaliseGiftCode, reserveGiftCodes } from './giftcards';
 import { rateLimit } from './ratelimit';
 import { verifyStripeSignature } from './stripe';
 import { appendLicence } from './zip-licence';
@@ -92,7 +92,7 @@ describe('server helpers', () => {
 });
 
 type FakeState = {
-  giftCards: Array<{ id: string; code_hash: string; code_last4: string; balance_cents: number; reserved_cents: number; disabled: number; purchaser_email: string }>;
+  giftCards: Array<{ id: string; code_hash: string; code_last4: string; balance_cents: number; reserved_cents: number; disabled: number; purchaser_email: string; expires_at: string | null }>;
   redemptions: Array<{ id: string; gift_card_id: string; order_id: string; amount_cents: number; status: string }>;
   orders: Array<Record<string, unknown>>;
   grants: Array<Record<string, unknown>>;
@@ -120,9 +120,12 @@ function fakeEnv(state: FakeState, fetchMock = vi.fn(async (...args: unknown[]) 
             async run() {
               let changes = 0;
               if (sql.startsWith('UPDATE gift_cards SET reserved_cents = reserved_cents +')) {
-                const [amount, cardId, minimum] = args as number[] | string[];
+                // Mirrors the real gate: balance and expiry are checked in the
+                // same conditional UPDATE, so a card cannot slip through either.
+                const [amount, cardId, now, minimum] = args as (number | string)[];
                 const card = state.giftCards.find((row) => row.id === cardId);
-                if (card && !card.disabled && card.balance_cents - card.reserved_cents >= Number(minimum)) {
+                const live = !card?.expires_at || card.expires_at > String(now);
+                if (card && !card.disabled && live && card.balance_cents - card.reserved_cents >= Number(minimum)) {
                   card.reserved_cents += Number(amount);
                   changes = 1;
                 }
@@ -198,7 +201,7 @@ function fakeEnv(state: FakeState, fetchMock = vi.fn(async (...args: unknown[]) 
   return { env, fetchMock };
 }
 
-function pendingOrder(id: string, items = { kits: ['seedoils'], gifts: [], giftCodes: [] }) {
+function pendingOrder(id: string, items = { kits: ['seed-oils'], gifts: [], giftCodes: [] }) {
   return { id, order_number: 'RN-TEST01', customer_email: 'buyer@example.com', status: 'pending', stripe_session_id: null, stripe_payment_intent: null, currency: 'aud', kit_subtotal_cents: 3500, bundle_discount_cents: 0, gift_subtotal_cents: 0, gift_applied_cents: 0, total_cents: 3500, billing_country: null, items_json: JSON.stringify(items), paid_at: null };
 }
 
@@ -211,10 +214,30 @@ describe('server fulfilment flows', () => {
     const state = stateWithOrder();
     const envResult = fakeEnv(state);
     const code = 'ABCDEFGH2J';
-    state.giftCards.push({ id: 'card-1', code_hash: await hashGiftCode(envResult.env as never, code), code_last4: code.slice(-4), balance_cents: 1500, reserved_cents: 0, disabled: 0, purchaser_email: 'giver@example.com' });
+    state.giftCards.push({ id: 'card-1', code_hash: await hashGiftCode(envResult.env as never, code), code_last4: code.slice(-4), balance_cents: 1500, reserved_cents: 0, disabled: 0, purchaser_email: 'giver@example.com', expires_at: giftCardExpiry() });
     const result = await reserveGiftCodes(envResult.env as never, [code], 3500, 'order-1');
     expect(result.appliedCents).toBe(1500);
     expect(result.reservations).toHaveLength(1);
+  });
+
+  it('refuses a gift card that has passed its three-year expiry', async () => {
+    const state = stateWithOrder();
+    const envResult = fakeEnv(state);
+    const code = 'ABCDEFGH3K';
+    const issued = new Date(Date.now() - 4 * 365 * 24 * 60 * 60 * 1000);
+    state.giftCards.push({ id: 'card-2', code_hash: await hashGiftCode(envResult.env as never, code), code_last4: code.slice(-4), balance_cents: 5000, reserved_cents: 0, disabled: 0, purchaser_email: 'giver@example.com', expires_at: giftCardExpiry(issued) });
+    await expect(reserveGiftCodes(envResult.env as never, [code], 3500, 'order-1')).rejects.toThrow(/expired on/);
+    expect(state.redemptions).toHaveLength(0);
+    expect(state.giftCards[0].reserved_cents).toBe(0);
+  });
+
+  it('still honours a card sold before expiry dates existed', async () => {
+    const state = stateWithOrder();
+    const envResult = fakeEnv(state);
+    const code = 'ABCDEFGH4L';
+    state.giftCards.push({ id: 'card-3', code_hash: await hashGiftCode(envResult.env as never, code), code_last4: code.slice(-4), balance_cents: 5000, reserved_cents: 0, disabled: 0, purchaser_email: 'giver@example.com', expires_at: null });
+    const result = await reserveGiftCodes(envResult.env as never, [code], 3500, 'order-1');
+    expect(result.appliedCents).toBe(3500);
   });
 
   it('fulfils an order only once when claims race', async () => {

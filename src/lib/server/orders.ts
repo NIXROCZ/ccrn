@@ -1,8 +1,8 @@
 import type { Env } from '../../env';
 
 import { availableKits, getKit } from '../catalogue';
-import { formatAud, priceCart, type Cart } from '../pricing';
-import { createGiftCard, applyReservations, releaseReservations, reserveGiftCodes } from './giftcards';
+import { BUNDLE_SIZE, formatAud, KIT_PRICE_CENTS, kitLinePrices, priceCart, type Cart } from '../pricing';
+import { createGiftCard, applyReservations, formatGiftExpiry, releaseReservations, reserveGiftCodes } from './giftcards';
 import { dbAll, dbFirst, dbRun, id, orderNumber } from './db';
 import { createCheckoutSession, stripeRequest, type StripeCheckoutSession } from './stripe';
 import { sendEmail } from './resend';
@@ -33,7 +33,7 @@ export function validateCart(cart: OrderItem): { cart: OrderItem; totals: Return
   if (clean.giftCodes.length > 3) throw new Error('You can apply up to three gift codes');
   if (clean.gifts.length > 0 && clean.giftCodes.length > 0) throw new Error('Gift cards cannot be used to buy gift cards');
   const kits = availableKits();
-  const totals = priceCart(clean, kits.map((kit) => kit.id));
+  const totals = priceCart(clean);
   return { cart: clean, totals, kits };
 }
 
@@ -56,9 +56,9 @@ export async function createPendingOrder(env: Env, input: OrderItem): Promise<{ 
 }
 
 function lineItems(cart: Cart, totals: ReturnType<typeof priceCart>): Record<string, unknown>[] {
-  const kitPrice = totals.isBundle ? Math.round(3500 * 0.7) : 3500;
+  const prices = kitLinePrices(cart.kits.length);
   return [
-    ...cart.kits.map((kitId) => ({ price_data: { currency: 'aud', product_data: { name: getKit(kitId)?.title ?? kitId, description: totals.isBundle ? 'Complete bundle price' : undefined }, unit_amount: kitPrice }, quantity: 1 })),
+    ...cart.kits.map((kitId, index) => ({ price_data: { currency: 'aud', product_data: { name: getKit(kitId)?.title ?? kitId, description: index < totals.bundles * BUNDLE_SIZE ? 'Bundle of three price' : undefined }, unit_amount: prices[index] }, quantity: 1 })),
     ...cart.gifts.map((gift) => ({ price_data: { currency: 'aud', product_data: { name: 'Raising Noble gift card' }, unit_amount: gift.amountCents }, quantity: 1 })),
   ];
 }
@@ -130,16 +130,17 @@ export async function finalisePaidOrder(env: Env, orderId: string, session: Stri
   for (const gift of cart.gifts) {
     const card = await createGiftCard(env, { amountCents: gift.amountCents, purchaserEmail: order.customer_email, recipientEmail: gift.recipientEmail, recipientName: gift.recipientName, message: gift.message, orderId });
     const recipient = gift.recipientEmail || order.customer_email;
-    await sendEmail(env, { ...giftCardEmail({ code: card.displayCode, amount: formatAud(gift.amountCents), recipientName: gift.recipientName, message: gift.message }), to: recipient }).then(() => undefined).catch(() => undefined);
+    await sendEmail(env, { ...giftCardEmail({ code: card.displayCode, amount: formatAud(gift.amountCents), expires: formatGiftExpiry(card.expiresAt), recipientName: gift.recipientName, message: gift.message }), to: recipient }).then(() => undefined).catch(() => undefined);
   }
-  const totals = priceCart(cart, availableKits().map((kit) => kit.id));
+  const totals = priceCart(cart);
+  const receiptPrices = kitLinePrices(cart.kits.length);
   await sendEmail(env, {
     ...orderReceiptEmail({
       orderNumber: order.order_number,
       email: order.customer_email,
       downloadUrl: `${env.SITE_URL}/downloads`,
       date: new Date().toISOString().slice(0, 10),
-      kits: cart.kits.map((kitId) => ({ title: getKit(kitId)?.title ?? kitId, amount: formatAud(totals.isBundle ? 2450 : 3500) })),
+      kits: cart.kits.map((kitId, index) => ({ title: getKit(kitId)?.title ?? kitId, amount: formatAud(receiptPrices[index] ?? KIT_PRICE_CENTS) })),
       gifts: cart.gifts.map((gift) => formatAud(gift.amountCents)),
       bundleDiscount: totals.bundleDiscount ? formatAud(totals.bundleDiscount) : null,
       giftApplied: order.gift_applied_cents ? formatAud(order.gift_applied_cents) : null,

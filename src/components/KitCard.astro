@@ -14,7 +14,7 @@ import Cover from './Cover.astro';
 import { categoryLabel } from '../lib/catalogue';
 import { formatAud, KIT_PRICE_CENTS } from '../lib/pricing';
 
-const { kit, eager = false } = Astro.props as { kit: Kit; eager?: boolean };
+const { kit, eager = false, order = 0 } = Astro.props as { kit: Kit; eager?: boolean; order?: number };
 const available = kit.status === 'available';
 ---
 <article
@@ -23,6 +23,8 @@ const available = kit.status === 'available';
   data-cat={kit.cat}
   data-min={kit.ages.min}
   data-max={kit.ages.max}
+  data-title={kit.title}
+  data-order={order}
 >
   <a class="card-media" href={`/kits/${kit.id}`} tabindex="-1" aria-hidden="true">
     {!available && <span class="ribbon">Coming soon</span>}
@@ -30,7 +32,7 @@ const available = kit.status === 'available';
       kit.cover ? (
         <img src={kit.cover} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
       ) : kit.realCover ? (
-        <img src="/covers/seedoils.jpg" alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
+        <img src={`/covers/${kit.id}.jpg`} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
       ) : (
         <Cover kit={kit} />
       )

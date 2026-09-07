@@ -2,16 +2,21 @@
 import Layout from '../layouts/Layout.astro';
 import KitCard from '../components/KitCard.astro';
 import MediaSlot from '../components/MediaSlot.astro';
-import { getKits } from '../lib/catalogue';
+import { bundle, getKits } from '../lib/catalogue';
 import { categories, ageBands } from '../data/collections';
+import { formatAud } from '../lib/pricing';
+import { testimonialsFor } from '../data/testimonials';
 
 /**
  * Every kit is rendered into the page and the chips filter them on the client.
- * With fifteen kits that beats a page load per click, it survives the back
+ * With twenty kits that beats a page load per click, it survives the back
  * button, and the whole catalogue stays in the HTML for crawlers whichever
- * filter a visitor arrives on.
+ * filter a visitor arrives on. Sorting reorders the same nodes for the same
+ * reason.
  */
 const kits = getKits();
+const offer = bundle();
+const quotes = testimonialsFor();
 const countFor = (id: string) => kits.filter((kit) => kit.cat === id).length;
 const countForAge = (min: number, max: number) =>
   kits.filter((kit) => kit.ages.min <= max && kit.ages.max >= min).length;
@@ -66,9 +71,20 @@ const countForAge = (min: number, max: number) =>
   </div>
 
   <section class="wrap">
-    <p class="count-line" id="shop-count" role="status">{kits.length} kits</p>
+    <div class="shop-toolbar">
+      <p class="count-line" id="shop-count" role="status">{kits.length} kits</p>
+      <div class="sortbar">
+        <label class="filter-label" for="shop-sort">Sort</label>
+        <select id="shop-sort" class="sort-select">
+          <option value="featured">Featured</option>
+          <option value="az">A&ndash;Z</option>
+          <option value="za">Z&ndash;A</option>
+          <option value="age">Age, youngest first</option>
+        </select>
+      </div>
+    </div>
     <div class="cards" id="shop-grid">
-      {kits.map((kit, index) => <KitCard kit={kit} eager={index < 4} />)}
+      {kits.map((kit, index) => <KitCard kit={kit} eager={index < 4} order={index} />)}
     </div>
     <div class="no-results" id="shop-empty" hidden>
       <span class="sk">Nothing matches that combination</span>
@@ -77,5 +93,34 @@ const countForAge = (min: number, max: number) =>
     </div>
   </section>
 
-  <section class="sec-b"></section>
+  {quotes.length > 0 && (
+    <section class="band band-soft">
+      <div class="wrap sec">
+        <div class="phead"><p class="kicker">In their words</p><h2 class="h2">What Families Are Saying</h2></div>
+        <div class="quotes">
+          {quotes.map((entry) => (
+            <figure class="quote reveal">
+              <blockquote>{entry.quote}</blockquote>
+              <figcaption>{entry.who}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="wrap sec">
+    <div class="promo reveal">
+      <div>
+        <p class="kicker">Not sure where to start?</p>
+        <h2 class="h2">A Gift With Meaning</h2>
+        <p class="lede">Let them choose the conversation they are ready for. Gift cards are delivered by email with your own message, and stay valid for three years.</p>
+        <p><a class="btn" href="/gift-card">Send a gift card</a> <a class="btn ghost" href="/bundle">Build a bundle &mdash; any three for {formatAud(offer.priceCents)}</a></p>
+      </div>
+      <div class="promo-art" aria-hidden="true">
+        <span class="gift-art-kicker">Raising Noble</span>
+        <span class="gift-art-title">Gift Card</span>
+      </div>
+    </div>
+  </section>
 </Layout>

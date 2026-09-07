@@ -1,7 +1,59 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { GIFT_PRESETS_CENTS } from '../lib/pricing';
+import { GIFT_PRESETS_CENTS, GIFT_VALIDITY_YEARS, formatAud } from '../lib/pricing';
+const benefits = [
+  'Valid for three years from the date of purchase',
+  'Spend it across any kit, or put it towards a bundle of three',
+  'Any unused balance stays on the card',
+  'Delivered by email, with your own message',
+  'Choose a set amount, or name your own from A$10 to A$500',
+];
 ---
 <Layout title="Gift cards | Raising Noble">
-  <section class="wrap sec"><div class="phead"><p class="kicker">A thoughtful gift</p><h1 class="h1">Give a Raising Noble gift card.</h1><p class="lede narrow center">Choose an amount and send it by email, or send it to yourself.</p></div><form class="form-grid" id="gift-form"><div class="amounts">{GIFT_PRESETS_CENTS.map((amount) => <button type="button" class="filter gift-amount" data-amount={amount}>{amount / 100}</button>)}</div><div class="field"><label for="amount">Custom amount (A$10–A$500)</label><input id="amount" name="amountCents" type="number" min="10" max="500" step="1" required></div><div class="field"><label for="recipientName">Recipient name (optional)</label><input id="recipientName" name="recipientName"></div><div class="field"><label for="recipientEmail">Recipient email (optional)</label><input id="recipientEmail" name="recipientEmail" type="email"></div><div class="field"><label for="message">Message (optional)</label><textarea id="message" name="message"></textarea></div><button class="btn" type="submit">Add gift card</button></form><div class="narrow sec-s"><h2 class="h2">Check a balance</h2><form class="form-grid" data-endpoint="/api/gift/check"><div class="field"><label for="giftCode">Gift card code</label><input id="giftCode" name="code" required></div><button class="btn" type="submit">Check balance</button></form></div></section>
+  <section class="phero flat">
+    <div class="wrap phero-in">
+      <p class="kicker">A gift with meaning</p>
+      <h1 class="h1">Give something worth keeping.</h1>
+      <p class="lede narrow center">A Raising Noble gift card lets a family choose the conversation they are ready to have — and gives them the tools to have it well.</p>
+    </div>
+  </section>
+
+  <section class="wrap sec gift-layout">
+    <div class="gift-form-col">
+      <h2 class="h2">Send a gift card</h2>
+      <form class="form-grid" id="gift-form">
+        <fieldset class="field">
+          <legend>Choose an amount</legend>
+          <div class="amounts">{GIFT_PRESETS_CENTS.map((amount) => <button type="button" class="filter gift-amount" data-amount={amount}>{formatAud(amount)}</button>)}</div>
+        </fieldset>
+        <div class="field"><label for="amount">Or enter your own (A$10&ndash;A$500)</label><input id="amount" name="amountCents" type="number" min="10" max="500" step="1" required></div>
+        <div class="field"><label for="recipientName">Recipient name (optional)</label><input id="recipientName" name="recipientName"></div>
+        <div class="field"><label for="recipientEmail">Recipient email (optional)</label><input id="recipientEmail" name="recipientEmail" type="email"><p class="hint">Leave this blank to have the card sent to you, so you can pass it on yourself.</p></div>
+        <div class="field"><label for="message">Message (optional)</label><textarea id="message" name="message"></textarea></div>
+        <button class="btn" type="submit">Add gift card to cart</button>
+      </form>
+    </div>
+
+    <aside class="gift-aside">
+      <div class="gift-card-art" aria-hidden="true">
+        <span class="gift-art-kicker">Raising Noble</span>
+        <span class="gift-art-title">Gift Card</span>
+        <span class="gift-art-note">Valid for {GIFT_VALIDITY_YEARS} years</span>
+      </div>
+      <h3 class="h3">What is included</h3>
+      <ul class="ticks">{benefits.map((benefit) => <li>{benefit}</li>)}</ul>
+      <p class="muted">Not sure how to use one? Read the <a href="/gift-card/redeem">redemption instructions</a>.</p>
+    </aside>
+  </section>
+
+  <section class="wrap sec-s" id="balance">
+    <div class="narrow">
+      <h2 class="h2">Check a balance</h2>
+      <p class="muted">Enter a code to see what is left on it and when it expires.</p>
+      <form class="form-grid" data-endpoint="/api/gift/check">
+        <div class="field"><label for="giftCode">Gift card code</label><input id="giftCode" name="code" required></div>
+        <button class="btn ghost" type="submit">Check balance</button>
+      </form>
+    </div>
+  </section>
 </Layout>
