@@ -1,0 +1,81 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MediaSlot from '../components/MediaSlot.astro';
+import { categories } from '../data/collections';
+import { getKits } from '../lib/catalogue';
+
+const kits = getKits();
+const countFor = (id: string) => kits.filter((kit) => kit.cat === id && kit.status === 'available').length;
+
+const starters: [string, string][] = [
+  ['At the shops', 'Pick one packet each and read the first three ingredients out loud. Whoever finds the longest word explains what they think it does.'],
+  ['At dinner', 'What is one thing you were unsure about today, and who did you ask?'],
+  ['In the car', 'Name five adults you could go to if you needed help and I was not there. Do we all agree on the list?'],
+  ['Before bed', 'What felt good in your body today, and what did not?'],
+];
+
+const support: [string, string, string][] = [
+  ['Emergency', 'If a child is in immediate danger.', '000'],
+  ['Kids Helpline', 'Free counselling for young people aged 5 to 25, any hour.', '1800 55 1800'],
+  ['1800RESPECT', 'Sexual assault, domestic and family violence counselling.', '1800 737 732'],
+  ['Parentline NSW', 'Support for parents and carers in New South Wales.', '1300 1300 52'],
+];
+---
+<Layout title="Resources for families | Raising Noble" description="Free conversation starters, the collections explained, and where to get help.">
+  <section class="phero">
+    <MediaSlot src="/images/about-child.webp" alt="A child looking closely at something held in both hands." ratio="fill" eager />
+    <div class="phero-in">
+      <h1>Resources</h1>
+      <p>Free places to start, and where to go when a conversation needs more than a kit.</p>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="phead">
+      <p class="kicker">Start anywhere</p>
+      <h2 class="h2">Conversation starters</h2>
+      <p class="lede narrow center">No download, no purchase. Take one to the dinner table tonight.</p>
+    </div>
+    <div class="four">
+      {starters.map(([when, prompt]) => (
+        <div class="keep reveal">
+          <h3 class="h4">{when}</h3>
+          <p>{prompt}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="band band-soft">
+    <div class="wrap sec">
+      <div class="phead"><p class="kicker">The collections</p><h2 class="h2">What we cover, and why</h2></div>
+      <div class="four">
+        {categories.map((category) => (
+          <div class="keep reveal">
+            <h3 class="h4">{category.collection}</h3>
+            <p class="muted">{countFor(category.id) > 0 ? `${countFor(category.id)} kits available` : 'In development'}</p>
+            <p><a class="inline-link" href={`/shop?c=${category.id}`}>Browse {category.label}</a></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="narrow">
+      <div class="support">
+        <strong>Where to get help</strong>
+        <p class="mt-sm">Our kits are educational materials, not counselling. These services are free, confidential, and several are open at any hour.</p>
+        <div class="services mt-md">
+          {support.map(([name, detail, number]) => (
+            <div class="service">
+              <div><h3>{name}</h3><p>{detail}</p></div>
+              <span class="num"><a href={`tel:${number.replace(/\s/g, '')}`}>{number}</a></span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <p class="center sec-s"><a class="btn" href="/shop">Browse the kits</a> <a class="btn ghost" href="/faqs">Read the FAQs</a></p>
+    </div>
+  </section>
+</Layout>

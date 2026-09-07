@@ -1,4 +1,3 @@
-import { availableKits } from '../lib/catalogue';
 import { formatAud, priceCart, type Cart } from '../lib/pricing';
 
 const emptyCart = (): Cart => ({ kits: [], gifts: [], giftCodes: [] });
@@ -59,7 +58,7 @@ document.querySelector<HTMLFormElement>('#gift-form')?.addEventListener('submit'
   saveCart(cart); toast('Gift card added to your cart.');
 });
 const renderCart = () => {
-  const cart = readCart(); const ids = availableKits().map((kit) => kit.id); const totals = priceCart(cart, ids);
+  const cart = readCart(); const totals = priceCart(cart);
   document.querySelectorAll<HTMLElement>('[data-cart-line]').forEach((line) => { line.hidden = !cart.kits.includes(line.dataset.cartLine ?? ''); });
   const giftLines = document.querySelector<HTMLElement>('#gift-cart-lines');
   if (giftLines) {
@@ -111,7 +110,7 @@ document.querySelectorAll<HTMLElement>('[data-cart-line]').forEach((line) => lin
   const id = line.dataset.cartLine; if (!id) return; const cart = readCart(); cart.kits = cart.kits.filter((kit) => kit !== id); saveCart(cart); window.location.reload();
 }));
 window.addEventListener('rn:cart', updateCount); updateCount();
-void formatAud; void priceCart; void availableKits;
+void formatAud; void priceCart;
 
 /* ==========================================================================
    PRESENTATION
@@ -232,6 +231,25 @@ if (shopGrid && shopCount) {
   if (!known('cat', activeCat)) activeCat = 'all';
   if (!known('age', activeAge)) activeAge = 'all';
 
+  const sortSelect = document.querySelector<HTMLSelectElement>('#shop-sort');
+  let activeSort = shopParams.get('sort') ?? 'featured';
+  if (sortSelect && !Array.from(sortSelect.options).some((option) => option.value === activeSort)) activeSort = 'featured';
+  if (sortSelect) sortSelect.value = activeSort;
+
+  /* Sorting reorders the nodes already in the grid rather than re-rendering it,
+     so a card keeps its reveal state and the filter pass stays untouched. */
+  const applySort = () => {
+    const ordered = [...cards].sort((a, b) => {
+      const titleA = a.dataset.title ?? '';
+      const titleB = b.dataset.title ?? '';
+      if (activeSort === 'az') return titleA.localeCompare(titleB);
+      if (activeSort === 'za') return titleB.localeCompare(titleA);
+      if (activeSort === 'age') return Number(a.dataset.min) - Number(b.dataset.min) || titleA.localeCompare(titleB);
+      return Number(a.dataset.order) - Number(b.dataset.order);
+    });
+    for (const card of ordered) shopGrid.append(card);
+  };
+
   const applyFilters = (pushUrl: boolean) => {
     const band = chips.find((chip) => chip.dataset.facet === 'age' && chip.dataset.value === activeAge);
     const bandMin = Number(band?.dataset.min ?? 0);
@@ -262,10 +280,17 @@ if (shopGrid && shopCount) {
       const next = new URLSearchParams();
       if (activeCat !== 'all') next.set('c', activeCat);
       if (activeAge !== 'all') next.set('age', activeAge);
+      if (activeSort !== 'featured') next.set('sort', activeSort);
       const query = next.toString();
       window.history.replaceState(null, '', query ? `/shop?${query}` : '/shop');
     }
   };
+
+  sortSelect?.addEventListener('change', () => {
+    activeSort = sortSelect.value;
+    applySort();
+    applyFilters(true);
+  });
 
   for (const chip of chips) {
     chip.addEventListener('click', () => {
@@ -282,5 +307,6 @@ if (shopGrid && shopCount) {
     applyFilters(true);
   });
 
+  applySort();
   applyFilters(false);
 }

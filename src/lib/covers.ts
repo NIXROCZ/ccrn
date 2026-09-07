@@ -32,10 +32,12 @@ function esc(value: string): string {
 }
 
 export const MOTIFS: Record<string, string> = {
-  sugar: `<g><path d="M60 120h80v70H60z" fill="#F0EBDD" stroke="${P.ochre}" stroke-width="2"/>
-    <path d="M60 120l22-22h80l-22 22M140 120l22-22v70l-22 22" fill="#E4DCC6" stroke="${P.ochre}" stroke-width="2"/>
-    <circle cx="86" cy="212" r="11" fill="#F2EDE0"/><circle cx="114" cy="220" r="9" fill="#EDE6D5"/>
-    <circle cx="140" cy="210" r="12" fill="#F2EDE0"/></g>`,
+  sugar: `<path d="M74 98h92v84a30 30 0 0 1-30 30h-32a30 30 0 0 1-30-30z" fill="#F2E4D5"
+      stroke="${P.ochre}" stroke-width="3"/>
+    <rect x="66" y="74" width="108" height="26" rx="9" fill="${P.ochre}" opacity=".85"/>
+    <rect x="106" y="56" width="28" height="20" rx="7" fill="${P.ochre}" opacity=".85"/>
+    <g fill="${P.white}" stroke="${P.ochre}" stroke-width="2">
+      <rect x="92" y="148" width="27" height="27" rx="4"/><rect x="124" y="160" width="25" height="25" rx="4"/></g>`,
 
   label: `<g fill="none" stroke="${P.sage}" stroke-width="4"><circle cx="88" cy="112" r="46"/>
     <path d="M122 146l40 40" stroke-linecap="round"/></g>
@@ -117,17 +119,111 @@ export const MOTIFS: Record<string, string> = {
     <path d="M74 190v-34a46 46 0 0 1 92 0v34" fill="none" stroke="${P.sage}" stroke-width="3"/>
     <path d="M120 156v34" stroke="${P.sage}" stroke-width="2.5" opacity=".7"/>`,
 
-  bowls: `<path d="M62 118h116" stroke="${P.sage}" stroke-width="3" stroke-linecap="round"/>
-    <path d="M74 118h52a26 26 0 0 1-52 0z" fill="${P.ochre}" opacity=".5"/>
-    <path d="M138 118h44a22 22 0 0 1-44 0z" fill="${P.sage}" opacity=".5"/>
-    <path d="M86 150h68a34 34 0 0 1-68 0z" fill="${P.yellow}" opacity=".6"/>
-    <g fill="${P.sage}" opacity=".55"><circle cx="96" cy="96" r="6"/><circle cx="118" cy="90" r="5"/>
-      <circle cx="140" cy="96" r="6"/><circle cx="162" cy="92" r="4.5"/></g>`,
+  bowls: `<path d="M56 116h128a64 40 0 0 1-128 0z" fill="#F0EBDD" stroke="${P.ochre}" stroke-width="3"/>
+    <path d="M76 128h88a44 28 0 0 1-88 0z" fill="${P.yellow}" opacity=".62"/>
+    <path d="M56 116h128" stroke="${P.ochre}" stroke-width="3" stroke-linecap="round"/>
+    <path d="M152 106l38-44" stroke="${P.sage}" stroke-width="9" stroke-linecap="round"/>
+    <ellipse cx="148" cy="110" rx="17" ry="10" fill="${P.sage}" opacity=".7" transform="rotate(-41 148 110)"/>
+    <g fill="${P.sage}" opacity=".5"><circle cx="86" cy="92" r="5"/><circle cx="108" cy="83" r="4"/>
+      <circle cx="130" cy="92" r="4.5"/></g>`,
 
   leaf: `<path d="M120 56c48 32 52 90 0 146-52-56-48-114 0-146z" fill="${P.sage}" opacity=".45"/>
     <path d="M120 56c48 32 52 90 0 146-52-56-48-114 0-146z" fill="none" stroke="${P.sage}" stroke-width="3"/>
     <path d="M120 70v126M120 108l26-16M120 108l-26-16M120 142l30-18M120 142l-30-18" fill="none"
       stroke="${P.sage}" stroke-width="2" opacity=".8" stroke-linecap="round"/>`,
+  droppers: `<g stroke-width="3">
+    <rect x="62" y="122" width="34" height="84" rx="7" fill="#DCE9EE" stroke="#5D93A6"/>
+    <rect x="69" y="102" width="20" height="22" rx="4" fill="#5D93A6"/>
+    <path d="M62 156h34v43a7 7 0 0 1-7 7H69a7 7 0 0 1-7-7z" fill="#5D93A6" opacity=".72"/>
+    <rect x="103" y="106" width="34" height="100" rx="7" fill="#F6F1E2" stroke="${P.ochre}"/>
+    <rect x="110" y="86" width="20" height="22" rx="4" fill="${P.ochre}"/>
+    <path d="M103 146h34v53a7 7 0 0 1-7 7h-20a7 7 0 0 1-7-7z" fill="${P.yellow}" opacity=".82"/>
+    <rect x="144" y="132" width="34" height="74" rx="7" fill="#F3E5E0" stroke="#B4685A"/>
+    <rect x="151" y="112" width="20" height="22" rx="4" fill="#B4685A"/>
+    <path d="M144 166h34v33a7 7 0 0 1-7 7h-20a7 7 0 0 1-7-7z" fill="#C9564A" opacity=".7"/></g>`,
+
+  bottle: `<path d="M104 64h32v20l18 26v90a14 14 0 0 1-14 14h-40a14 14 0 0 1-14-14v-90l18-26z"
+      fill="#F3E5E0" stroke="#B4685A" stroke-width="3"/>
+    <path d="M102 50h36v14h-36z" fill="#B4685A"/>
+    <path d="M86 142h68v52a14 14 0 0 1-14 14h-40a14 14 0 0 1-14-14z" fill="#C9564A" opacity=".78"/>
+    <g fill="#C9564A"><circle cx="180" cy="76" r="7" opacity=".55"/><circle cx="196" cy="96" r="5" opacity=".4"/>
+      <circle cx="176" cy="102" r="4" opacity=".45"/></g>`,
+
+  spoon: `<path d="M134 156l54-42" stroke="#4E9BA8" stroke-width="13" stroke-linecap="round"/>
+    <ellipse cx="98" cy="170" rx="44" ry="27" fill="#F0EBDD" stroke="${P.ochre}" stroke-width="3"/>
+    <ellipse cx="98" cy="164" rx="34" ry="18" fill="${P.yellow}" opacity=".7"/>
+    <g fill="${P.sage}" opacity=".5"><circle cx="78" cy="126" r="4.5"/><circle cx="102" cy="116" r="3.5"/>
+      <circle cx="122" cy="130" r="3"/></g>`,
+
+  waves: `<g fill="none" stroke="#7A939C" stroke-width="15" stroke-linecap="round">
+      <path d="M50 128a98 98 0 0 1 140 0"/><path d="M78 160a58 58 0 0 1 84 0"/></g>
+    <circle cx="120" cy="194" r="15" fill="#7A939C"/>
+    <path d="M50 128a98 98 0 0 1 140 0" fill="none" stroke="${P.sage}" stroke-width="4" opacity=".45"/>`,
+
+  foil: `<path d="M52 130l62-42 76 32-62 44z" fill="#E1E7EC" stroke="#7A939C" stroke-width="3"/>
+    <path d="M52 130v36l76 36 62-46v-36l-62 44z" fill="#BFC9D3" stroke="#7A939C" stroke-width="3"/>
+    <g stroke="#FFFFFF" stroke-width="4" opacity=".65" stroke-linecap="round">
+      <path d="M74 120l60 25M98 105l60 25"/></g>`,
+
+  pan: `<path d="M172 122l28-22" stroke="#5F676D" stroke-width="11" stroke-linecap="round"/>
+    <ellipse cx="110" cy="152" rx="68" ry="44" fill="#9AA0A6" stroke="#5F676D" stroke-width="3"/>
+    <ellipse cx="110" cy="144" rx="54" ry="32" fill="#4A5157"/>
+    <path d="M82 134a36 22 0 0 1 42-8" fill="none" stroke="#FFFFFF" stroke-width="4" opacity=".3"
+      stroke-linecap="round"/>`,
+
+  bag: `<path d="M74 98h92l14 106a12 12 0 0 1-12 14H72a12 12 0 0 1-12-14z" fill="#E4EDF0"
+      stroke="#7A939C" stroke-width="3"/>
+    <path d="M92 98V80a28 28 0 0 1 56 0v18" fill="none" stroke="#7A939C" stroke-width="3"/>
+    <g stroke="#FFFFFF" stroke-width="4" opacity=".7" stroke-linecap="round">
+      <path d="M90 126c14 18 8 42 22 60M144 126c-12 20-6 44-18 62"/></g>`,
+
+  flask: `<path d="M132 100h26v32l28 60a11 11 0 0 1-10 16h-62a11 11 0 0 1-10-16l28-60z"
+      fill="#F3E5E0" stroke="#B4685A" stroke-width="3"/>
+    <path d="M124 166h42l20 26a11 11 0 0 1-10 16h-62a11 11 0 0 1-10-16z" fill="#C9564A" opacity=".72"/>
+    <path d="M78 68h28v36l30 68a12 12 0 0 1-11 18H59a12 12 0 0 1-11-18l30-68z"
+      fill="#F6F1E2" stroke="${P.ochre}" stroke-width="3"/>
+    <path d="M66 146h52l18 26a12 12 0 0 1-11 18H59a12 12 0 0 1-11-18z" fill="${P.yellow}" opacity=".85"/>`,
+
+  pin: `<ellipse cx="120" cy="208" rx="34" ry="9" fill="${P.sage}" opacity=".32"/>
+    <path d="M120 50a54 54 0 0 1 54 54c0 39-54 98-54 98s-54-59-54-98a54 54 0 0 1 54-54z"
+      fill="#C9564A" stroke="#A2453B" stroke-width="3"/>
+    <circle cx="120" cy="104" r="21" fill="${P.white}"/>`,
+
+  lock: `<path d="M86 114V90a34 34 0 0 1 68 0v24" fill="none" stroke="#9AA0A6" stroke-width="15"
+      stroke-linecap="round"/>
+    <rect x="62" y="112" width="116" height="92" rx="13" fill="${P.yellow}" stroke="${P.ochre}" stroke-width="3"/>
+    <circle cx="120" cy="146" r="13" fill="${P.ochre}"/>
+    <path d="M120 156v24" stroke="${P.ochre}" stroke-width="9" stroke-linecap="round"/>`,
+
+  hand: `<g fill="#F2CDAC" stroke="${P.ochre}" stroke-width="2.5" stroke-linejoin="round">
+      <rect x="76" y="76" width="21" height="74" rx="10.5"/><rect x="99" y="58" width="21" height="88" rx="10.5"/>
+      <rect x="122" y="64" width="21" height="82" rx="10.5"/><rect x="145" y="84" width="21" height="66" rx="10.5"/>
+      <path d="M62 136a13 13 0 0 1 22-9l12 11v-12h74v46a46 46 0 0 1-46 46h-16a42 42 0 0 1-32-15z"/></g>`,
+
+  figure: `<circle cx="120" cy="138" r="78" fill="none" stroke="${P.sage}" stroke-width="3" stroke-dasharray="11 9"/>
+    <circle cx="120" cy="138" r="62" fill="#E4EDF0" opacity=".55"/>
+    <path d="M120 128c23 0 31 19 31 40v34H89v-34c0-21 8-40 31-40z" fill="#F2CDAC" stroke="${P.ochre}" stroke-width="2.5"/>
+    <circle cx="120" cy="104" r="19" fill="#F2CDAC" stroke="${P.ochre}" stroke-width="2.5"/>`,
+
+  alert: `<path d="M120 52l78 134a13 13 0 0 1-11 20H53a13 13 0 0 1-11-20z" fill="${P.yellow}"
+      stroke="#2F2F2F" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M120 106v46" stroke="#2F2F2F" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="120" cy="174" r="7.5" fill="#2F2F2F"/>`,
+
+  coins: `<g stroke="${P.ochre}" stroke-width="3">
+      <path d="M56 186v-24h92v24a46 15 0 0 1-92 0z" fill="${P.yellow}"/>
+      <ellipse cx="102" cy="162" rx="46" ry="15" fill="#F4E39A"/>
+      <path d="M56 162v-22h92v22" fill="${P.yellow}"/>
+      <ellipse cx="102" cy="140" rx="46" ry="15" fill="#F4E39A"/>
+      <ellipse cx="160" cy="112" rx="38" ry="13" fill="${P.yellow}"/></g>
+    <path d="M96 128v24M90 134h14M90 146h14" stroke="${P.ochre}" stroke-width="3" stroke-linecap="round" fill="none"/>`,
+
+  clock: `<circle cx="120" cy="134" r="74" fill="${P.shell}" stroke="${P.sage}" stroke-width="4"/>
+    <circle cx="120" cy="134" r="60" fill="none" stroke="${P.sage}" stroke-width="2" opacity=".45"/>
+    <g stroke="${P.deep}" stroke-width="7" stroke-linecap="round"><path d="M120 134V88"/><path d="M120 134l32 21"/></g>
+    <circle cx="120" cy="134" r="7" fill="${P.ochre}"/>
+    <g stroke="${P.sage}" stroke-width="4" stroke-linecap="round">
+      <path d="M120 70v-11M120 209v-11M186 134h11M43 134h11"/></g>`,
 };
 
 export interface CoverInput {
@@ -174,12 +270,20 @@ export function coverSvg(kit: CoverInput): string {
   const longest = Math.max(line1.length, line2.length || 1);
   const size = Math.min(line2 ? 62 : 74, (640 / longest) * 1.55);
   /* A two-line title needs to start lower, or its cap-height runs back into
-     the collection line above it. The motif drops with it to keep the spacing
-     even. */
+     the collection line above it. The motif band shrinks and drops with it so
+     it still clears the strapline at y=812. */
   const titleY = line2 ? 316 : 322;
   const lineGap = 78;
-  const motifY = line2 ? 448 : 400;
+  const motifY = line2 ? 448 : 392;
+  const motifSize = line2 ? 322 : 378;
   const motif = MOTIFS[kit.motif] ?? MOTIFS.leaf;
+  /* Motifs are drawn against a shared 36,36 168x184 box. A nested <svg> with a
+     viewBox would centre them for free, but `.cover svg { width: 100% }` in
+     global.css is a descendant selector and would resize it, so the box is
+     mapped by hand instead. */
+  const motifScale = motifSize / 184;
+  const motifX = 500 - 120 * motifScale;
+  const motifTop = motifY - 36 * motifScale;
 
   return `<svg viewBox="0 0 1000 1000" role="img" aria-label="${esc(kit.title)} cover" xmlns="http://www.w3.org/2000/svg">
   <rect width="1000" height="1000" fill="${P.white}"/>
@@ -196,7 +300,7 @@ export function coverSvg(kit: CoverInput): string {
     font-size="${size.toFixed(1)}" letter-spacing="9" fill="${P.title}">${esc(line2)}</text>`
       : ''
   }
-  <g transform="translate(380,${motifY}) scale(1.85)">${motif}</g>
+  <g transform="translate(${motifX.toFixed(1)},${motifTop.toFixed(1)}) scale(${motifScale.toFixed(4)})">${motif}</g>
   <text x="500" y="812" text-anchor="middle" font-family="Jost, sans-serif" font-size="19"
     fill="${P.ink2}">${esc(kit.coverLines[0])}</text>
   <text x="500" y="838" text-anchor="middle" font-family="Jost, sans-serif" font-size="19"

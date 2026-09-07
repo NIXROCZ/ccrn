@@ -1,0 +1,39 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { GIFT_VALIDITY_YEARS } from '../../lib/pricing';
+const steps: [string, string][] = [
+  ['Find your code', 'It is in the email that delivered the gift card, printed as five letters, a dash, then five more. Codes are not case sensitive and the dash is optional.'],
+  ['Choose your kits', 'Add whatever you like to the cart. A gift card can be spent on a single kit or put towards a bundle of three at A$89.'],
+  ['Enter the code in your cart', 'On the cart page, type the code into the Gift codes box and press Apply. The credit appears against your total straight away. Up to three cards can be applied to one order.'],
+  ['Check out', 'If the cards cover the whole order there is nothing left to pay and your downloads are released immediately. If there is a balance owing, pay the difference by card, Apple Pay, Google Pay or Link.'],
+];
+---
+<Layout title="How to redeem a gift card | Raising Noble">
+  <section class="phero flat">
+    <div class="wrap phero-in">
+      <p class="kicker">Gift cards</p>
+      <h1 class="h1">How to redeem your gift card.</h1>
+      <p class="lede narrow center">Four steps, and none of them need an account.</p>
+    </div>
+  </section>
+  <section class="wrap sec">
+    <ol class="steps narrow">
+      {steps.map(([title, detail], index) => (
+        <li class="step reveal">
+          <span class="step-n">{index + 1}</span>
+          <div><h2 class="h3">{title}</h2><p>{detail}</p></div>
+        </li>
+      ))}
+    </ol>
+    <div class="narrow sec-s">
+      <h2 class="h2">Good to know</h2>
+      <ul class="ticks">
+        <li>Gift cards are valid for {GIFT_VALIDITY_YEARS} years from the date of purchase. The expiry date is shown in your email.</li>
+        <li>Any unused balance stays on the card and can be spent on a later order.</li>
+        <li>Gift cards cannot be used to buy other gift cards, and are not redeemable for cash.</li>
+        <li>Lost the email? <a href="/contact">Get in touch</a> and we can look it up from the purchaser&#8217;s details.</li>
+      </ul>
+      <p class="sec-s"><a class="btn" href="/shop">Browse the kits</a> <a class="btn ghost" href="/gift-card#balance">Check a balance</a></p>
+    </div>
+  </section>
+</Layout>
