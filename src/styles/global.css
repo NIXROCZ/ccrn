@@ -377,22 +377,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .hero-in .btn { margin-top: 2.2rem; }
 
 .filmband { position: relative; }
-.film-ctrl {
-  position: absolute;
-  right: var(--pad);
-  bottom: 1.6rem;
-  z-index: 3;
-  background: rgba(28, 34, 24, 0.72);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(8px);
-  cursor: pointer;
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 0.7em 1.2em;
-}
-.film-ctrl:hover { background: rgba(28, 34, 24, 0.88); }
 
 .phero { position: relative; min-height: clamp(300px, 48vh, 470px); display: grid; place-items: center; overflow: hidden; }
 .phero .ph { position: absolute; inset: 0; aspect-ratio: auto; height: 100%; }
@@ -1002,7 +986,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 @media print {
-  .nav, .foot, .drawer, .scrim, .toast, .film-ctrl, .skip { display: none !important; }
+  .nav, .foot, .drawer, .scrim, .toast, .skip { display: none !important; }
   body { background: #fff; color: #000; }
 }
 

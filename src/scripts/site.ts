@@ -153,28 +153,6 @@ document.querySelectorAll<HTMLVideoElement>('video[data-film]').forEach((video) 
   void video.play().catch(() => undefined);
 });
 
-/* WCAG 2.2.2: anything moving for more than five seconds needs a control. */
-document.querySelectorAll<HTMLButtonElement>('[data-film-toggle]').forEach((button) => {
-  const scope = document.querySelector(button.dataset.filmToggle ?? '');
-  const video = scope?.querySelector('video');
-  if (!(video instanceof HTMLVideoElement)) {
-    button.hidden = true;
-    return;
-  }
-  const paint = () => {
-    button.textContent = video.paused ? 'Play' : 'Pause';
-    button.setAttribute('aria-label', video.paused ? 'Play the film' : 'Pause the film');
-  };
-  button.addEventListener('click', () => {
-    if (video.paused) void video.play().catch(() => undefined);
-    else video.pause();
-    paint();
-  });
-  video.addEventListener('play', paint);
-  video.addEventListener('pause', paint);
-  paint();
-});
-
 /* ── Tabs (WAI-ARIA pattern) ────────────────────────────────────────────── */
 
 document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
