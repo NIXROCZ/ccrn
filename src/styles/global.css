@@ -940,9 +940,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* ── Footer ─────────────────────────────────────────────────────────────── */
 
 .foot { background: var(--shell); padding-block: clamp(2.5rem, 5.5vw, 4rem) 1.9rem; margin-top: auto; }
-.foot-in { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(0, 1fr)); gap: var(--gap); }
+.foot-in { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr)); gap: var(--gap); }
 .foot .logo { height: 20px; margin-bottom: 0.9rem; }
-.foot h2 { font-family: var(--body); margin: 0 0 1rem; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 400; color: var(--sage-dark); }
+.foot h2, .foot h4 { font-family: var(--body); margin: 0 0 1rem; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 400; color: var(--sage-dark); }
 .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
 .foot a { text-decoration: none; font-size: 0.84rem; color: var(--ink-2); transition: color 0.25s; }
 .foot a:hover { color: var(--sage-deep); text-decoration: underline; text-underline-offset: 3px; }
@@ -960,6 +960,35 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--ink-2);
 }
 .foot-base nav { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.foot-support {
+  margin-top: clamp(2rem, 4.5vw, 3rem);
+  padding-top: clamp(1.6rem, 3vw, 2.2rem);
+  border-top: 1px solid var(--line-soft);
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 3fr);
+  gap: var(--gap);
+  align-items: start;
+}
+.foot-support-head h4 { margin-bottom: 0.7rem; }
+.foot-support-head p { font-size: 0.84rem; max-width: 34ch; margin: 0 0 0.9rem; }
+.foot-lines { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; }
+.foot-line {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.15rem 1rem;
+  padding: 0.9rem 1rem;
+  background: var(--white);
+  border: 1px solid var(--line-soft);
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 0.25s, transform 0.25s;
+}
+.foot-line:hover { border-color: var(--sage); text-decoration: none; transform: translateY(-1px); }
+.foot-line-name { font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sage-deep); }
+.foot-line-num { font-family: var(--display); font-size: 1.15rem; color: var(--sage-deep); white-space: nowrap; }
+.foot-line-detail { grid-column: 1 / -1; font-size: 0.78rem; color: var(--ink-2); }
+@media (max-width: 900px) { .foot-support { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .foot-lines { grid-template-columns: 1fr; } }
 @media (max-width: 1100px) { .foot-in { grid-template-columns: repeat(3, minmax(0, 1fr)); } .foot-in > div:first-child { grid-column: 1 / -1; } }
 @media (max-width: 900px) { .foot-in { grid-template-columns: 1fr 1fr; } .foot-in > div:first-child { grid-column: 1 / -1; } }
 @media (max-width: 480px) { .foot-in { grid-template-columns: 1fr; } }
@@ -1287,12 +1316,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .promo-art, .gift-card-art {
   display: flex; flex-direction: column; justify-content: center; gap: 0.4rem;
   aspect-ratio: 8 / 5; padding: clamp(1.2rem, 3vw, 2rem);
-  background: linear-gradient(135deg, var(--butter) 0%, var(--wash) 100%);
-  border: 1px solid rgba(95, 107, 92, 0.2);
+  background: linear-gradient(135deg, var(--sage-dark) 0%, var(--sage-deep) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
-.gift-art-kicker { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sage-dark); }
-.gift-art-title { font-family: var(--display); font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem); color: var(--sage-deep); line-height: 1; }
-.gift-art-note { font-size: 0.76rem; letter-spacing: 0.06em; color: var(--ink-2); margin-top: auto; }
+.gift-art-kicker { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--butter); }
+.gift-art-title { font-family: var(--display); font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem); color: #fff; line-height: 1; }
+.gift-art-note { font-size: 0.76rem; letter-spacing: 0.06em; color: var(--on-dark-2); margin-top: auto; }
 
 .gift-layout { display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(1.8rem, 4vw, 3.4rem); align-items: start; }
 .gift-aside { background: var(--shell); border: 1px solid var(--line); padding: clamp(1.4rem, 3vw, 2.2rem); }

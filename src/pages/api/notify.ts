@@ -6,7 +6,7 @@ import { getKit } from '../../lib/catalogue';
 import { rateLimit } from '../../lib/server/ratelimit';
 
 export const prerender = false;
-const schema = z.object({ email: z.string().email(), kitId: z.string().min(1).max(80) });
+const schema = z.object({ email: z.email(), kitId: z.string().min(1).max(80) });
 
 export const POST: APIRoute = async (context) => {
   const env = context.locals.runtime.env;

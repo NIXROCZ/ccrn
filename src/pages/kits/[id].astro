@@ -6,6 +6,7 @@ import KitCard from '../../components/KitCard.astro';
 import { getKits, categoryLabel } from '../../lib/catalogue';
 import { formatAud, BUNDLE_SIZE, BUNDLE_PRICE_CENTS, KIT_PRICE_CENTS } from '../../lib/pricing';
 import { testimonialsFor } from '../../data/testimonials';
+import { supportLines, telHref } from '../../data/support';
 
 export function getStaticPaths() {
   return getKits().map((kit) => ({ params: { id: kit.id }, props: { kit } }));
@@ -126,10 +127,12 @@ const instructions = [
               are free and confidential, and several are open at any hour.
             </p>
             <div class="services mt-md">
-              <div class="service"><div><h3>Emergency</h3><p>If a child is in immediate danger.</p></div><span class="num"><a href="tel:000">000</a></span></div>
-              <div class="service"><div><h3>Kids Helpline</h3><p>Free counselling for young people aged 5 to 25, any hour.</p></div><span class="num"><a href="tel:1800551800">1800 55 1800</a></span></div>
-              <div class="service"><div><h3>1800RESPECT</h3><p>Sexual assault, domestic and family violence counselling.</p></div><span class="num"><a href="tel:1800737732">1800 737 732</a></span></div>
-              <div class="service"><div><h3>Parentline NSW</h3><p>Support for parents and carers in New South Wales.</p></div><span class="num"><a href="tel:1300130052">1300 1300 52</a></span></div>
+              {supportLines.map((line) => (
+                <div class="service">
+                  <div><h3>{line.name}</h3><p>{line.detail}</p></div>
+                  <span class="num"><a href={telHref(line.number)}>{line.number}</a></span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
