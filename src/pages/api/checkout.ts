@@ -11,17 +11,17 @@ const schema = z.object({
   gifts: z.array(z.object({
     amountCents: z.number(),
     recipientName: z.string().max(120).optional(),
-    /* An untouched optional field arrives as "", which z.string().email()
+    /* An untouched optional field arrives as "", which z.email()
        rejects — so a gift card with no recipient blocked the whole checkout.
        Normalise empty to undefined before validating. */
     recipientEmail: z.preprocess(
       (value) => (typeof value === 'string' && value.trim() === '' ? undefined : value),
-      z.string().email().optional(),
+      z.email().optional(),
     ),
     message: z.string().max(1000).optional(),
   })).max(20),
   giftCodes: z.array(z.string()).max(3),
-  email: z.string().email(),
+  email: z.email(),
 });
 
 export const POST: APIRoute = async (context) => {

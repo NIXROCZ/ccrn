@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import MediaSlot from '../components/MediaSlot.astro';
 import { categories } from '../data/collections';
 import { getKits } from '../lib/catalogue';
+import { supportLines, telHref } from '../data/support';
 
 const kits = getKits();
 const countFor = (id: string) => kits.filter((kit) => kit.cat === id && kit.status === 'available').length;
@@ -12,13 +13,6 @@ const starters: [string, string][] = [
   ['At dinner', 'What is one thing you were unsure about today, and who did you ask?'],
   ['In the car', 'Name five adults you could go to if you needed help and I was not there. Do we all agree on the list?'],
   ['Before bed', 'What felt good in your body today, and what did not?'],
-];
-
-const support: [string, string, string][] = [
-  ['Emergency', 'If a child is in immediate danger.', '000'],
-  ['Kids Helpline', 'Free counselling for young people aged 5 to 25, any hour.', '1800 55 1800'],
-  ['1800RESPECT', 'Sexual assault, domestic and family violence counselling.', '1800 737 732'],
-  ['Parentline NSW', 'Support for parents and carers in New South Wales.', '1300 1300 52'],
 ];
 ---
 <Layout title="Resources for families | Raising Noble" description="Free conversation starters, the collections explained, and where to get help.">
@@ -67,10 +61,10 @@ const support: [string, string, string][] = [
         <strong>Where to get help</strong>
         <p class="mt-sm">Our kits are educational materials, not counselling. These services are free, confidential, and several are open at any hour.</p>
         <div class="services mt-md">
-          {support.map(([name, detail, number]) => (
+          {supportLines.map((line) => (
             <div class="service">
-              <div><h3>{name}</h3><p>{detail}</p></div>
-              <span class="num"><a href={`tel:${number.replace(/\s/g, '')}`}>{number}</a></span>
+              <div><h3>{line.name}</h3><p>{line.detail}</p></div>
+              <span class="num"><a href={telHref(line.number)}>{line.number}</a></span>
             </div>
           ))}
         </div>
