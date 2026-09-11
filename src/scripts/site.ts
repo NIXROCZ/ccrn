@@ -1,8 +1,22 @@
-import { availableKits } from '../lib/catalogue';
 import { formatAud, priceCart, type Cart } from '../lib/pricing';
 
 const emptyCart = (): Cart => ({ kits: [], gifts: [], giftCodes: [] });
-const readCart = (): Cart => { try { return { ...emptyCart(), ...JSON.parse(localStorage.getItem('rn_cart_v1') ?? '{}') }; } catch { return emptyCart(); } };
+const normaliseGiftCode = (code: string) => code.replace(/[\s-]/g, '').toUpperCase();
+const readCart = (): Cart => {
+  try {
+    const parsed = JSON.parse(localStorage.getItem('rn_cart_v1') ?? '{}') as Partial<Cart>;
+    const kits = Array.isArray(parsed.kits) ? parsed.kits.filter((kit): kit is string => typeof kit === 'string') : [];
+    const gifts = Array.isArray(parsed.gifts)
+      ? parsed.gifts.filter((gift) => gift && Number.isInteger(gift.amountCents) && gift.amountCents >= 1000 && gift.amountCents <= 50000)
+      : [];
+    const giftCodes = Array.isArray(parsed.giftCodes)
+      ? [...new Set(parsed.giftCodes.filter((code): code is string => typeof code === 'string').map(normaliseGiftCode))]
+      : [];
+    return { kits, gifts, giftCodes };
+  } catch {
+    return emptyCart();
+  }
+};
 const saveCart = (cart: Cart) => { localStorage.setItem('rn_cart_v1', JSON.stringify(cart)); window.dispatchEvent(new CustomEvent('rn:cart')); };
 const toast = (message: string) => { const el = document.querySelector<HTMLElement>('#toast'); if (!el) return; el.textContent = message; el.classList.add('on'); window.setTimeout(() => el.classList.remove('on'), 2600); };
 let giftCreditCents = 0;
@@ -31,16 +45,24 @@ document.querySelectorAll<HTMLElement>('.filter[data-filter-key]').forEach((butt
   const next = new URL(window.location.href); const key = button.dataset.filterKey; const value = button.dataset.filterValue;
   if (key && value) next.searchParams.set(key, value); window.location.href = next.toString();
 }));
-document.querySelectorAll<HTMLFormElement>('form[data-endpoint]:not(#gift-code-form)').forEach((form) => form.addEventListener('submit', async (event) => {
+document.querySelectorAll<HTMLFormElement>('form[data-endpoint]:not(#gift-code-form):not([data-endpoint="/api/gift/check"])').forEach((form) => form.addEventListener('submit', async (event) => {
   event.preventDefault(); const endpoint = form.dataset.endpoint; if (!endpoint) return;
-  const payload = Object.fromEntries(new FormData(form)); const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const data = await response.json().catch(() => ({}));
-  toast(response.ok ? (data.message ?? 'Thanks — your message has been sent.') : (data.error ?? 'Please try again in a moment.'));
+  try {
+    const payload = Object.fromEntries(new FormData(form)); const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const data = await response.json().catch(() => ({}));
+    toast(response.ok ? (data.message ?? 'Thanks — your message has been sent.') : (data.error ?? 'Please try again in a moment.'));
+  } catch {
+    toast('Please try again in a moment.');
+  }
 }));
 document.querySelectorAll<HTMLFormElement>('#checkout-form').forEach((form) => form.addEventListener('submit', async (event) => {
   event.preventDefault(); const confirmed = form.querySelector<HTMLInputElement>('[name=au]')?.checked; if (!confirmed) return toast('Please confirm you are purchasing from Australia.');
   const email = form.querySelector<HTMLInputElement>('[name=email]')?.value.trim(); if (!email) return toast('Enter your email for delivery.');
-  const response = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...readCart(), email }) }); const data = await response.json().catch(() => ({}));
-  if (response.ok && data.url) window.location.href = data.url; else toast(data.error ?? 'Checkout could not be started.');
+  try {
+    const response = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...readCart(), email }) }); const data = await response.json().catch(() => ({}));
+    if (response.ok && data.url) window.location.href = data.url; else toast(data.error ?? 'Checkout could not be started.');
+  } catch {
+    toast('Checkout could not be started.');
+  }
 }));
 document.querySelectorAll<HTMLElement>('.gift-amount').forEach((button) => button.addEventListener('click', () => {
   const input = document.querySelector<HTMLInputElement>('#amount');
@@ -58,8 +80,21 @@ document.querySelector<HTMLFormElement>('#gift-form')?.addEventListener('submit'
   cart.gifts.push({ amountCents, recipientName: optional(data.recipientName), recipientEmail: optional(data.recipientEmail), message: optional(data.message) });
   saveCart(cart); toast('Gift card added to your cart.');
 });
+document.querySelectorAll<HTMLFormElement>('form[data-endpoint="/api/gift/check"]:not(#gift-code-form)').forEach((form) => form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const code = String(new FormData(form).get('code') ?? '').trim();
+  if (!code) return toast('Enter a gift card code.');
+  try {
+    const response = await fetch('/api/gift/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.valid) return toast(data.error ?? 'We could not check that gift card yet.');
+    toast(`Balance ${formatAud(Number(data.balanceCents) || 0)} (code ••••${data.last4 ?? '????'}).`);
+  } catch {
+    toast('We could not check that gift card yet.');
+  }
+}));
 const renderCart = () => {
-  const cart = readCart(); const ids = availableKits().map((kit) => kit.id); const totals = priceCart(cart, ids);
+  const cart = readCart(); const totals = priceCart(cart);
   document.querySelectorAll<HTMLElement>('[data-cart-line]').forEach((line) => { line.hidden = !cart.kits.includes(line.dataset.cartLine ?? ''); });
   const giftLines = document.querySelector<HTMLElement>('#gift-cart-lines');
   if (giftLines) {
@@ -96,22 +131,51 @@ document.querySelector<HTMLFormElement>('#gift-code-form')?.addEventListener('su
   const form = event.currentTarget as HTMLFormElement;
   const code = String(new FormData(form).get('code') ?? '').trim();
   const cart = readCart();
-  if (!code || cart.giftCodes.includes(code)) return toast('Enter a new gift card code.');
+  const normalisedCode = normaliseGiftCode(code);
+  if (!normalisedCode || cart.giftCodes.includes(normalisedCode)) return toast('Enter a new gift card code.');
   if (cart.giftCodes.length >= 3) return toast('You can apply up to three gift codes.');
-  const response = await fetch('/api/gift/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.valid) return toast(data.error ?? 'We could not check that gift card yet.');
-  cart.giftCodes.push(code);
-  giftCreditCents += Number(data.balanceCents) || 0;
-  saveCart(cart);
-  form.reset();
-  toast('Gift card applied.');
+  try {
+    const response = await fetch('/api/gift/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.valid) return toast(data.error ?? 'We could not check that gift card yet.');
+    cart.giftCodes.push(normalisedCode);
+    giftCreditCents += Number(data.balanceCents) || 0;
+    saveCart(cart);
+    form.reset();
+    toast(`Balance ${formatAud(Number(data.balanceCents) || 0)} (code ••••${data.last4 ?? '????'}) applied.`);
+  } catch {
+    toast('We could not check that gift card yet.');
+  }
 });
+const refreshGiftCodes = async () => {
+  const form = document.querySelector<HTMLFormElement>('#gift-code-form');
+  if (!form) return;
+  const cart = readCart();
+  if (cart.giftCodes.length === 0) return;
+  const results = await Promise.all(cart.giftCodes.map(async (code) => {
+    try {
+      const response = await fetch('/api/gift/check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) return { code, status: 'unavailable' as const, balanceCents: 0 };
+      return data.valid
+        ? { code, status: 'valid' as const, balanceCents: Number(data.balanceCents) || 0 }
+        : { code, status: 'invalid' as const, balanceCents: 0 };
+    } catch {
+      return { code, status: 'unavailable' as const, balanceCents: 0 };
+    }
+  }));
+  const valid = results.filter((result) => result.status === 'valid');
+  const retainedCodes = results.filter((result) => result.status !== 'invalid').map((result) => result.code);
+  giftCreditCents = valid.reduce((sum, result) => sum + result.balanceCents, 0);
+  if (retainedCodes.length !== cart.giftCodes.length) saveCart({ ...cart, giftCodes: retainedCodes });
+  else renderCart();
+};
+void refreshGiftCodes();
 document.querySelectorAll<HTMLElement>('[data-cart-line]').forEach((line) => line.querySelector('button')?.addEventListener('click', () => {
   const id = line.dataset.cartLine; if (!id) return; const cart = readCart(); cart.kits = cart.kits.filter((kit) => kit !== id); saveCart(cart); window.location.reload();
 }));
 window.addEventListener('rn:cart', updateCount); updateCount();
-void formatAud; void priceCart; void availableKits;
+void formatAud; void priceCart;
 
 /* ==========================================================================
    PRESENTATION
@@ -152,28 +216,6 @@ document.querySelectorAll<HTMLVideoElement>('video[data-film]').forEach((video) 
   if (reducedMotion) return;
   video.autoplay = true;
   void video.play().catch(() => undefined);
-});
-
-/* WCAG 2.2.2: anything moving for more than five seconds needs a control. */
-document.querySelectorAll<HTMLButtonElement>('[data-film-toggle]').forEach((button) => {
-  const scope = document.querySelector(button.dataset.filmToggle ?? '');
-  const video = scope?.querySelector('video');
-  if (!(video instanceof HTMLVideoElement)) {
-    button.hidden = true;
-    return;
-  }
-  const paint = () => {
-    button.textContent = video.paused ? 'Play' : 'Pause';
-    button.setAttribute('aria-label', video.paused ? 'Play the film' : 'Pause the film');
-  };
-  button.addEventListener('click', () => {
-    if (video.paused) void video.play().catch(() => undefined);
-    else video.pause();
-    paint();
-  });
-  video.addEventListener('play', paint);
-  video.addEventListener('pause', paint);
-  paint();
 });
 
 /* ── Tabs (WAI-ARIA pattern) ────────────────────────────────────────────── */
@@ -232,6 +274,25 @@ if (shopGrid && shopCount) {
   if (!known('cat', activeCat)) activeCat = 'all';
   if (!known('age', activeAge)) activeAge = 'all';
 
+  const sortSelect = document.querySelector<HTMLSelectElement>('#shop-sort');
+  let activeSort = shopParams.get('sort') ?? 'featured';
+  if (sortSelect && !Array.from(sortSelect.options).some((option) => option.value === activeSort)) activeSort = 'featured';
+  if (sortSelect) sortSelect.value = activeSort;
+
+  /* Sorting reorders the nodes already in the grid rather than re-rendering it,
+     so a card keeps its reveal state and the filter pass stays untouched. */
+  const applySort = () => {
+    const ordered = [...cards].sort((a, b) => {
+      const titleA = a.dataset.title ?? '';
+      const titleB = b.dataset.title ?? '';
+      if (activeSort === 'az') return titleA.localeCompare(titleB);
+      if (activeSort === 'za') return titleB.localeCompare(titleA);
+      if (activeSort === 'age') return Number(a.dataset.min) - Number(b.dataset.min) || titleA.localeCompare(titleB);
+      return Number(a.dataset.order) - Number(b.dataset.order);
+    });
+    for (const card of ordered) shopGrid.append(card);
+  };
+
   const applyFilters = (pushUrl: boolean) => {
     const band = chips.find((chip) => chip.dataset.facet === 'age' && chip.dataset.value === activeAge);
     const bandMin = Number(band?.dataset.min ?? 0);
@@ -262,10 +323,17 @@ if (shopGrid && shopCount) {
       const next = new URLSearchParams();
       if (activeCat !== 'all') next.set('c', activeCat);
       if (activeAge !== 'all') next.set('age', activeAge);
+      if (activeSort !== 'featured') next.set('sort', activeSort);
       const query = next.toString();
       window.history.replaceState(null, '', query ? `/shop?${query}` : '/shop');
     }
   };
+
+  sortSelect?.addEventListener('change', () => {
+    activeSort = sortSelect.value;
+    applySort();
+    applyFilters(true);
+  });
 
   for (const chip of chips) {
     chip.addEventListener('click', () => {
@@ -282,5 +350,6 @@ if (shopGrid && shopCount) {
     applyFilters(true);
   });
 
+  applySort();
   applyFilters(false);
 }

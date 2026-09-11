@@ -7,7 +7,7 @@ import { sendEmail } from '../../lib/server/resend';
 import { contactRelayEmail } from '../../lib/email/templates';
 
 export const prerender = false;
-const schema = z.object({ name: z.string().trim().min(1).max(120), email: z.string().email(), topic: z.string().trim().min(1).max(80), message: z.string().trim().min(1).max(6000), website: z.string().optional(), turnstile: z.string().optional() });
+const schema = z.object({ name: z.string().trim().min(1).max(120), email: z.email(), topic: z.string().trim().min(1).max(80), message: z.string().trim().min(1).max(6000), website: z.string().optional(), turnstile: z.string().optional() });
 
 export const POST: APIRoute = async (context) => {
   const env = context.locals.runtime.env;

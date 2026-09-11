@@ -8,7 +8,7 @@ import { sendEmail } from '../../lib/server/resend';
 import { magicLinkEmail } from '../../lib/email/templates';
 
 export const prerender = false;
-const schema = z.object({ email: z.string().email(), turnstile: z.string().optional() });
+const schema = z.object({ email: z.email(), turnstile: z.string().optional() });
 
 export const POST: APIRoute = async (context) => {
   const env = context.locals.runtime.env;

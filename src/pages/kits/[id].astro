@@ -4,7 +4,9 @@ import Cover from '../../components/Cover.astro';
 import MediaSlot from '../../components/MediaSlot.astro';
 import KitCard from '../../components/KitCard.astro';
 import { getKits, categoryLabel } from '../../lib/catalogue';
-import { formatAud, KIT_PRICE_CENTS } from '../../lib/pricing';
+import { formatAud, BUNDLE_SIZE, BUNDLE_PRICE_CENTS, KIT_PRICE_CENTS } from '../../lib/pricing';
+import { testimonialsFor } from '../../data/testimonials';
+import { supportLines, telHref } from '../../data/support';
 
 export function getStaticPaths() {
   return getKits().map((kit) => ({ params: { id: kit.id }, props: { kit } }));
@@ -12,7 +14,11 @@ export function getStaticPaths() {
 
 const { kit } = Astro.props;
 const available = kit.status === 'available';
-const related = getKits().filter((other) => other.id !== kit.id).slice(0, 4);
+/* Same collection first: someone reading about seed oils is more likely to
+   want another food kit than a random one. */
+const others = getKits().filter((other) => other.id !== kit.id);
+const related = [...others.filter((other) => other.cat === kit.cat), ...others.filter((other) => other.cat !== kit.cat)].slice(0, 4);
+const quotes = testimonialsFor(kit.id);
 
 const pillars = [
   { title: 'Simple & engaging', body: 'Written in the gentle, educational style of Raising Noble, so learning stays simple, warm and genuinely interesting.' },
@@ -23,7 +29,7 @@ const pillars = [
 const instructions = [
   'Unzip the file.',
   'Read the parent and carer guide first.',
-  'Watch the presentation together, as a PowerPoint or a PDF.',
+  'Watch the presentation together on a laptop, tablet or TV.',
   'Talk through the ideas and the questions.',
   'Print and complete the activities together.',
   'Keep returning to it in everyday family life.',
@@ -36,7 +42,7 @@ const instructions = [
         <figure class="cover">
           {
             kit.cover ? <img src={kit.cover} alt={`${kit.title} cover`} />
-            : kit.realCover ? <img src="/covers/seedoils.jpg" alt={`${kit.title} cover`} />
+            : kit.realCover ? <img src={`/covers/${kit.id}.jpg`} alt={`${kit.title} cover`} />
             : <Cover kit={kit} />
           }
         </figure>
@@ -121,10 +127,12 @@ const instructions = [
               are free and confidential, and several are open at any hour.
             </p>
             <div class="services mt-md">
-              <div class="service"><div><h3>Emergency</h3><p>If a child is in immediate danger.</p></div><span class="num"><a href="tel:000">000</a></span></div>
-              <div class="service"><div><h3>Kids Helpline</h3><p>Free counselling for young people aged 5 to 25, any hour.</p></div><span class="num"><a href="tel:1800551800">1800 55 1800</a></span></div>
-              <div class="service"><div><h3>1800RESPECT</h3><p>Sexual assault, domestic and family violence counselling.</p></div><span class="num"><a href="tel:1800737732">1800 737 732</a></span></div>
-              <div class="service"><div><h3>Parentline NSW</h3><p>Support for parents and carers in New South Wales.</p></div><span class="num"><a href="tel:1300130052">1300 1300 52</a></span></div>
+              {supportLines.map((line) => (
+                <div class="service">
+                  <div><h3>{line.name}</h3><p>{line.detail}</p></div>
+                  <span class="num"><a href={telHref(line.number)}>{line.number}</a></span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -135,8 +143,8 @@ const instructions = [
   <section class="wrap sec-b">
     <div class="pillars">
       {
-        pillars.map((pillar, index) => (
-          <div class="pillar" data-reveal >
+        pillars.map((pillar) => (
+          <div class="pillar" data-reveal>
             <div class="body">
               <h4>{pillar.title}</h4>
               <p>{pillar.body}</p>
@@ -147,10 +155,59 @@ const instructions = [
     </div>
   </section>
 
+  <section class="band band-soft">
+    <div class="wrap sec">
+      <div class="split">
+        <MediaSlot src="/images/home-children.webp" alt="Two children sitting together with a picture book." ratio="wide" zoom />
+        <div>
+          <p class="kicker">Time well spent</p>
+          <h2 class="h2 mb-sm">More Than Just Family Time</h2>
+          <p>A kit is not a worksheet to get through. It is an hour where everyone is pointed at the same thing, and the questions come from the children rather than the adults.</p>
+          <p class="mt-md">Read the guide first, watch the presentation together, then let the conversation go where it goes. The activities are there for afterwards, not as homework.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="phead">
+      <p class="kicker">Yours to keep</p>
+      <h2 class="h2">Tools &amp; Memories to Keep</h2>
+      <p class="lede narrow center">Downloaded once, printed as often as you like, and revisited whenever a child is ready for it again.</p>
+    </div>
+    <div class="four">
+      {kit.files.map((file) => (
+        <div class="keep reveal">
+          <h3 class="h4">{file.replace(' (PDF)', '')}</h3>
+          <p class="muted">PDF</p>
+        </div>
+      ))}
+      <div class="keep keep-note reveal">
+        <h3 class="h4">Add two more</h3>
+        <p class="muted">Any three kits together are {formatAud(BUNDLE_PRICE_CENTS)} instead of {formatAud(BUNDLE_SIZE * KIT_PRICE_CENTS)}.</p>
+        <p><a class="inline-link" href="/bundle">Build a bundle</a></p>
+      </div>
+    </div>
+  </section>
+
+  {quotes.length > 0 && (
+    <section class="wrap sec-b">
+      <div class="phead"><p class="kicker">In their words</p><h2 class="h2">What Families Are Saying</h2></div>
+      <div class="quotes">
+        {quotes.map((entry) => (
+          <figure class="quote reveal">
+            <blockquote>{entry.quote}</blockquote>
+            <figcaption>{entry.who}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  )}
+
   <section class="wrap sec-b">
     <p class="section-title center">
-      Discover more together
+      Discover More Together
     </p>
-    <div class="cards">{related.map((other) => <KitCard kit={other} />)}</div>
+    <div class="cards">{related.map((other, index) => <KitCard kit={other} order={index} />)}</div>
   </section>
 </Layout>

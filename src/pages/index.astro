@@ -4,7 +4,9 @@ import KitCard from '../components/KitCard.astro';
 import MediaSlot from '../components/MediaSlot.astro';
 import Stars from '../components/Stars.astro';
 import { getKits, bundle } from '../lib/catalogue';
+import { formatAud } from '../lib/pricing';
 import { categories } from '../data/collections';
+import { testimonialsFor } from '../data/testimonials';
 
 const kits = getKits();
 
@@ -26,12 +28,9 @@ const kitContents = [
   { title: 'Viewing guide', note: 'Simple tips to help you get started and get the most from it.' },
 ];
 
-const testimonials = [
-  { quote: 'The kits gave us a gentle way to start conversations we had been putting off.', name: 'Crystal & Nishant' },
-  { quote: 'Simple, thoughtful and easy to bring into an ordinary afternoon.', name: 'Dean' },
-  { quote: 'The prompts helped us listen more and lecture less.', name: 'Jenny' },
-  { quote: 'A lovely resource for making family conversations feel natural.', name: 'Bo' },
-];
+/* Real quotes only — see src/data/testimonials.ts. The band is built and
+   styled but renders nothing until there are genuine ones to show. */
+const quotes = testimonialsFor(undefined, 4);
 ---
 <Layout title="Raising Noble — for the conversations that matter">
   <section class="hero">
@@ -46,7 +45,6 @@ const testimonials = [
       <p>Thoughtful resources for curious families</p>
       <a class="btn light" href="/shop">Shop now</a>
     </div>
-    <button class="film-ctrl" type="button" data-film-toggle=".hero" data-needs-js>Pause</button>
   </section>
 
   <section class="shelf sec">
@@ -93,23 +91,22 @@ const testimonials = [
       alt="A family together at the shore as the sun goes down."
       ratio="pano"
     />
-    <button class="film-ctrl" type="button" data-film-toggle=".filmband" data-needs-js>Pause</button>
   </section>
 
-  <section class="wrap sec">
-    <p class="kicker center mb-md">Loved by curious families</p>
-    <div class="quotes">
-      {
-        testimonials.map((item, index) => (
-          <figure class="quote" data-reveal >
+  {quotes.length > 0 && (
+    <section class="wrap sec">
+      <p class="kicker center mb-md">Loved by curious families</p>
+      <div class="quotes">
+        {quotes.map((item) => (
+          <figure class="quote" data-reveal>
             <blockquote>{item.quote}</blockquote>
-            <figcaption class="who">{item.name}</figcaption>
+            <figcaption class="who">{item.who}</figcaption>
             <Stars />
           </figure>
-        ))
-      }
-    </div>
-  </section>
+        ))}
+      </div>
+    </section>
+  )}
 
   {
     safeStrong && (
@@ -151,7 +148,7 @@ const testimonials = [
       <h2 class="h2 center mb-lg">Five pieces, ready to use</h2>
       <div class="four five">
         {
-          kitContents.map((item, index) => (
+          kitContents.map((item) => (
             <div class="item" data-reveal >
               <h4>{item.title}</h4>
               <p>{item.note}</p>
@@ -173,9 +170,9 @@ const testimonials = [
           <h3><a href="/bundle">Bundle and <em>Save</em></a></h3>
           <p>
             {
-              offer.count >= 2
-                ? 'Take every published kit in one payment and save 30% on the collection.'
-                : 'Every kit in one payment, at 30% off, as soon as the first ones are published.'
+              offer.count >= offer.size
+                ? `Choose any three kits and pay ${formatAud(offer.priceCents)} instead of ${formatAud(offer.wasCents)}.`
+                : 'Choose any three kits for one price, as soon as the first ones are published.'
             }
           </p>
         </div>

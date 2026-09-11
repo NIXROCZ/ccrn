@@ -22,7 +22,10 @@ export const GET: APIRoute = async ({ params, request, locals }) => {
   if ((downloads[0]?.count ?? 0) >= DOWNLOAD_CAP) return errorResponse('Download limit reached', 429);
   const key = `kits/${kitId}/kit.zip`;
   const archive = await env.KITS.get(key);
-  if (!archive) return errorResponse('Kit file not found', 404);
+  /* The grant exists, so this customer has paid. A missing object means the ZIP
+     has not been uploaded to R2 yet, which is our problem and not a 404 for
+     them — say so plainly and keep their entitlement intact. */
+  if (!archive) return errorResponse('This kit is not ready to download yet. Your purchase is safe and we have been alerted — please contact us if it is still unavailable tomorrow.', 503);
   const licence = `Raising Noble licence\n\nBuyer: ${email}\nOrder: ${grant.order_number}\nDownloaded: ${new Date().toISOString()}\n\nPersonal, single-household use only. Sharing files is not permitted.`;
   const result = await appendLicence(env.KITS, key, licence);
   await dbRun(env, 'INSERT INTO downloads (id, grant_id, ip_hash, user_agent) VALUES (?, ?, ?, ?)', crypto.randomUUID(), grant.id, await hashedIp(env, clientIp(request)), request.headers.get('User-Agent') ?? '');

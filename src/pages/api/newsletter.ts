@@ -7,7 +7,7 @@ import { sendEmail } from '../../lib/server/resend';
 import { newsletterConfirmEmail } from '../../lib/email/templates';
 
 export const prerender = false;
-const schema = z.object({ email: z.string().email(), turnstile: z.string().optional() });
+const schema = z.object({ email: z.email(), turnstile: z.string().optional() });
 const token = () => {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);

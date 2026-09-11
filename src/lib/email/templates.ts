@@ -13,13 +13,13 @@ export function newsletterConfirmEmail(url: string) {
   return { subject: 'Confirm your Raising Noble newsletter subscription', text: `Confirm your subscription: ${url}`, html: shell('Confirm your subscription', `<p><a href="${escapeHtml(url)}">Confirm subscription</a></p>`) };
 }
 
-export function giftCardEmail(data: { code: string; amount: string; recipientName?: string; message?: string }) {
+export function giftCardEmail(data: { code: string; amount: string; expires: string; recipientName?: string; message?: string }) {
   const greeting = data.recipientName ? `Hi ${data.recipientName},\n\n` : '';
   const message = data.message ? `\n\n${data.message}` : '';
   return {
     subject: 'A Raising Noble gift card for you',
-    text: `${greeting}Your Raising Noble gift card is ${data.code} (${data.amount}).\n\nEnter this code at checkout when buying a kit. The balance never expires, and any remaining balance is tracked automatically.${message}`,
-    html: shell('A gift for you', `<p>${data.recipientName ? `Hi ${escapeHtml(data.recipientName)},` : ''}</p><p>Your Raising Noble gift card is <strong>${escapeHtml(data.code)}</strong> (${escapeHtml(data.amount)}).</p>${data.message ? `<p>${escapeHtml(data.message)}</p>` : ''}<p>Enter this code at checkout when buying a kit. The balance never expires, and any remaining balance is tracked automatically.</p>`),
+    text: `${greeting}Your Raising Noble gift card is ${data.code} (${data.amount}).\n\nEnter this code at checkout when buying a kit. It is valid until ${data.expires}, and any remaining balance is tracked automatically.${message}`,
+    html: shell('A gift for you', `<p>${data.recipientName ? `Hi ${escapeHtml(data.recipientName)},` : ''}</p><p>Your Raising Noble gift card is <strong>${escapeHtml(data.code)}</strong> (${escapeHtml(data.amount)}).</p>${data.message ? `<p>${escapeHtml(data.message)}</p>` : ''}<p>Enter this code at checkout when buying a kit. It is valid until <strong>${escapeHtml(data.expires)}</strong>, and any remaining balance is tracked automatically.</p>`),
   };
 }
 
