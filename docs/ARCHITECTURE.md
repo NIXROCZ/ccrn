@@ -83,9 +83,18 @@ its `[ages.min, ages.max]` range overlaps the band.
 - Gift cards: presets 35 / 50 / 100 / 200, custom 10–500 AUD, whole dollars. Gift-card value is never discounted.
 - Gift-card redemption: applied after the bundle discount, up to the order total, across up to 3 codes.
   Never applies to the purchase of another gift card.
-- No GST: the seller is not GST-registered. Prices are shown as "AUD" only; Stripe Tax is off.
-- Australia only at launch: Checkout collects a billing address; a paid order whose billing country is not
-  `AU` is refunded automatically and not delivered (see webhook).
+- Sells worldwide. Checkout collects a billing address and the country is recorded on the order.
+  It is no longer gated on: an earlier rule refunded any paid order whose billing country was not
+  `AU`, which charged an overseas buyer and immediately reversed it. That rule is gone; every paid
+  order is fulfilled. `refunded_non_au` is still recognised so historical rows stay readable, but
+  nothing produces it.
+- Currency: AUD only, charged in AUD wherever the buyer is. Their card issuer converts.
+- Tax: **Stripe Tax is off and no tax is collected on any sale.** That was defensible while the
+  store sold only to Australia and the seller was not GST-registered. Selling digital products
+  internationally is different — the EU, the UK and a number of other jurisdictions require a
+  foreign seller to register and collect VAT or GST on consumer sales, in several cases from the
+  first sale with no threshold. Turning Stripe Tax on is a prerequisite for selling into those
+  markets, not an optimisation. See docs/GOING-INTERNATIONAL.md.
 
 ## Gift cards (D1 ledger)
 

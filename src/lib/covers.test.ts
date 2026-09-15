@@ -102,7 +102,7 @@ describe('the real Canva catalogue', () => {
     const byCat = (cat: string) => kits.filter((kit: SeedKit) => kit.cat === cat).map((kit: SeedKit) => kit.id);
     expect(byCat('food')).toEqual(['seed-oils', 'refined-sugar', 'artificial-colours', 'artificial-flavours', 'preservatives']);
     expect(byCat('home')).toEqual(['emfs', 'aluminium', 'forever-chemicals', 'microplastics', 'artificial-fragrances']);
-    expect(byCat('safety')).toEqual(['getting-lost', 'unsafe-secrets', 'unsafe-touch', 'personal-space', 'trusted-adults']);
+    expect(byCat('safety')).toEqual(['getting-lost', 'safe-secrets', 'safe-touch', 'personal-space', 'trusted-adults']);
   });
 
   it('lists the six documents every delivered kit archive holds', () => {

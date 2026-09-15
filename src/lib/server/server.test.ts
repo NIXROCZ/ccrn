@@ -250,15 +250,22 @@ describe('server fulfilment flows', () => {
     expect(envResult.fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  it('refunds a non-Australian order once without grants', async () => {
+  it('fulfils an overseas order and records where the buyer was', async () => {
+    // This used to assert the opposite: a non-AU billing country was refunded
+    // on the spot, because the store sold to Australia only. It sells worldwide
+    // now, so an American buyer is a customer, not a reversal. The country is
+    // still recorded — it is the basis of any tax determination and of how a
+    // dispute is assessed.
     const state = stateWithOrder();
     const envResult = fakeEnv(state);
     const session = { id: 'cs_test', payment_status: 'paid', customer_details: { email: 'buyer@example.com', address: { country: 'US' } }, payment_intent: 'pi_test', metadata: { order_id: 'order-1' } };
     await Promise.all([finalisePaidOrder(envResult.env as never, 'order-1', session), finalisePaidOrder(envResult.env as never, 'order-1', session)]);
-    expect(state.orders[0].status).toBe('refunded_non_au');
-    expect(state.grants).toHaveLength(0);
-    expect(envResult.fetchMock).toHaveBeenCalledTimes(2);
-    expect(envResult.fetchMock.mock.calls[0]?.[0]).toContain('/v1/refunds');
+    expect(state.orders[0].status).toBe('paid');
+    expect(state.orders[0].billing_country).toBe('US');
+    expect(state.grants).toHaveLength(1);
+    // Racing claims must still fulfil once: one receipt, and no refund call.
+    expect(envResult.fetchMock).toHaveBeenCalledTimes(1);
+    expect(envResult.fetchMock.mock.calls[0]?.[0]).not.toContain('/v1/refunds');
   });
 
   it('deduplicates identical webhook events', async () => {

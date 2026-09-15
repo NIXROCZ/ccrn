@@ -46,8 +46,8 @@ Name each archive `<id>.zip` and the upload script does the rest.
 | Microplastics Kit | `microplastics.zip` | `kits/microplastics/kit.zip` |
 | Artificial Fragrances Kit | `artificial-fragrances.zip` | `kits/artificial-fragrances/kit.zip` |
 | Getting Lost & Staying Safe Kit | `getting-lost.zip` | `kits/getting-lost/kit.zip` |
-| Safe vs Unsafe Secrets Kit | `unsafe-secrets.zip` | `kits/unsafe-secrets/kit.zip` |
-| Safe vs Unsafe Touch Kit | `unsafe-touch.zip` | `kits/unsafe-touch/kit.zip` |
+| Safe vs Unsafe Secrets Kit | `safe-secrets.zip` | `kits/safe-secrets/kit.zip` |
+| Safe vs Unsafe Touch Kit | `safe-touch.zip` | `kits/safe-touch/kit.zip` |
 | Personal Space & Body Consent Kit | `personal-space.zip` | `kits/personal-space/kit.zip` |
 | Trusted Adults & Asking For Help Kit | `trusted-adults.zip` | `kits/trusted-adults/kit.zip` |
 

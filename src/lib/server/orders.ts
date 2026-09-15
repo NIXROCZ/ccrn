@@ -6,7 +6,7 @@ import { createGiftCard, applyReservations, formatGiftExpiry, releaseReservation
 import { dbAll, dbFirst, dbRun, id, orderNumber } from './db';
 import { createCheckoutSession, stripeRequest, type StripeCheckoutSession } from './stripe';
 import { sendEmail } from './resend';
-import { giftCardEmail, orderReceiptEmail, simpleNoticeEmail } from '../email/templates';
+import { giftCardEmail, orderReceiptEmail } from '../email/templates';
 
 export type OrderItem = Cart & { email: string };
 export type OrderRow = {
@@ -110,17 +110,22 @@ export async function finalisePaidOrder(env: Env, orderId: string, session: Stri
   const order = await dbFirst<OrderRow>(env, 'SELECT * FROM orders WHERE id = ?', orderId);
   if (!order || order.status === 'paid' || order.status === 'refunded_non_au') return order;
   const cart = JSON.parse(order.items_json) as Cart;
+  /**
+   * The billing country is recorded, not gated on.
+   *
+   * This used to refund any order whose billing country was not AU: the store
+   * sold to Australia only, so a customer elsewhere was charged and then
+   * immediately refunded. The store now sells worldwide, so every paid order is
+   * fulfilled wherever the buyer is.
+   *
+   * The country is still stored on the order. It is the basis of any future
+   * tax determination — digital goods attract VAT or GST in a number of places
+   * from the first sale — and it is what a refund or a dispute is assessed
+   * against. `refunded_non_au` is no longer produced but is still recognised
+   * above, so orders refunded under the old rule stay readable.
+   */
   const country = session?.customer_details?.address?.country ?? order.billing_country ?? null;
   const paymentIntent = typeof session?.payment_intent === 'string' ? session.payment_intent : session?.payment_intent?.id;
-  if (country && country !== 'AU') {
-    const claimed = await dbRun(env, 'UPDATE orders SET status = ?, billing_country = ?, stripe_payment_intent = ? WHERE id = ? AND status = ?', 'refunded_non_au', country, paymentIntent ?? null, orderId, 'pending');
-    if (claimed.meta?.changes !== 1) return dbFirst<OrderRow>(env, 'SELECT * FROM orders WHERE id = ?', orderId);
-    if (paymentIntent) await stripeRequest(env, '/refunds', { payment_intent: paymentIntent });
-    const reservations = await dbAll<{ gift_card_id: string; amount_cents: number }>(env, 'SELECT gift_card_id, amount_cents FROM gift_redemptions WHERE order_id = ? AND status = ?', orderId, 'reserved');
-    await releaseReservations(env, reservations.map((row) => ({ cardId: row.gift_card_id, amountCents: row.amount_cents, code: '' })), orderId);
-    await sendEmail(env, { ...simpleNoticeEmail('Your Raising Noble order was refunded', 'Orders are currently available in Australia only.'), to: order.customer_email }).catch(() => undefined);
-    return dbFirst<OrderRow>(env, 'SELECT * FROM orders WHERE id = ?', orderId);
-  }
   const claimed = await dbRun(env, 'UPDATE orders SET status = ?, billing_country = ?, stripe_payment_intent = ?, paid_at = CURRENT_TIMESTAMP WHERE id = ? AND status = ?', 'paid', country, paymentIntent ?? null, orderId, 'pending');
   if (claimed.meta?.changes !== 1) return dbFirst<OrderRow>(env, 'SELECT * FROM orders WHERE id = ?', orderId);
   await applyReservations(env, orderId);

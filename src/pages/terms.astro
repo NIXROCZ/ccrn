@@ -1,5 +1,188 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { sellerIdentity } from '../data/seller';
+import { seller, sellerIdentity } from '../data/seller';
+import { GIFT_VALIDITY_YEARS } from '../lib/pricing';
+
+const updated = '15 September 2026';
 ---
-<Layout title="Terms of sale | Raising Noble"><section class="wrap sec prose"><p class="kicker">Legal</p><h1 class="h1">Terms of sale</h1><p class="stamp">Last updated: 5 September 2026</p><h2>Seller</h2><p>{sellerIdentity}</p><h2>Digital products and licence</h2><p>Our products are digital educational kits delivered by email or download page after payment confirmation. Your licence is personal, for single-household use. Sharing files is not permitted. Download limits are 10 per kit per 30 days; contact us if you need more.</p><h2>Payment and gift cards</h2><p>Card, Apple Pay, Google Pay and Link. Prices in AUD. Raising Noble is not currently registered for GST. Prices do not include GST.</p><p>Gift cards are valid for three years from the date of issue, the minimum period required under the Australian Consumer Law. The expiry date is shown on the card and in the email that delivers it. Gift cards are not redeemable for cash and cannot be used to buy gift cards. Any unused balance is tracked automatically until the card expires.</p><h2>Australia-only launch</h2><p>Sales are currently available in Australia only. Orders from outside Australia are refunded.</p><h2>Australian Consumer Law</h2><p>Our goods come with guarantees that cannot be excluded under the Australian Consumer Law. You are entitled to a replacement or refund for a major failure and compensation for any other reasonably foreseeable loss or damage. You are also entitled to have the goods repaired or replaced if the goods fail to be of acceptable quality and the failure does not amount to a major failure.</p><h2>Governing law</h2><p>These terms are governed by the laws of New South Wales, Australia.</p></section></Layout>
+<Layout title="Terms of sale | Raising Noble" description="The terms on which Raising Noble sells its digital kits, worldwide.">
+  <section class="wrap sec prose">
+    <p class="kicker">Legal</p>
+    <h1 class="h1">Terms of sale</h1>
+    <p class="stamp">Last updated: {updated}</p>
+
+    <p>
+      These terms apply to every order placed on this website. Please read them before you buy —
+      placing an order means you accept them.
+    </p>
+
+    <h2>1. Who you are buying from</h2>
+    <p>{sellerIdentity}</p>
+    <p>
+      We are an Australian business and we sell worldwide. In these terms, “we”, “us” and “our”
+      mean Raising Noble; “you” means the person placing the order.
+    </p>
+
+    <h2>2. What we sell</h2>
+    <p>
+      We sell digital educational kits for families. Each kit is a set of downloadable files — a
+      presentation, printable activities, a parent and carer guide and a viewing guide. Nothing is
+      posted to you and nothing physical is shipped.
+    </p>
+    <p>
+      Our kits are educational resources. They are not medical, psychological, legal or
+      professional advice, and they are not a substitute for it. If something raises a concern
+      about a child, please speak to a qualified professional.
+    </p>
+
+    <h2>3. Placing an order</h2>
+    <p>
+      Adding items to your cart is not an order. Your order is made when you complete payment, and
+      accepted when we email your confirmation. If we cannot accept an order — for example a kit is
+      withdrawn, or payment is declined or reversed — we will tell you and refund anything you have
+      paid.
+    </p>
+    <p>
+      You must be old enough to enter a contract where you live, and the payment method you use
+      must be yours.
+    </p>
+
+    <h2>4. Prices, currency and tax</h2>
+    <p>
+      All prices are shown and charged in <strong>Australian dollars (AUD)</strong>. If your card or
+      account is in another currency, your bank or card issuer converts the amount at its own rate
+      and may add its own fee. That conversion is between you and them; we only ever see the
+      Australian dollar amount.
+    </p>
+    <p>
+      Where we are required to collect sales tax, VAT or GST on a sale into your country, the amount
+      is calculated and shown at checkout before you pay. The price you confirm at checkout is the
+      total you will be charged.
+    </p>
+
+    <h2>5. Delivery of your files</h2>
+    <p>
+      Delivery is immediate and by download. After payment you receive an email with a link to your
+      library, where your kits stay available to download again. Signing in to that library uses a
+      one-time link sent to the email address on the order, so keep that address current and
+      reachable.
+    </p>
+    <p>
+      Downloads are limited to ten per kit in any thirty-day period. The limit exists to stop links
+      being shared, not to inconvenience you — if you need more, ask and we will help.
+    </p>
+    <p>
+      If a file will not download or will not open, contact us and we will supply it another way or
+      put the problem right.
+    </p>
+
+    <h2>6. What you may do with the files</h2>
+    <p>
+      When you buy a kit you get a personal, non-exclusive, non-transferable licence to use it
+      within your own household, for as long as you like. You may print as many copies as your own
+      household needs.
+    </p>
+    <p>You may not:</p>
+    <ul>
+      <li>resell, sublicense, rent or otherwise distribute the files;</li>
+      <li>share them outside your household, or upload them anywhere others can obtain them;</li>
+      <li>use them commercially, including in a paid class, childcare setting or clinic, without
+        our written permission;</li>
+      <li>remove or alter any notice of ownership, including the licence file inside your download.</li>
+    </ul>
+    <p>
+      Schools, libraries and other organisations are welcome — please contact us for a licence that
+      fits, rather than buying a household one.
+    </p>
+    <p>
+      We keep all intellectual property in the kits and on this website. Buying a kit buys the
+      licence described above, not the content itself.
+    </p>
+
+    <h2>7. Refunds</h2>
+    <p>
+      Because the files are delivered immediately and cannot be returned, we do not offer
+      change-of-mind refunds once a download has been made available to you.
+    </p>
+    <p>
+      That does not limit your rights when something is wrong. If a kit is faulty, incomplete, will
+      not open, or is materially not what was described, contact us and we will repair it, replace
+      it or refund it. Statutory rights that apply where you live are set out below and are not
+      affected by this paragraph.
+    </p>
+    <p>Our full approach is on the <a class="inline-link" href="/refunds">refunds page</a>.</p>
+
+    <h2>8. Gift cards</h2>
+    <p>
+      Gift cards are delivered by email and are valid for {GIFT_VALIDITY_YEARS} years from the date
+      of issue. The expiry date is shown on the card and in the email that delivers it.
+    </p>
+    <ul>
+      <li>They may be spent on kits, in part or in full, and any unused balance is tracked until the
+        card expires.</li>
+      <li>They cannot be exchanged for cash, and cannot be used to buy further gift cards.</li>
+      <li>Up to three cards may be applied to one order.</li>
+      <li>Treat the code like cash. We cannot replace a code that has been lost or shared, and we
+        cannot reverse a redemption made by someone who had it.</li>
+    </ul>
+
+    <h2>9. Your rights as a consumer</h2>
+    <p>
+      <strong>In Australia.</strong> Our goods come with guarantees that cannot be excluded under
+      the Australian Consumer Law. You are entitled to a replacement or refund for a major failure
+      and to compensation for any other reasonably foreseeable loss or damage. You are also entitled
+      to have the goods repaired or replaced if they fail to be of acceptable quality and the
+      failure does not amount to a major failure.
+    </p>
+    <p>
+      <strong>Elsewhere.</strong> Nothing in these terms removes any right you have under the
+      mandatory consumer law of the country you live in, including any statutory right to cancel.
+      Where the law where you live gives you more than these terms do, that law applies.
+    </p>
+    <p>
+      Consumers in the European Union and the United Kingdom normally have a 14-day right to cancel
+      a distance purchase. That right does not apply to digital content once its supply has begun
+      with your consent and acknowledgement that the right is lost — which is what you give when you
+      complete checkout and the download becomes available. Until you download, you may still
+      cancel; contact us.
+    </p>
+
+    <h2>10. Things outside our control</h2>
+    <p>
+      We take reasonable care to keep the site and your library available, but we do not promise
+      uninterrupted access. We are not liable for failures caused by events outside our reasonable
+      control, or by your own equipment or connection.
+    </p>
+    <p>
+      To the extent the law allows, our total liability for any order is limited to the amount you
+      paid for it. We do not exclude or limit liability where it would be unlawful to do so —
+      including for fraud, or for death or personal injury caused by negligence.
+    </p>
+
+    <h2>11. Your information</h2>
+    <p>
+      We handle your personal information as described in our
+      <a class="inline-link" href="/privacy">privacy policy</a>. Payments are processed by Stripe;
+      we never see or store your card number.
+    </p>
+
+    <h2>12. Changes to these terms</h2>
+    <p>
+      We may update these terms. The version that applies to your order is the one published when
+      you placed it, and the date at the top tells you when this version was published.
+    </p>
+
+    <h2>13. Governing law and contacting us</h2>
+    <p>
+      These terms are governed by the laws of New South Wales, Australia, and the courts of New
+      South Wales have non-exclusive jurisdiction. If you are a consumer elsewhere, you keep the
+      protection of the mandatory laws of your own country, and you may bring proceedings there
+      where that law allows.
+    </p>
+    <p>
+      Questions, problems, or anything that does not look right: <a class="inline-link" href={`mailto:${seller.contactEmail}`}>{seller.contactEmail}</a>,
+      or use the <a class="inline-link" href="/contact">contact form</a>. We aim to reply within a
+      few days.
+    </p>
+  </section>
+</Layout>

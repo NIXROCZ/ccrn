@@ -51,8 +51,8 @@ About **1000 × 1000** is plenty. Bigger only makes the page slower.
 | Microplastics Kit | `microplastics.jpg` |
 | Artificial Fragrances Kit | `artificial-fragrances.jpg` |
 | Getting Lost & Staying Safe Kit | `getting-lost.jpg` |
-| Safe vs Unsafe Secrets Kit | `unsafe-secrets.jpg` |
-| Safe vs Unsafe Touch Kit | `unsafe-touch.jpg` |
+| Safe vs Unsafe Secrets Kit | `safe-secrets.jpg` |
+| Safe vs Unsafe Touch Kit | `safe-touch.jpg` |
 | Personal Space & Body Consent Kit | `personal-space.jpg` |
 | Trusted Adults & Asking For Help Kit | `trusted-adults.jpg` |
 

@@ -468,7 +468,7 @@
     ]
   },
   {
-    "id": "unsafe-secrets",
+    "id": "safe-secrets",
     "cat": "safety",
     "motif": "lock",
     "sensitive": true,
@@ -511,7 +511,7 @@
     ]
   },
   {
-    "id": "unsafe-touch",
+    "id": "safe-touch",
     "cat": "safety",
     "best": true,
     "motif": "hand",

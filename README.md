@@ -48,6 +48,7 @@ npx wrangler deploy
 |---|---|
 | [`docs/GO-LIVE.md`](docs/GO-LIVE.md) | **Start here.** Empty accounts → live store, step by step. |
 | [`docs/CHANGING-IMAGES.md`](docs/CHANGING-IMAGES.md) | Swapping kit covers and page photography. No code. |
+| [`docs/GOING-INTERNATIONAL.md`](docs/GOING-INTERNATIONAL.md) | **Selling worldwide, and the VAT obligation it creates.** |
 | [`docs/CLOUDFLARE-SETUP.md`](docs/CLOUDFLARE-SETUP.md) | Kit ZIP preparation, R2 upload, symptom-to-cause table. |
 | [`docs/HANDOVER.md`](docs/HANDOVER.md) | Moving between accounts; what currently points where. |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | How the pieces fit. |
@@ -62,3 +63,8 @@ manager.
 **Preview and production currently share one D1 database**, so test orders land
 in the real orders table. Split them before taking real money — see
 `docs/HANDOVER.md`.
+
+**The store sells worldwide but collects no tax anywhere.** Selling digital
+products to EU or UK consumers requires VAT registration from the first sale,
+with no threshold. Turn on Stripe Tax before advertising outside Australia —
+see `docs/GOING-INTERNATIONAL.md`.

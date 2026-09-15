@@ -55,7 +55,7 @@ document.querySelectorAll<HTMLFormElement>('form[data-endpoint]:not(#gift-code-f
   }
 }));
 document.querySelectorAll<HTMLFormElement>('#checkout-form').forEach((form) => form.addEventListener('submit', async (event) => {
-  event.preventDefault(); const confirmed = form.querySelector<HTMLInputElement>('[name=au]')?.checked; if (!confirmed) return toast('Please confirm you are purchasing from Australia.');
+  event.preventDefault();
   const email = form.querySelector<HTMLInputElement>('[name=email]')?.value.trim(); if (!email) return toast('Enter your email for delivery.');
   try {
     const response = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...readCart(), email }) }); const data = await response.json().catch(() => ({}));

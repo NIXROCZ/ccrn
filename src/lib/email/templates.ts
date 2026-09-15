@@ -40,6 +40,3 @@ export function orderReceiptEmail(data: { orderNumber: string; email: string; do
   };
 }
 
-export function simpleNoticeEmail(subject: string, text: string) {
-  return { subject, text, html: shell(subject, `<p>${escapeHtml(text)}</p>`) };
-}
