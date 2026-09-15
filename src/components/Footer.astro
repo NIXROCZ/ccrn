@@ -1,31 +1,17 @@
----
-import { supportLines, telHref } from '../data/support';
----
 <footer class="foot">
   <div class="wrap foot-in">
     <div><img class="logo" src="/images/logo-sage.png" alt="Raising Noble"><p class="muted">Thoughtful resources for curious families. Made in Wollongong.</p></div>
     <div><h4>Shop</h4><ul><li><a href="/shop">Shop all</a></li><li><a href="/bundle">Bundle</a></li><li><a href="/gift-card">Gift Cards</a></li></ul></div>
-    <div><h4>Support</h4><ul><li><a href="/faqs">FAQ</a></li><li><a href="/refunds">Refunds</a></li><li><a href="/contact">Contact Us</a></li></ul></div>
+    <div><h4>Support</h4><ul><li><a href="/faqs">FAQ</a></li><li><a href="/refunds">Refunds</a></li><li><a href="/contact">Contact Us</a></li><li><a href="/resources">Resources</a></li></ul></div>
     <div><h4>Explore</h4><ul><li><a href="/about">About Us</a></li><li><a href="/about#philosophy">Our Philosophy</a></li></ul></div>
   </div>
-  <section class="wrap foot-support" aria-labelledby="foot-support-title">
-    <div class="foot-support-head">
-      <h4 id="foot-support-title">Resources &amp; support lines</h4>
-      <p class="muted">Our kits are educational, not counselling. If a conversation raises something bigger, these free services can help &mdash; tap a number to call.</p>
-      <a class="tlink" href="/resources">All resources</a>
-    </div>
-    <ul class="foot-lines">
-      {supportLines.map((line) => (
-        <li>
-          <a class="foot-line" href={telHref(line.number)}>
-            <span class="foot-line-name">{line.name}</span>
-            <span class="foot-line-num">{line.number}</span>
-            <span class="foot-line-detail">{line.detail}</span>
-          </a>
-        </li>
-      ))}
-    </ul>
-  </section>
+  {/* The crisis lines used to sit on every page. They now live on /resources,
+      which is where the "All resources" link already pointed, so the footer is
+      not an Australia-only artefact on a site planning to sell abroad. They are
+      moved rather than deleted: these kits cover unsafe touch and unsafe
+      secrets, and a reader who needs a number should still be one click from
+      one. Replace or extend the list in src/data/support.ts when other
+      countries are added. */}
   {/* Downloads is where a paying customer collects what they bought, and the
       legal pages have to stay reachable from every page, so the three the
       column spec leaves out live here rather than nowhere. */}

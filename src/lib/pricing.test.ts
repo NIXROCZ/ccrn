@@ -7,6 +7,7 @@ import {
   GIFT_VALIDITY_YEARS,
   KIT_PRICE_CENTS,
   bundleDiscountFor,
+  formatAud,
   kitLinePrices,
   priceCart,
 } from './pricing';
@@ -75,5 +76,16 @@ describe('gift card bounds', () => {
 
   it('sets validity to the Australian statutory minimum', () => {
     expect(GIFT_VALIDITY_YEARS).toBe(3);
+  });
+});
+
+describe('currency display', () => {
+  it('prefixes A$ so the amount cannot be read as USD', () => {
+    // en-AU renders AUD as a bare "$", which is ambiguous to anyone outside
+    // Australia and disagreed with the "A$0" placeholders in the cart markup.
+    expect(formatAud(3500)).toBe('A$35.00');
+    expect(formatAud(8900)).toBe('A$89.00');
+    expect(formatAud(0)).toBe('A$0.00');
+    expect(formatAud(123456)).toBe('A$1,234.56');
   });
 });

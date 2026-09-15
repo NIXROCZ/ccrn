@@ -68,7 +68,7 @@ const countForAge = (age: number) => kits.filter((kit) => kit.ages.min <= age).l
     </div>
   </div>
 
-  <section class="wrap">
+  <section class="wrap-cards">
     <div class="shop-toolbar">
       <p class="count-line" id="shop-count" role="status">{kits.length} kits</p>
       <div class="sortbar">
@@ -84,6 +84,11 @@ const countForAge = (age: number) => kits.filter((kit) => kit.ages.min <= age).l
     <div class="cards" id="shop-grid">
       {kits.map((kit, index) => <KitCard kit={kit} eager={index < 4} order={index} />)}
     </div>
+    <nav class="pager" id="shop-pager" aria-label="Shop pages" hidden>
+      <button class="btn ghost sm" type="button" id="shop-prev">Previous</button>
+      <span class="pager-label" id="shop-page-label" role="status"></span>
+      <button class="btn ghost sm" type="button" id="shop-next">Next page</button>
+    </nav>
     <div class="no-results" id="shop-empty" hidden>
       <span class="sk">Nothing matches that combination</span>
       <p class="muted">Try a wider age range, or clear the collection filter.</p>

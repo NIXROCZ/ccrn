@@ -35,10 +35,13 @@ const benefits = [
     </div>
 
     <aside class="gift-aside">
-      <div class="gift-card-art" aria-hidden="true">
-        <span class="gift-art-kicker">Raising Noble</span>
-        <span class="gift-art-title">Gift Card</span>
-        <span class="gift-art-note">Valid for {GIFT_VALIDITY_YEARS} years</span>
+      {/* The real card artwork, front and reverse. Hover (or focus, or a tap on
+          a touch screen) flips to the reverse, which carries the three-year
+          validity the law requires us to state. Both are always in the DOM so
+          the second is not a surprise load on hover. */}
+      <div class="gift-flip" tabindex="0" aria-label={`Raising Noble gift card, valid for ${GIFT_VALIDITY_YEARS} years`}>
+        <img class="gift-flip-front" src="/images/gift-card-front.png" alt="" width="1063" height="650" loading="lazy" decoding="async" />
+        <img class="gift-flip-back" src="/images/gift-card-reverse.png" alt="" width="1063" height="650" loading="lazy" decoding="async" />
       </div>
       <h3 class="h3">What is included</h3>
       <ul class="ticks">{benefits.map((benefit) => <li>{benefit}</li>)}</ul>

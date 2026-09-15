@@ -269,6 +269,16 @@ if (shopGrid && shopCount) {
   let activeCat = shopParams.get('c') ?? 'all';
   let activeAge = shopParams.get('age') ?? 'all';
 
+  /* Twenty cards is a long scroll on a phone, so the grid pages twelve at a
+     time. Every card stays in the DOM — paging only toggles `hidden` — so the
+     whole catalogue remains crawlable and the no-JS view still lists it all. */
+  const PAGE_SIZE = 12;
+  const pager = document.getElementById('shop-pager');
+  const pagerPrev = document.getElementById('shop-prev') as HTMLButtonElement | null;
+  const pagerNext = document.getElementById('shop-next') as HTMLButtonElement | null;
+  const pagerLabel = document.getElementById('shop-page-label');
+  let page = Math.max(1, Number(shopParams.get('page') ?? 1) || 1);
+
   const known = (facet: string, value: string) =>
     value === 'all' || chips.some((chip) => chip.dataset.facet === facet && chip.dataset.value === value);
   if (!known('cat', activeCat)) activeCat = 'all';
@@ -296,7 +306,7 @@ if (shopGrid && shopCount) {
   const applyFilters = (pushUrl: boolean) => {
     const band = chips.find((chip) => chip.dataset.facet === 'age' && chip.dataset.value === activeAge);
     const bandAge = Number(band?.dataset.min ?? 0);
-    let shown = 0;
+    const matching: HTMLElement[] = [];
 
     for (const card of cards) {
       const inCat = activeCat === 'all' || card.dataset.cat === activeCat;
@@ -304,9 +314,22 @@ if (shopGrid && shopCount) {
       // Age bands are open-ended, so a kit matches whenever the child is old
       // enough to start it. Nothing ages out.
       const inAge = activeAge === 'all' || min <= bandAge;
-      const visible = inCat && inAge;
-      card.hidden = !visible;
-      if (visible) shown += 1;
+      if (inCat && inAge) matching.push(card);
+      card.hidden = true;
+    }
+
+    const shown = matching.length;
+    const pages = Math.max(1, Math.ceil(shown / PAGE_SIZE));
+    // A narrower filter can strand you past the last page.
+    if (page > pages) page = pages;
+    const start = (page - 1) * PAGE_SIZE;
+    for (const card of matching.slice(start, start + PAGE_SIZE)) card.hidden = false;
+
+    if (pager) {
+      pager.hidden = pages < 2;
+      if (pagerLabel) pagerLabel.textContent = `Page ${page} of ${pages}`;
+      if (pagerPrev) pagerPrev.disabled = page === 1;
+      if (pagerNext) pagerNext.disabled = page === pages;
     }
 
     for (const chip of chips) {
@@ -323,6 +346,7 @@ if (shopGrid && shopCount) {
       if (activeCat !== 'all') next.set('c', activeCat);
       if (activeAge !== 'all') next.set('age', activeAge);
       if (activeSort !== 'featured') next.set('sort', activeSort);
+      if (page > 1) next.set('page', String(page));
       const query = next.toString();
       window.history.replaceState(null, '', query ? `/shop?${query}` : '/shop');
     }
@@ -330,6 +354,7 @@ if (shopGrid && shopCount) {
 
   sortSelect?.addEventListener('change', () => {
     activeSort = sortSelect.value;
+    page = 1;
     applySort();
     applyFilters(true);
   });
@@ -339,13 +364,25 @@ if (shopGrid && shopCount) {
       const value = chip.dataset.value!;
       if (chip.dataset.facet === 'cat') activeCat = value;
       else activeAge = value;
+      page = 1;
       applyFilters(true);
     });
   }
 
+  /* Paging scrolls back to the top of the grid: landing mid-list after pressing
+     Next reads as nothing having happened. */
+  const goToPage = (next: number) => {
+    page = Math.max(1, next);
+    applyFilters(true);
+    shopGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  pagerPrev?.addEventListener('click', () => goToPage(page - 1));
+  pagerNext?.addEventListener('click', () => goToPage(page + 1));
+
   document.getElementById('shop-clear')?.addEventListener('click', () => {
     activeCat = 'all';
     activeAge = 'all';
+    page = 1;
     applyFilters(true);
   });
 
