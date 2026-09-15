@@ -10,7 +10,9 @@
     "check": "node scripts/sync-catalogue.mjs && astro check && tsc --noEmit",
     "lint": "eslint src scripts eslint.config.js",
     "test": "node scripts/sync-catalogue.mjs && vitest run",
-    "deploy": "wrangler d1 migrations apply raising-noble --remote && wrangler deploy"
+    "deploy": "node scripts/sync-catalogue.mjs && wrangler d1 migrations apply raising-noble --remote --env=\"\" && wrangler deploy --env=\"\"",
+    "deploy:preview": "npm run build && wrangler deploy --env preview",
+    "health": "node scripts/health.mjs"
   },
   "dependencies": {
     "@astrojs/check": "0.9.10",

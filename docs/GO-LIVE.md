@@ -394,6 +394,35 @@ or two.
 
 ---
 
+## Part 9.5 — Ask the deployment whether it is wired up
+
+Before testing by hand, ask the Worker directly. A Worker with a missing secret
+or an empty bucket looks perfectly healthy from outside: pages render, the shop
+lists kits, nothing errors. It fails at the worst moment — a customer pays, the
+webhook signature check fails, and no email and no download ever arrive.
+
+```bash
+SYNC_TOKEN=<the token from Part 7> npm run health -- https://raisingnoble.com
+```
+
+It reports, line by line:
+
+- every required secret — set or missing (presence only; no value is returned)
+- whether your Stripe key is a **test** or **live** key
+- D1 reachable, with both migrations applied
+- KV written and read back
+- **every sellable kit checked against the bucket**, naming any that are missing
+- `SITE_URL` matching the host actually serving the request, because that value
+  is what every emailed link is built from
+
+Exit code 0 means ready. Anything else prints exactly what is wrong.
+
+**Run it again after any change to secrets, after uploading kits, and after
+pointing the custom domain.** It is the fastest way to know a deploy is sound,
+and it stays useful long after launch.
+
+---
+
 ## Part 10 — Prove it works before taking real money
 
 Still in Stripe **test** mode. Do all nine.

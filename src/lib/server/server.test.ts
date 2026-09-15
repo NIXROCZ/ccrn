@@ -5,6 +5,7 @@ import { verifyStripeSignature } from './stripe';
 import { appendLicence } from './zip-licence';
 import { finalisePaidOrder, validateCart } from './orders';
 import { POST as stripeWebhook } from '../../pages/api/webhooks/stripe';
+import { GET as healthCheck } from '../../pages/api/health';
 
 const bytes = (value: Uint8Array): ReadableStream<Uint8Array> => new Response(value.buffer as ArrayBuffer).body as ReadableStream<Uint8Array>;
 const u16 = (value: number) => new Uint8Array([value & 255, value >>> 8]);
@@ -281,5 +282,59 @@ describe('server fulfilment flows', () => {
     expect((await stripeWebhook(context())).status).toBe(200);
     expect(state.grants).toHaveLength(1);
     expect(envResult.fetchMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('deployment health check', () => {
+  /** Wraps fakeEnv with the R2 bucket the health check lists. */
+  const healthEnv = (present: string[], overrides: Record<string, unknown> = {}) => {
+    const { env } = fakeEnv(stateWithOrder());
+    return {
+      ...env,
+      ...overrides,
+      KITS: { list: async () => ({ objects: present.map((id) => ({ key: `kits/${id}/kit.zip` })), truncated: false }) },
+    };
+  };
+
+  const call = (env: unknown, token?: string) => healthCheck({
+    request: new Request('https://raisingnoble.com/api/health', token ? { headers: { Authorization: `Bearer ${token}` } } : undefined),
+    locals: { runtime: { env } },
+  } as never);
+
+  it('refuses without the token', async () => {
+    const response = await call(healthEnv([]));
+    expect(response.status).toBe(401);
+  });
+
+  it('refuses a wrong token', async () => {
+    const response = await call(healthEnv([]), 'not-the-token');
+    expect(response.status).toBe(401);
+  });
+
+  it('says so when SYNC_TOKEN itself is unset, rather than opening up', async () => {
+    // An unauthenticated endpoint that lists which secrets are missing tells a
+    // stranger exactly where the store is soft, so a missing token closes it.
+    const response = await call(healthEnv([], { SYNC_TOKEN: '' }), '');
+    expect(response.status).toBe(503);
+  });
+
+  it('fails when a sellable kit has no file in R2', async () => {
+    const response = await call(healthEnv(['seed-oils']), 'sync');
+    const body = await response.json() as { ok: boolean; checks: Record<string, { ok: boolean; detail: string }> };
+    expect(response.status).toBe(503);
+    expect(body.ok).toBe(false);
+    expect(body.checks['r2:kits'].ok).toBe(false);
+    expect(body.checks['r2:kits'].detail).toContain('refined-sugar');
+  });
+
+  it('fails when a required secret is missing, and never echoes a value', async () => {
+    const response = await call(healthEnv([], { STRIPE_WEBHOOK_SECRET: '' }), 'sync');
+    const body = await response.text();
+    expect(response.status).toBe(503);
+    expect(body).toContain('secret:STRIPE_WEBHOOK_SECRET');
+    // Presence only: no secret value may appear in the response.
+    expect(body).not.toContain('sk_test');
+    expect(body).not.toContain('re_test');
+    expect(body).not.toContain('pepper');
   });
 });

@@ -30,6 +30,8 @@ npm test          # 44 tests
 npm run lint
 npm run build
 npx wrangler deploy
+
+SYNC_TOKEN=... npm run health -- https://raisingnoble.com   # is it wired up?
 ```
 
 ## Where things live
