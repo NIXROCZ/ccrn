@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { z } from 'zod';
-import { dbRun, errorResponse, id, jsonResponse, sha256 } from '../../lib/server/db';
+import { dbFirst, errorResponse, id, jsonResponse, sha256 } from '../../lib/server/db';
 import { HttpError, readJson, verifyTurnstile } from '../../lib/server/guards';
 import { rateLimit } from '../../lib/server/ratelimit';
 import { sendEmail } from '../../lib/server/resend';
@@ -23,8 +23,35 @@ export const POST: APIRoute = async (context) => {
     const email = data.email.toLowerCase();
     const confirm = token();
     const unsub = token();
-    await dbRun(env, 'INSERT INTO subscribers (id, email, status, confirm_token_hash, unsub_token_hash) VALUES (?, ?, ?, ?, ?) ON CONFLICT(email) DO UPDATE SET status = ?, confirm_token_hash = ?, unsub_token_hash = ?', id(), email, 'pending', await sha256(`${env.SITE_PEPPER}:${confirm}`), await sha256(`${env.SITE_PEPPER}:${unsub}`), 'pending', await sha256(`${env.SITE_PEPPER}:${confirm}`), await sha256(`${env.SITE_PEPPER}:${unsub}`));
-    await sendEmail(env, { ...newsletterConfirmEmail(`${env.SITE_URL}/api/newsletter/confirm?token=${encodeURIComponent(confirm)}`), to: email });
+    /*
+     * Never move an existing subscriber's status, and only refresh the tokens
+     * of someone still pending.
+     *
+     * This used to set status back to 'pending' on every submission. Anyone who
+     * knew an address could therefore knock a confirmed subscriber off the list
+     * silently, and rotating the unsubscribe token broke the unsubscribe link in
+     * every email already sent to them. It also re-mailed people who had
+     * unsubscribed, which the Spam Act 2003 does not take kindly to.
+     *
+     * The returned status then decides whether an email is warranted at all:
+     * only someone genuinely awaiting confirmation needs one. That also means an
+     * address already on the list cannot be used to send itself mail.
+     */
+    const row = await dbFirst<{ status: string }>(
+      env,
+      `INSERT INTO subscribers (id, email, status, confirm_token_hash, unsub_token_hash)
+       VALUES (?, ?, 'pending', ?, ?)
+       ON CONFLICT(email) DO UPDATE SET
+         confirm_token_hash = CASE WHEN subscribers.status = 'pending' THEN excluded.confirm_token_hash ELSE subscribers.confirm_token_hash END,
+         unsub_token_hash   = CASE WHEN subscribers.status = 'pending' THEN excluded.unsub_token_hash   ELSE subscribers.unsub_token_hash   END
+       RETURNING status`,
+      id(), email, await sha256(`${env.SITE_PEPPER}:${confirm}`), await sha256(`${env.SITE_PEPPER}:${unsub}`),
+    );
+    if (row?.status === 'pending') {
+      await sendEmail(env, { ...newsletterConfirmEmail(`${env.SITE_URL}/api/newsletter/confirm?token=${encodeURIComponent(confirm)}`), to: email });
+    }
+    /* Always the same answer, so the endpoint cannot be used to discover who is
+       already subscribed. */
     return jsonResponse({ ok: true });
   } catch (error) {
     return error instanceof HttpError ? errorResponse(error.message, error.status) : errorResponse('Unable to subscribe', 400);

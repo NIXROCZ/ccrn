@@ -79,7 +79,13 @@ export async function appendLicence(bucket: R2BucketLike, key: string, licence: 
     if (u32(tail, index) === EOCD) { eocdOffset = index; break; }
   }
   if (eocdOffset < 0) throw new Error('Invalid ZIP archive');
-  const eocd = tail.slice(eocdOffset, eocdOffset + 22);
+  /* An archive may end with a comment, and the EOCD records its length. Taking
+     only the fixed 22 bytes while copying that length forward produces a file
+     that claims bytes past its own end, which strict readers reject. Carry the
+     comment with it. `suffix: 65557` is 22 + the maximum comment length, so the
+     tail always holds the whole of it. */
+  const commentLength = u16(tail, eocdOffset + 20);
+  const eocd = tail.slice(eocdOffset, eocdOffset + 22 + commentLength);
   const count = u16(eocd, 10);
   const centralSize = u32(eocd, 12);
   const centralOffset = u32(eocd, 16);

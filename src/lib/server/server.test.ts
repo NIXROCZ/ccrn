@@ -23,6 +23,30 @@ function zipFixture(): Uint8Array {
   return concat(local, central, eocd);
 }
 
+function zipFixtureWithComment(comment: string): Uint8Array {
+  const name = new TextEncoder().encode('hello.txt');
+  const data = new TextEncoder().encode('hello');
+  const commentBytes = new TextEncoder().encode(comment);
+  const local = concat(u32(0x04034b50), u16(20), u16(0), u16(0), u16(0), u32(0), u32(data.length), u32(data.length), u16(name.length), u16(0), name, data);
+  const central = concat(u32(0x02014b50), u16(20), u16(20), u16(0), u16(0), u16(0), u16(0), u32(0), u32(data.length), u32(data.length), u16(name.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(0), name);
+  const eocd = concat(u32(0x06054b50), u16(0), u16(0), u16(1), u16(1), u32(central.length), u32(local.length), u16(commentBytes.length), commentBytes);
+  return concat(local, central, eocd);
+}
+
+/** Serves ranges out of an in-memory archive the way R2 does. */
+function zipBucket(fixture: Uint8Array) {
+  return { get: async (_key: string, options?: { range?: { offset: number; length: number } | { suffix: number } }) => {
+    const value = options?.range && 'suffix' in options.range
+      ? fixture.slice(Math.max(0, fixture.length - options.range.suffix))
+      : options?.range
+        ? 'offset' in options.range
+          ? fixture.slice(options.range.offset, options.range.offset + options.range.length)
+          : fixture
+        : fixture;
+    return { size: fixture.length, body: bytes(value) };
+  } };
+}
+
 function zipEntryNames(bytes: Uint8Array): string[] {
   let eocd = bytes.length - 22;
   while (eocd >= 0 && read32(bytes, eocd) !== 0x06054b50) eocd -= 1;
@@ -84,6 +108,34 @@ describe('server helpers', () => {
     const result = new Uint8Array(await new Response(output.body).arrayBuffer());
     expect(zipEntryNames(result)).toEqual(['hello.txt', 'LICENCE.txt']);
     expect(new TextDecoder().decode(result)).toContain('Personal licence');
+  });
+
+  it('reports a size matching the bytes it actually streams', async () => {
+    // The route sends this as Content-Length. If it disagrees with the body the
+    // browser truncates the download or hangs waiting for bytes that never come.
+    const fixture = zipFixture();
+    const output = await appendLicence(zipBucket(fixture), 'kit.zip', 'Personal licence');
+    const result = new Uint8Array(await new Response(output.body).arrayBuffer());
+    expect(output.size).toBe(result.byteLength);
+  });
+
+  it('keeps an archive valid when the original carries an EOCD comment', async () => {
+    // A ZIP may end with a comment, and some packaging tools add one. The EOCD
+    // records its length; dropping the bytes while keeping the length leaves an
+    // archive that claims data past its own end.
+    const comment = 'Created by a packaging tool';
+    const fixture = zipFixtureWithComment(comment);
+    const output = await appendLicence(zipBucket(fixture), 'kit.zip', 'Personal licence');
+    const result = new Uint8Array(await new Response(output.body).arrayBuffer());
+
+    expect(output.size).toBe(result.byteLength);
+    expect(zipEntryNames(result)).toEqual(['hello.txt', 'LICENCE.txt']);
+
+    // Whatever we claim the comment length is, that many bytes must follow.
+    let eocd = result.length - 22;
+    while (eocd >= 0 && read32(result, eocd) !== 0x06054b50) eocd -= 1;
+    const declared = read16(result, eocd + 20);
+    expect(result.byteLength - (eocd + 22)).toBe(declared);
   });
 
   it('rejects unavailable kits and gift-on-gift carts', () => {
