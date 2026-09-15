@@ -72,3 +72,92 @@ jobs:
             git --no-pager diff -- src/lib/security-headers.ts public/_headers
             exit 1
           fi
+
+  # ── Keeping the live site in step with this branch ───────────────────────
+  #
+  # Needs `check`, so a commit that fails lint, tests or the build can never
+  # reach the site. Runs only on a real push to the deploying branch, never on
+  # a pull request, and never from a fork.
+  #
+  # Deploys the PREVIEW environment, because that is what serves
+  # raising-noble-preview.<subdomain>.workers.dev — the URL currently being
+  # shared. The production block below goes live when the custom domain is
+  # attached; until then a production Worker would be a second copy nobody
+  # visits, pointing emails at a domain that does not resolve yet.
+  deploy:
+    name: Deploy to Cloudflare
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/devin/1788603912.51045-raising-noble-site'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      # Never let two deploys race. A queued one waits rather than being
+      # cancelled, so the newest commit is always what ends up live.
+      group: deploy-cloudflare
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # Without a token there is nothing to deploy with. Skip with a notice
+      # rather than failing: a red tick on every push would train everyone to
+      # ignore it, and the checks above have already done their job.
+      - name: Is deployment configured?
+        id: configured
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Deploy skipped::Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID under Settings → Secrets and variables → Actions, and this push will deploy itself."
+          fi
+
+      # The build reads R2 to decide which kits are on sale, so the same
+      # credentials are needed here, not only at deploy time.
+      - name: Build
+        if: steps.configured.outputs.ready == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npm run build
+
+      # Idempotent: applies only migrations the database has not seen. Runs
+      # before the deploy so new code never meets an older schema.
+      - name: Apply database migrations
+        if: steps.configured.outputs.ready == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler d1 migrations apply raising-noble --remote --env preview
+
+      - name: Deploy
+        if: steps.configured.outputs.ready == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy --env preview
+
+      # When raisingnoble.com is attached to the production Worker, change the
+      # two steps above from `--env preview` to `--env=""`, or add them again
+      # alongside so both stay current. Secrets are per-environment in
+      # Cloudflare, so set them for production too before switching.
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ "${{ steps.configured.outputs.ready }}" = "true" ]; then
+            echo "Deployed ${{ github.sha }} to the preview Worker." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Deploy skipped — Cloudflare secrets are not set on this repository." >> "$GITHUB_STEP_SUMMARY"
+          fi

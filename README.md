@@ -49,6 +49,7 @@ SYNC_TOKEN=... npm run health -- https://raisingnoble.com   # is it wired up?
 | | |
 |---|---|
 | [`docs/GO-LIVE.md`](docs/GO-LIVE.md) | **Start here.** Empty accounts → live store, step by step. |
+| [`docs/AUTO-DEPLOY.md`](docs/AUTO-DEPLOY.md) | **Two secrets, then every push deploys itself.** |
 | [`docs/CHANGING-IMAGES.md`](docs/CHANGING-IMAGES.md) | Swapping kit covers and page photography. No code. |
 | [`docs/GOING-INTERNATIONAL.md`](docs/GOING-INTERNATIONAL.md) | **Selling worldwide, and the VAT obligation it creates.** |
 | [`docs/CLOUDFLARE-SETUP.md`](docs/CLOUDFLARE-SETUP.md) | Kit ZIP preparation, R2 upload, symptom-to-cause table. |
