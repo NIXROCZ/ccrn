@@ -6,6 +6,7 @@ import KitCard from '../../components/KitCard.astro';
 import { getKits, categoryLabel } from '../../lib/catalogue';
 import { formatAud, BUNDLE_SIZE, BUNDLE_PRICE_CENTS, KIT_PRICE_CENTS } from '../../lib/pricing';
 import { testimonialsFor } from '../../data/testimonials';
+import Stars from '../../components/Stars.astro';
 import { supportLines, telHref } from '../../data/support';
 
 export function getStaticPaths() {
@@ -27,12 +28,32 @@ const pillars = [
 ];
 
 const instructions = [
+  'Locate the email containing your Raising Noble purchase.',
+  'Download the ZIP file from the email.',
   'Unzip the file.',
-  'Read the parent and carer guide first.',
-  'Watch the presentation together on a laptop, tablet or TV.',
+  'Read your Viewing Guide and Parent & Carer Guide.',
+  'Watch the presentation together, as a PowerPoint or a PDF.',
   'Talk through the ideas and the questions.',
   'Print and complete the activities together.',
-  'Keep returning to it in everyday family life.',
+  'Keep the conversation going by looking for ways to bring what you have learned into everyday family life.',
+];
+
+/** What each file in the download is for. The same six in every kit. */
+const fileNotes: [string, string][] = [
+  ['Presentation (PPTX)', 'Designed for viewing together on a TV, computer or tablet.'],
+  ['Presentation (PDF)', 'An easy-to-view alternative to the PowerPoint, which opens on anything.'],
+  ['Printable activities', 'Two hands-on activities that reinforce what you have just watched.'],
+  ['Parent & Carer Guide', 'Background information, conversation prompts and practical tips.'],
+  ['Viewing Guide', 'Simple tips to help you get started.'],
+];
+
+/** Reasons to buy, in the buyer's terms rather than ours. */
+const highlights = [
+  'Instant download',
+  'Thoughtfully designed for families',
+  'Child-friendly presentation',
+  'Includes printable activities',
+  'Learn together, at your own pace',
 ];
 ---
 <Layout title={`${kit.title} | Raising Noble`} description={kit.blurb}>
@@ -53,7 +74,7 @@ const instructions = [
         <h1>{kit.title}</h1>
 
         <div class="pdp-meta">
-          <span class="pill">Ages {kit.ages.min}–{kit.ages.max}</span>
+          <span class="pill">Ages {kit.ages.min}+</span>
           <span class="pill">{kit.files.length} files</span>
           {!available && <span class="pill">Coming soon</span>}
         </div>
@@ -61,7 +82,10 @@ const instructions = [
         {
           available ? (
             <>
-              <div class="pdp-price"><span class="amt">{formatAud(KIT_PRICE_CENTS)} AUD</span></div>
+              <div class="pdp-price">
+                <span class="amt">{formatAud(KIT_PRICE_CENTS)}</span>
+                <a class="pdp-bundle" href="/bundle">or bundle any {BUNDLE_SIZE} for {formatAud(BUNDLE_PRICE_CENTS)}</a>
+              </div>
               <div class="pdp-buy"><button class="btn add-kit" data-kit={kit.id}>Add to cart</button></div>
             </>
           ) : (
@@ -85,15 +109,22 @@ const instructions = [
 
         <div class="tabbody">
           <div id="panel-desc" role="tabpanel" aria-labelledby="tab-desc" tabindex="0">
-            <p>{kit.blurb}</p>
+            <p>{kit.intro}</p>
             <p class="mt-md">
-              Written in the gentle, educational style of Raising Noble: no complicated rules and no
-              fear-based messaging, just honest, practical guidance that builds understanding.
+              With activities designed to be explored together, it turns an everyday topic into a
+              meaningful family moment — written in the gentle, educational style of Raising Noble:
+              no complicated rules and no fear-based messaging, just honest, practical guidance that
+              builds understanding.
             </p>
+            <ul class="ticks mt-md">{highlights.map((item) => <li>{item}</li>)}</ul>
           </div>
           <div id="panel-incl" role="tabpanel" aria-labelledby="tab-incl" tabindex="0">
             <h4>This kit includes</h4>
             <ul class="file-list">{kit.files.map((file) => <li>{file}</li>)}</ul>
+            <h4 class="mt-md">More information on what is inside</h4>
+            <dl class="file-notes">
+              {fileNotes.map(([name, note]) => (<><dt>{name}</dt><dd>{note}</dd></>))}
+            </dl>
           </div>
           <div id="panel-inst" role="tabpanel" aria-labelledby="tab-inst" tabindex="0">
             <h4>How to use your kit</h4>
@@ -192,12 +223,16 @@ const instructions = [
 
   {quotes.length > 0 && (
     <section class="wrap sec-b">
-      <div class="phead"><p class="kicker">In their words</p><h2 class="h2">What Families Are Saying</h2></div>
+      <div class="phead"><h2 class="h2 h2-quiet">What Families Are Saying</h2></div>
       <div class="quotes">
         {quotes.map((entry) => (
           <figure class="quote reveal">
             <blockquote>{entry.quote}</blockquote>
-            <figcaption>{entry.who}</figcaption>
+            <figcaption>
+              <span class="quote-who">{entry.who}</span>
+              {entry.where && <span class="quote-where">{entry.where}</span>}
+            </figcaption>
+            <Stars />
           </figure>
         ))}
       </div>

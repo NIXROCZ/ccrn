@@ -30,7 +30,7 @@ const kitContents = [
 
 /* Real quotes only — see src/data/testimonials.ts. The band is built and
    styled but renders nothing until there are genuine ones to show. */
-const quotes = testimonialsFor(undefined, 4);
+const quotes = testimonialsFor(undefined, 3);
 ---
 <Layout title="Raising Noble — for the conversations that matter">
   <section class="hero">
@@ -48,7 +48,7 @@ const quotes = testimonialsFor(undefined, 4);
   </section>
 
   <section class="shelf sec">
-    <div class="wrap">
+    <div class="wrap-cards">
       <div class="shelf-head">
         <p class="kicker">The collection</p>
         <a class="tlink" href="/shop">Shop all</a>
@@ -59,28 +59,26 @@ const quotes = testimonialsFor(undefined, 4);
     </div>
   </section>
 
-  <section class="wrap sec">
-    <div class="split narrowL">
-      <div>
-        <h2 class="h1">Raising curious <em>thinkers</em>.<br />Building connected <em>families</em>.</h2>
-        <hr class="rule" />
-        <p class="lede">
-          Simple, thoughtful resources to help you turn everyday topics and life skills into
-          meaningful family moments.
-        </p>
-        <p class="muted note">
-          Each kit takes one subject a child will eventually ask about, and gives you a
-          presentation to watch together, printable activities, and a parent guide with the
-          background and the conversation prompts.
-        </p>
-        <p class="mt-lg"><a class="tlink" href="/about">Our story</a></p>
+  {/* White ground, and the heading held to two lines so the copy column stays
+      narrow enough for the image to sit beside it rather than under it. */}
+  <section class="band-plain">
+    <div class="wrap sec">
+      <div class="split narrowL">
+        <div>
+          <h2 class="h1 h1-intro">Raising curious <em>thinkers</em>.<br />Building connected <em>families</em>.</h2>
+          <hr class="rule" />
+          <p class="lede">
+            Thoughtful learning resources designed to help families explore, question and learn
+            valuable life lessons together.
+          </p>
+        </div>
+        <MediaSlot
+          class="art"
+          src="/images/home-children.webp"
+          alt="Children painting a large mural on a white wall."
+          zoom
+        />
       </div>
-      <MediaSlot
-        class="art"
-        src="/images/home-children.webp"
-        alt="Children painting a large mural on a white wall."
-        zoom
-      />
     </div>
   </section>
 
@@ -95,12 +93,15 @@ const quotes = testimonialsFor(undefined, 4);
 
   {quotes.length > 0 && (
     <section class="wrap sec">
-      <p class="kicker center mb-md">Loved by curious families</p>
+      <div class="phead"><h2 class="h2 h2-quiet">What Families Are Saying</h2></div>
       <div class="quotes">
         {quotes.map((item) => (
           <figure class="quote" data-reveal>
             <blockquote>{item.quote}</blockquote>
-            <figcaption class="who">{item.who}</figcaption>
+            <figcaption>
+              <span class="quote-who">{item.who}</span>
+              {item.where && <span class="quote-where">{item.where}</span>}
+            </figcaption>
             <Stars />
           </figure>
         ))}

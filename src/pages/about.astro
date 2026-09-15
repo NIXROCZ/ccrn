@@ -1,7 +1,83 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import MediaSlot from '../components/MediaSlot.astro';
+
+/**
+ * Three beliefs, in the founder's words. Rendered with the same `.pillars`
+ * grid the product pages use, so the two read as one site.
+ */
+const philosophy = [
+  {
+    title: 'Learning for the world ahead',
+    paragraphs: [
+      'We believe the classroom is an important part of a child’s education, but it is only one part of the picture.',
+      'Children also need opportunities to question, think critically, understand the world around them, make conscious choices and develop the practical confidence to navigate everyday life.',
+    ],
+  },
+  {
+    title: 'Family connection',
+    paragraphs: [
+      'We believe education doesn’t belong solely to the classroom.',
+      'Home and family life are filled with unique and irreplaceable opportunities to learn, grow and understand the world together. The conversations we share, the experiences we create and the choices we make all play an important role in shaping what children question and value.',
+      'We give families the tools to make learning part of everyday life.',
+    ],
+  },
+  {
+    title: 'Raising with intention',
+    paragraphs: [
+      'We believe every family can choose what they bring into their children’s lives. The ideas we introduce, the questions we explore and the conversations we make space for can shape how children understand and engage with the world.',
+      'There is no single way to raise a child, but there is value in being intentional about what we choose to explore. Raising Noble gives families the freedom to discover and choose resources that feel meaningful to them, making learning part of everyday life.',
+    ],
+  },
+];
 ---
-<Layout title="About Raising Noble">
-  <section class="phero"><img src="/images/about-hero.webp" alt="A warm family moment"><div class="phero-in"><h1>About us</h1></div></section>
-  <section class="wrap sec prose"><p class="kicker">Our story</p><h2>For the conversations that matter.</h2><p>We're a couple in Wollongong who kept running out of good answers. Raising Noble grew from the belief that a thoughtful conversation, started at the right moment, can give a child confidence that lasts.</p><p>We make educational resources for families: clear background, honest questions and something practical to do together afterwards.</p><p>We are not doctors, dietitians or psychologists. Our kits are educational and are not medical or professional advice.</p></section>
+<Layout title="About Raising Noble" description="Our founding story and the beliefs behind Raising Noble.">
+  <section class="phero">
+    <img src="/images/about-hero.webp" alt="Sunlight through leaves">
+    <div class="phero-in">
+      <h1>About Us</h1>
+      <p>Our founding story &amp; philosophy</p>
+    </div>
+  </section>
+
+  <section class="wrap sec">
+    <div class="phead"><p class="kicker">A letter from the founder</p></div>
+    <div class="founder">
+      <div class="founder-art">
+        <MediaSlot src="/images/about-authors.webp" alt="The founder with her child." ratio="tall" />
+      </div>
+      <div class="founder-letter prose">
+        <p class="stamp">Raising Noble founding story</p>
+        <p>I became a mother with a growing sense that there was more I wanted my children to learn than what could be found within a traditional education.</p>
+        <p>Three months postpartum, in the middle of the beautiful chaos of new motherhood, the idea for Raising Noble began to take shape. As I explored what I wanted my children to learn, I began to see gaps in traditional education. Practical life skills, critical thinking, conscious decision-making and the everyday knowledge children need to navigate the world often receive limited attention.</p>
+        <p>Raising Noble grew from a desire to fill those gaps, creating simple, engaging resources that bring meaningful learning into the home while giving families a reason to sit down, explore ideas, ask questions and connect.</p>
+        <p>Built around naps, sleep deprivation, and a whole lot of love, Raising Noble is now becoming a collection of resources designed to help parents take a more active role in their children’s learning and development wherever they are in the world.</p>
+        <p>At its heart, Raising Noble is about making space for what matters, raising capable, conscious children and strengthening the family bonds that shape them.</p>
+        <p>Thank you for being part of the journey.</p>
+        <p class="founder-sign">Christine<span>Founder, Raising Noble</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band-soft" id="philosophy">
+    <div class="wrap sec">
+      <div class="phead"><p class="kicker">Our philosophy</p><h2 class="h2">What we believe</h2></div>
+      <div class="pillars">
+        {
+          philosophy.map((item) => (
+            <article class="pillar" data-reveal>
+              <div class="body bare">
+                <h4>{item.title}</h4>
+                {item.paragraphs.map((text) => <p>{text}</p>)}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec prose narrow">
+    <p class="muted">We are not doctors, dietitians or psychologists. Our kits are educational and are not medical or professional advice.</p>
+  </section>
 </Layout>

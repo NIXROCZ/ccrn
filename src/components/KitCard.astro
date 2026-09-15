@@ -22,12 +22,10 @@ const available = kit.status === 'available';
   data-reveal
   data-cat={kit.cat}
   data-min={kit.ages.min}
-  data-max={kit.ages.max}
   data-title={kit.title}
   data-order={order}
 >
   <a class="card-media" href={`/kits/${kit.id}`} tabindex="-1" aria-hidden="true">
-    {!available && <span class="ribbon">Coming soon</span>}
     {
       kit.cover ? (
         <img src={kit.cover} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />
@@ -42,14 +40,11 @@ const available = kit.status === 'available';
   <div class="card-body">
     <p class="meta">{categoryLabel(kit.cat)}</p>
     <h3><a href={`/kits/${kit.id}`}>{kit.title}</a></h3>
-    <p class="ages">Ages {kit.ages.min}–{kit.ages.max}</p>
-    <p class="desc">{available ? formatAud(KIT_PRICE_CENTS) : 'In development'}</p>
-    {
-      available ? (
-        <button class="btn ghost sm add-kit" data-kit={kit.id}>Add to cart</button>
-      ) : (
-        <a class="btn ghost sm" href={`/kits/${kit.id}`}>Read more</a>
-      )
-    }
+    <p class="ages">Ages {kit.ages.min}+</p>
+    {/* An unreleased kit still says so where the price goes — quietly, and
+        without a sticker or a button, but a shopper should never be left to
+        guess why a card has nothing to add to the cart. */}
+    <p class="desc">{available ? formatAud(KIT_PRICE_CENTS) : 'Coming soon'}</p>
+    {available && <button class="btn sm add-kit" data-kit={kit.id}>Add to cart</button>}
   </div>
 </article>

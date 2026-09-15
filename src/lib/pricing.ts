@@ -51,6 +51,14 @@ export function priceCart(cart: Cart) {
   };
 }
 
+/**
+ * "A$35.00", not "$35.00".
+ *
+ * The en-AU locale renders AUD with a bare dollar sign, which reads as USD to
+ * anyone outside Australia and disagreed with the "A$0" placeholders the cart
+ * ships in its markup. en-US renders the same number with the unambiguous A$
+ * prefix and identical grouping and decimals.
+ */
 export function formatAud(cents: number) {
-  return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 2 }).format(cents / 100);
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'AUD', maximumFractionDigits: 2 }).format(cents / 100);
 }

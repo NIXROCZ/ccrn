@@ -1,22 +1,854 @@
 [
-  {"id":"seed-oils","cat":"food","best":true,"motif":"oil","realCover":true,"title":"Seed Oils Kit","coverTitle":"Seed Oils","coverLine1":"Separating fact from marketing and helping families","coverLine2":"navigate the grocery aisle with confidence","blurb":"What seed oils actually are, how they are made, and how to weigh the claims made about them without fear.","learn":[["What a seed oil is","How canola, sunflower and soybean oil are pressed, refined and bottled"],["Reading the bottle","What cold pressed, vegetable oil and high oleic are each allowed to mean"],["Fact over fear","What the research does and does not establish, and where confident claims outrun the evidence"],["Cooking with confidence","Choosing an oil for the pan, the salad and the oven without overhauling the pantry"]],"ages":{"min":5,"max":14},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"refined-sugar","cat":"food","best":true,"motif":"sugar","title":"Refined Sugar Kit","coverTitle":"Refined Sugar","coverLine1":"Separating fact from marketing and helping families","coverLine2":"navigate the grocery aisle with confidence","blurb":"Where sugar hides, what refining does to it, and a way of talking about sweet food that leaves no room for shame.","learn":[["The names it hides behind","The many words on an ingredients list that all mean sugar"],["Refined and unrefined","What processing removes, and why that matters as much as the gram count"],["How much is a lot","Reference points a child can actually picture"],["Treats without guilt","Language that keeps birthdays, culture and pleasure intact"]],"ages":{"min":5,"max":14},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"artificial-colours","cat":"food","motif":"droppers","title":"Artificial Colours Kit","coverTitle":"Artificial Colours","coverLine1":"Separating fact from marketing and helping families","coverLine2":"navigate the grocery aisle with confidence","blurb":"The dyes that make food bright, why some are restricted overseas, and how to spot them on an Australian label.","learn":[["What the numbers mean","Reading 102, 110, 129 and the rest of the additive code"],["Why food is coloured at all","What the colour is doing for the manufacturer, not for the eater"],["The evidence on behaviour","What the Southampton study found, and what it did not"],["A colour hunt","A supermarket activity that turns the additive code into a game"]],"ages":{"min":5,"max":12},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"artificial-flavours","cat":"food","motif":"bottle","title":"Artificial Flavours Kit","coverTitle":"Artificial Flavours","coverLine1":"Separating fact from marketing and helping families","coverLine2":"navigate the grocery aisle with confidence","blurb":"How a flavour is built in a laboratory, what natural flavour is allowed to mean, and how to taste the difference.","learn":[["Natural and artificial","Why the two words describe the source, not the safety or the chemistry"],["Building a strawberry","How a handful of compounds can stand in for a whole fruit"],["What the label must say","The Australian rules on declaring flavours, and their limits"],["A taste test","A blind comparison the whole family can run at the kitchen table"]],"ages":{"min":6,"max":14},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"preservatives","cat":"food","motif":"spoon","title":"Preservatives Kit","coverTitle":"Preservatives","coverLine1":"Separating fact from marketing and helping families","coverLine2":"navigate the grocery aisle with confidence","blurb":"Why food spoils, what preservatives do about it, and how to read a label without assuming the worst.","learn":[["Why food goes off","Microbes, oxygen and time, explained simply"],["The trade-off","What preservation gives a household, and what it costs"],["Sulphites, nitrites and benzoates","The three families most likely to matter to your family"],["A fridge audit","A week of noticing what keeps, what does not, and why"]],"ages":{"min":6,"max":14},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"emfs","cat":"home","best":true,"motif":"waves","title":"EMFs Kit","coverTitle":"Electromagnetic Fields","coverLine1":"Understanding the everyday exposures in a family home","coverLine2":"and the changes that are actually worth making","blurb":"What electromagnetic fields are, where they come from in an ordinary house, and how to read the safety guidance calmly.","learn":[["What an EMF actually is","Power lines, wifi and phones, and the line between ionising and non-ionising"],["Distance does the work","Why a few centimetres changes exposure more than any gadget can"],["Reading the guidance","What ARPANSA sets, and how everyday devices compare to it"],["A household walk-through","Finding the routers, chargers and bedside habits worth adjusting"]],"ages":{"min":7,"max":14},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"aluminium","cat":"home","motif":"foil","title":"Aluminium Kit","coverTitle":"Aluminium","coverLine1":"Understanding the everyday exposures in a family home","coverLine2":"and the changes that are actually worth making","blurb":"Where aluminium turns up in food, foil and packaging, what the body does with it, and which habits are worth changing.","learn":[["Where it comes from","Cookware, foil, cans and the additives you would not expect"],["Acid and heat","The two conditions that move aluminium from the pan into the meal"],["What the limits are","The tolerable weekly intake, and how an ordinary diet compares"],["Simple swaps","Baking paper, glass and the changes that actually reduce exposure"]],"ages":{"min":7,"max":14},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"forever-chemicals","cat":"home","best":true,"motif":"pan","title":"Forever Chemicals Kit","coverTitle":"Forever Chemicals","coverLine1":"Understanding the everyday exposures in a family home","coverLine2":"and the changes that are actually worth making","blurb":"What PFAS are, why they do not break down, and where a family is most likely to meet them.","learn":[["Why forever","The carbon-fluorine bond, explained without the chemistry"],["Where they turn up","Non-stick pans, waterproofing, packaging and firefighting foam"],["Australia's hotspots","What testing has found here, and how drinking water is regulated"],["Reducing exposure","Cookware, water filters and the changes with the best return"]],"ages":{"min":8,"max":14},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"microplastics","cat":"home","motif":"bag","title":"Microplastics Kit","coverTitle":"Microplastics","coverLine1":"Understanding the everyday exposures in a family home","coverLine2":"and the changes that are actually worth making","blurb":"Where microplastics come from, how they end up in food and water, and what a household can realistically change.","learn":[["From bottle to particle","How plastic breaks down without ever going away"],["The main routes in","Heat, abrasion, packaging and the kettle you have not thought about"],["What we know so far","The state of the evidence on health, stated honestly"],["Changes that count","Separating the swaps that matter from the ones that only feel good"]],"ages":{"min":7,"max":14},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"artificial-fragrances","cat":"home","motif":"flask","title":"Artificial Fragrances Kit","coverTitle":"Artificial Fragrances","coverLine1":"Understanding the everyday exposures in a family home","coverLine2":"and the changes that are actually worth making","blurb":"What is inside a fragrance, why one word can cover hundreds of ingredients, and how to choose for a sensitive house.","learn":[["One word, many ingredients","Why fragrance on a label can stand for a hundred compounds"],["Where it hides","Cleaners, candles, laundry, personal care and plug-ins"],["Sensitivity and asthma","What triggers what, and how to test a change properly"],["A room-by-room swap","Working through the house one product at a time"]],"ages":{"min":6,"max":14},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"getting-lost","cat":"safety","best":true,"motif":"pin","title":"Getting Lost & Staying Safe Kit","coverTitle":"Getting Lost & Staying Safe","coverLine1":"Giving children the words, the rules and the practice","coverLine2":"to stay safe and to speak up","blurb":"A calm, rehearsed plan for the moment a child cannot see you, built long before it is ever needed.","learn":[["Stop and stay","Why standing still beats searching, and how to practise it"],["Who to ask","Choosing a safe stranger: a worker, a counter, a parent with children"],["Knowing the essentials","Full name, a phone number, and what to say once someone answers"],["A rehearsal","Walking the plan at a shopping centre so it is already familiar"]],"ages":{"min":3,"max":10},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"unsafe-secrets","cat":"safety","motif":"lock","sensitive":true,"title":"Safe vs Unsafe Secrets Kit","coverTitle":"Safe & Unsafe Secrets","coverLine1":"Giving children the words, the rules and the practice","coverLine2":"to stay safe and to speak up","blurb":"The difference between a surprise and a secret that sits heavy, and permission to tell either way.","learn":[["Surprises and secrets","One has an end date and makes people happy; the other does neither"],["The feeling in your stomach","Naming the signal that arrives before the words do"],["No secrets from parents","A family rule that takes the judgement call off the child"],["Telling, and telling again","What to do when the first adult does not listen"]],"ages":{"min":4,"max":12},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"unsafe-touch","cat":"safety","best":true,"motif":"hand","sensitive":true,"title":"Safe vs Unsafe Touch Kit","coverTitle":"Safe & Unsafe Touch","coverLine1":"Giving children the words, the rules and the practice","coverLine2":"to stay safe and to speak up","blurb":"Correct names, clear rules and practised words, staged gently and without alarm.","learn":[["Correct names","Why anatomical language protects children"],["Safe, unsafe and confusing","Three categories a child can sort a real situation into"],["Your body belongs to you","Rules that hold for family, friends and adults alike"],["Your safety network","Five named adults a child can go to, written down"]],"ages":{"min":3,"max":12},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"personal-space","cat":"safety","motif":"figure","sensitive":true,"title":"Personal Space & Body Consent Kit","coverTitle":"Personal Space & Body Consent","coverLine1":"Giving children the words, the rules and the practice","coverLine2":"to stay safe and to speak up","blurb":"Bubbles, boundaries and the everyday practice of asking first, for children and for the adults around them.","learn":[["Your bubble","A picture of personal space a young child can hold on to"],["Asking first","Consent as an everyday habit rather than a difficult conversation"],["Hearing no","Accepting someone else's boundary as readily as stating your own"],["Hugs are optional","Handling relatives, greetings and family expectations kindly"]],"ages":{"min":3,"max":12},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"trusted-adults","cat":"safety","motif":"alert","sensitive":true,"best":true,"title":"Trusted Adults & Asking For Help Kit","coverTitle":"Trusted Adults","coverLine1":"Giving children the words, the rules and the practice","coverLine2":"to stay safe and to speak up","blurb":"Building a named list of adults a child can go to, and the words to use once they get there.","learn":[["Choosing your five","Who belongs on the list, and who gets to decide"],["Asking out loud","Simple sentences that still work under pressure"],["When no one answers","Keeping going until somebody listens"],["Reviewing the list","Why it should change as a child grows"]],"ages":{"min":4,"max":12},"status":"available","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"money-basics","cat":"life","motif":"coins","title":"Money Basics Kit","coverTitle":"Money Basics","coverLine1":"Practical skills for the years ahead, taught gently","coverLine2":"and practised together at home","blurb":"Earning, saving, spending and waiting, taught with real coins and real decisions.","learn":[["Where money comes from","Work, time and the trade a wage represents"],["Save, spend, give","Three jars and a decision a child makes themselves"],["Wants and needs","A sorting exercise that survives contact with a toy aisle"],["Waiting for something","Setting a goal and tracking it to the end"]],"ages":{"min":5,"max":14},"status":"coming_soon","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"kitchen-skills","cat":"life","motif":"bowls","title":"Kitchen Skills Kit","coverTitle":"Kitchen Skills","coverLine1":"Practical skills for the years ahead, taught gently","coverLine2":"and practised together at home","blurb":"Knives, heat, hygiene and a first meal cooked start to finish, staged by age.","learn":[["Safe hands","Washing, cross-contamination and the habits that come first"],["Cutting and heat","Age-appropriate steps towards a knife and a hot pan"],["Reading a recipe","Order, timing and what to do before you start"],["One whole meal","A dish a child can make alone, chosen for their age"]],"ages":{"min":5,"max":14},"status":"coming_soon","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"time-and-routines","cat":"life","motif":"clock","title":"Time & Routines Kit","coverTitle":"Time & Routines","coverLine1":"Practical skills for the years ahead, taught gently","coverLine2":"and practised together at home","blurb":"Mornings, homework and bedtime, built into a rhythm a child can run without being chased.","learn":[["What time feels like","Building a sense of duration before a clock means anything"],["A morning that runs itself","A visual sequence a child owns rather than obeys"],["Starting a hard thing","Breaking a task down until the first step is easy"],["Adjusting the plan","Reviewing a routine together instead of enforcing it"]],"ages":{"min":4,"max":12},"status":"coming_soon","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"big-feelings","cat":"life","motif":"feelings","title":"Big Feelings Kit","coverTitle":"Big Feelings","coverLine1":"Practical skills for the years ahead, taught gently","coverLine2":"and practised together at home","blurb":"A vocabulary for what is happening inside, and a plan made in advance for when it spills over.","learn":[["A bigger vocabulary","Moving past the same four feeling words"],["What a body does first","The signals that arrive before a child can name a feeling"],["A plan made while calm","Deciding what helps before it is needed"],["Repair","What happens after, and why it matters more than the moment itself"]],"ages":{"min":4,"max":12},"status":"coming_soon","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]},
-  {"id":"screens-and-sleep","cat":"life","motif":"screen","title":"Screens & Sleep Kit","coverTitle":"Screens & Sleep","coverLine1":"Practical skills for the years ahead, taught gently","coverLine2":"and practised together at home","blurb":"A practical, non-judgemental look at evening habits and a rhythm that helps the whole house wind down.","learn":[["Notice the pattern","How timing and context shape an evening more than total minutes do"],["Light and winding down","What helps a body notice the day is ending"],["A family plan","Habits the adults follow too, or they will not hold"],["Try and adjust","A small experiment rather than a perfect rule"]],"ages":{"min":5,"max":14},"status":"coming_soon","files":["Presentation (PDF)","Activity 1 (PDF)","Activity 2 (PDF)","Parent & Carer Guide (PDF)","Viewing Guide (PDF)"]}
+  {
+    "id": "seed-oils",
+    "cat": "food",
+    "best": true,
+    "motif": "oil",
+    "realCover": true,
+    "title": "Seed Oils Kit",
+    "coverTitle": "Seed Oils",
+    "coverLine1": "Separating fact from marketing and helping families",
+    "coverLine2": "navigate the grocery aisle with confidence",
+    "blurb": "What seed oils actually are, how they are made, and how to weigh the claims made about them without fear.",
+    "intro": "Turn an everyday trip to the supermarket into an opportunity to learn together. This kit introduces children to seed oils, helps them spot them on food labels, and opens up thoughtful conversations about the food we eat.",
+    "learn": [
+      [
+        "What a seed oil is",
+        "How canola, sunflower and soybean oil are pressed, refined and bottled"
+      ],
+      [
+        "Reading the bottle",
+        "What cold pressed, vegetable oil and high oleic are each allowed to mean"
+      ],
+      [
+        "Fact over fear",
+        "What the research does and does not establish, and where confident claims outrun the evidence"
+      ],
+      [
+        "Cooking with confidence",
+        "Choosing an oil for the pan, the salad and the oven without overhauling the pantry"
+      ]
+    ],
+    "ages": {
+      "min": 5,
+      "max": 14
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "refined-sugar",
+    "cat": "food",
+    "best": true,
+    "motif": "sugar",
+    "title": "Refined Sugar Kit",
+    "coverTitle": "Refined Sugar",
+    "coverLine1": "Separating fact from marketing and helping families",
+    "coverLine2": "navigate the grocery aisle with confidence",
+    "blurb": "Where sugar hides, what refining does to it, and a way of talking about sweet food that leaves no room for shame.",
+    "intro": "Sweet food is part of childhood, and it does not need to come with guilt. This kit shows children where sugar hides, what refining actually does to it, and how to talk about treats without shame attached.",
+    "learn": [
+      [
+        "The names it hides behind",
+        "The many words on an ingredients list that all mean sugar"
+      ],
+      [
+        "Refined and unrefined",
+        "What processing removes, and why that matters as much as the gram count"
+      ],
+      [
+        "How much is a lot",
+        "Reference points a child can actually picture"
+      ],
+      [
+        "Treats without guilt",
+        "Language that keeps birthdays, culture and pleasure intact"
+      ]
+    ],
+    "ages": {
+      "min": 5,
+      "max": 14
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "artificial-colours",
+    "cat": "food",
+    "motif": "droppers",
+    "title": "Artificial Colours Kit",
+    "coverTitle": "Artificial Colours",
+    "coverLine1": "Separating fact from marketing and helping families",
+    "coverLine2": "navigate the grocery aisle with confidence",
+    "blurb": "The dyes that make food bright, why some are restricted overseas, and how to spot them on an Australian label.",
+    "intro": "The brightest things on the shelf are often the ones children reach for first. This kit explores what makes food so vividly coloured, why some of those dyes are restricted overseas, and how to find them on an Australian label together.",
+    "learn": [
+      [
+        "What the numbers mean",
+        "Reading 102, 110, 129 and the rest of the additive code"
+      ],
+      [
+        "Why food is coloured at all",
+        "What the colour is doing for the manufacturer, not for the eater"
+      ],
+      [
+        "The evidence on behaviour",
+        "What the Southampton study found, and what it did not"
+      ],
+      [
+        "A colour hunt",
+        "A supermarket activity that turns the additive code into a game"
+      ]
+    ],
+    "ages": {
+      "min": 5,
+      "max": 12
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "artificial-flavours",
+    "cat": "food",
+    "motif": "bottle",
+    "title": "Artificial Flavours Kit",
+    "coverTitle": "Artificial Flavours",
+    "coverLine1": "Separating fact from marketing and helping families",
+    "coverLine2": "navigate the grocery aisle with confidence",
+    "blurb": "How a flavour is built in a laboratory, what natural flavour is allowed to mean, and how to taste the difference.",
+    "intro": "Strawberry that never met a strawberry. This kit unpacks how a flavour is built in a laboratory, what \"natural flavour\" is actually allowed to mean, and how to taste the difference for yourselves.",
+    "learn": [
+      [
+        "Natural and artificial",
+        "Why the two words describe the source, not the safety or the chemistry"
+      ],
+      [
+        "Building a strawberry",
+        "How a handful of compounds can stand in for a whole fruit"
+      ],
+      [
+        "What the label must say",
+        "The Australian rules on declaring flavours, and their limits"
+      ],
+      [
+        "A taste test",
+        "A blind comparison the whole family can run at the kitchen table"
+      ]
+    ],
+    "ages": {
+      "min": 6,
+      "max": 14
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "preservatives",
+    "cat": "food",
+    "motif": "spoon",
+    "title": "Preservatives Kit",
+    "coverTitle": "Preservatives",
+    "coverLine1": "Separating fact from marketing and helping families",
+    "coverLine2": "navigate the grocery aisle with confidence",
+    "blurb": "Why food spoils, what preservatives do about it, and how to read a label without assuming the worst.",
+    "intro": "Why does bread go mouldy in a week when a packet cake lasts for months? This kit answers that properly — what preservatives do, why food spoils at all, and how to read a label without assuming the worst.",
+    "learn": [
+      [
+        "Why food goes off",
+        "Microbes, oxygen and time, explained simply"
+      ],
+      [
+        "The trade-off",
+        "What preservation gives a household, and what it costs"
+      ],
+      [
+        "Sulphites, nitrites and benzoates",
+        "The three families most likely to matter to your family"
+      ],
+      [
+        "A fridge audit",
+        "A week of noticing what keeps, what does not, and why"
+      ]
+    ],
+    "ages": {
+      "min": 6,
+      "max": 14
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "emfs",
+    "cat": "home",
+    "best": true,
+    "motif": "waves",
+    "title": "EMFs Kit",
+    "coverTitle": "Electromagnetic Fields",
+    "coverLine1": "Understanding the everyday exposures in a family home",
+    "coverLine2": "and the changes that are actually worth making",
+    "blurb": "What electromagnetic fields are, where they come from in an ordinary house, and how to read the safety guidance calmly.",
+    "intro": "Wi-fi, phones and smart meters are part of every home now. This kit explains what electromagnetic fields actually are, where they come from in an ordinary house, and how to read the safety guidance calmly rather than anxiously.",
+    "learn": [
+      [
+        "What an EMF actually is",
+        "Power lines, wifi and phones, and the line between ionising and non-ionising"
+      ],
+      [
+        "Distance does the work",
+        "Why a few centimetres changes exposure more than any gadget can"
+      ],
+      [
+        "Reading the guidance",
+        "What ARPANSA sets, and how everyday devices compare to it"
+      ],
+      [
+        "A household walk-through",
+        "Finding the routers, chargers and bedside habits worth adjusting"
+      ]
+    ],
+    "ages": {
+      "min": 7,
+      "max": 14
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "aluminium",
+    "cat": "home",
+    "motif": "foil",
+    "title": "Aluminium Kit",
+    "coverTitle": "Aluminium",
+    "coverLine1": "Understanding the everyday exposures in a family home",
+    "coverLine2": "and the changes that are actually worth making",
+    "blurb": "Where aluminium turns up in food, foil and packaging, what the body does with it, and which habits are worth changing.",
+    "intro": "Foil, cans, cookware, deodorant — aluminium turns up more often than most families realise. This kit explores where it appears, what the body does with it, and which small habits are genuinely worth changing.",
+    "learn": [
+      [
+        "Where it comes from",
+        "Cookware, foil, cans and the additives you would not expect"
+      ],
+      [
+        "Acid and heat",
+        "The two conditions that move aluminium from the pan into the meal"
+      ],
+      [
+        "What the limits are",
+        "The tolerable weekly intake, and how an ordinary diet compares"
+      ],
+      [
+        "Simple swaps",
+        "Baking paper, glass and the changes that actually reduce exposure"
+      ]
+    ],
+    "ages": {
+      "min": 7,
+      "max": 14
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "forever-chemicals",
+    "cat": "home",
+    "best": true,
+    "motif": "pan",
+    "title": "Forever Chemicals Kit",
+    "coverTitle": "Forever Chemicals",
+    "coverLine1": "Understanding the everyday exposures in a family home",
+    "coverLine2": "and the changes that are actually worth making",
+    "blurb": "What PFAS are, why they do not break down, and where a family is most likely to meet them.",
+    "intro": "Some things are called forever chemicals for a reason. This kit explains what PFAS are, why they do not break down, and where a family is most likely to meet them, with practical steps you can take together.",
+    "learn": [
+      [
+        "Why forever",
+        "The carbon-fluorine bond, explained without the chemistry"
+      ],
+      [
+        "Where they turn up",
+        "Non-stick pans, waterproofing, packaging and firefighting foam"
+      ],
+      [
+        "Australia's hotspots",
+        "What testing has found here, and how drinking water is regulated"
+      ],
+      [
+        "Reducing exposure",
+        "Cookware, water filters and the changes with the best return"
+      ]
+    ],
+    "ages": {
+      "min": 8,
+      "max": 14
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "microplastics",
+    "cat": "home",
+    "motif": "bag",
+    "title": "Microplastics Kit",
+    "coverTitle": "Microplastics",
+    "coverLine1": "Understanding the everyday exposures in a family home",
+    "coverLine2": "and the changes that are actually worth making",
+    "blurb": "Where microplastics come from, how they end up in food and water, and what a household can realistically change.",
+    "intro": "Plastic has become so ordinary that it is almost invisible. This kit follows microplastics from where they start to how they reach our food and water, and looks honestly at what one household can realistically change.",
+    "learn": [
+      [
+        "From bottle to particle",
+        "How plastic breaks down without ever going away"
+      ],
+      [
+        "The main routes in",
+        "Heat, abrasion, packaging and the kettle you have not thought about"
+      ],
+      [
+        "What we know so far",
+        "The state of the evidence on health, stated honestly"
+      ],
+      [
+        "Changes that count",
+        "Separating the swaps that matter from the ones that only feel good"
+      ]
+    ],
+    "ages": {
+      "min": 7,
+      "max": 14
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "artificial-fragrances",
+    "cat": "home",
+    "motif": "flask",
+    "title": "Artificial Fragrances Kit",
+    "coverTitle": "Artificial Fragrances",
+    "coverLine1": "Understanding the everyday exposures in a family home",
+    "coverLine2": "and the changes that are actually worth making",
+    "blurb": "What is inside a fragrance, why one word can cover hundreds of ingredients, and how to choose for a sensitive house.",
+    "intro": "One word on a label can stand for hundreds of ingredients. This kit opens up what is actually inside a fragrance, why \"parfum\" hides so much, and how to choose for a house where someone is sensitive.",
+    "learn": [
+      [
+        "One word, many ingredients",
+        "Why fragrance on a label can stand for a hundred compounds"
+      ],
+      [
+        "Where it hides",
+        "Cleaners, candles, laundry, personal care and plug-ins"
+      ],
+      [
+        "Sensitivity and asthma",
+        "What triggers what, and how to test a change properly"
+      ],
+      [
+        "A room-by-room swap",
+        "Working through the house one product at a time"
+      ]
+    ],
+    "ages": {
+      "min": 6,
+      "max": 14
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "getting-lost",
+    "cat": "safety",
+    "best": true,
+    "motif": "pin",
+    "title": "Getting Lost & Staying Safe Kit",
+    "coverTitle": "Getting Lost & Staying Safe",
+    "coverLine1": "Giving children the words, the rules and the practice",
+    "coverLine2": "to stay safe and to speak up",
+    "blurb": "A calm, rehearsed plan for the moment a child cannot see you, built long before it is ever needed.",
+    "intro": "The moment a child looks up and cannot see you is not the moment to make a plan. This kit builds one calmly and well in advance, so it already feels familiar if it is ever needed.",
+    "learn": [
+      [
+        "Stop and stay",
+        "Why standing still beats searching, and how to practise it"
+      ],
+      [
+        "Who to ask",
+        "Choosing a safe stranger: a worker, a counter, a parent with children"
+      ],
+      [
+        "Knowing the essentials",
+        "Full name, a phone number, and what to say once someone answers"
+      ],
+      [
+        "A rehearsal",
+        "Walking the plan at a shopping centre so it is already familiar"
+      ]
+    ],
+    "ages": {
+      "min": 3,
+      "max": 10
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "safe-secrets",
+    "cat": "safety",
+    "motif": "lock",
+    "sensitive": true,
+    "title": "Safe vs Unsafe Secrets Kit",
+    "coverTitle": "Safe & Unsafe Secrets",
+    "coverLine1": "Giving children the words, the rules and the practice",
+    "coverLine2": "to stay safe and to speak up",
+    "blurb": "The difference between a surprise and a secret that sits heavy, and permission to tell either way.",
+    "intro": "Some secrets are exciting and some sit heavy. This kit gives children the language to tell the difference, and clear, repeated permission to speak up either way.",
+    "learn": [
+      [
+        "Surprises and secrets",
+        "One has an end date and makes people happy; the other does neither"
+      ],
+      [
+        "The feeling in your stomach",
+        "Naming the signal that arrives before the words do"
+      ],
+      [
+        "No secrets from parents",
+        "A family rule that takes the judgement call off the child"
+      ],
+      [
+        "Telling, and telling again",
+        "What to do when the first adult does not listen"
+      ]
+    ],
+    "ages": {
+      "min": 4,
+      "max": 12
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "safe-touch",
+    "cat": "safety",
+    "best": true,
+    "motif": "hand",
+    "sensitive": true,
+    "title": "Safe vs Unsafe Touch Kit",
+    "coverTitle": "Safe & Unsafe Touch",
+    "coverLine1": "Giving children the words, the rules and the practice",
+    "coverLine2": "to stay safe and to speak up",
+    "blurb": "Correct names, clear rules and practised words, staged gently and without alarm.",
+    "intro": "Body safety is easier to teach early, gently, and without alarm. This kit gives children correct names, clear rules and words they have actually practised, so the knowledge is there long before it is needed.",
+    "learn": [
+      [
+        "Correct names",
+        "Why anatomical language protects children"
+      ],
+      [
+        "Safe, unsafe and confusing",
+        "Three categories a child can sort a real situation into"
+      ],
+      [
+        "Your body belongs to you",
+        "Rules that hold for family, friends and adults alike"
+      ],
+      [
+        "Your safety network",
+        "Five named adults a child can go to, written down"
+      ]
+    ],
+    "ages": {
+      "min": 3,
+      "max": 12
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "personal-space",
+    "cat": "safety",
+    "motif": "figure",
+    "sensitive": true,
+    "title": "Personal Space & Body Consent Kit",
+    "coverTitle": "Personal Space & Body Consent",
+    "coverLine1": "Giving children the words, the rules and the practice",
+    "coverLine2": "to stay safe and to speak up",
+    "blurb": "Bubbles, boundaries and the everyday practice of asking first, for children and for the adults around them.",
+    "intro": "Asking first is a habit, and habits are learned. This kit explores bubbles, boundaries and everyday consent in a way that makes sense to a child, and is a useful reminder for the adults around them too.",
+    "learn": [
+      [
+        "Your bubble",
+        "A picture of personal space a young child can hold on to"
+      ],
+      [
+        "Asking first",
+        "Consent as an everyday habit rather than a difficult conversation"
+      ],
+      [
+        "Hearing no",
+        "Accepting someone else's boundary as readily as stating your own"
+      ],
+      [
+        "Hugs are optional",
+        "Handling relatives, greetings and family expectations kindly"
+      ]
+    ],
+    "ages": {
+      "min": 3,
+      "max": 12
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "trusted-adults",
+    "cat": "safety",
+    "motif": "alert",
+    "sensitive": true,
+    "best": true,
+    "title": "Trusted Adults & Asking For Help Kit",
+    "coverTitle": "Trusted Adults",
+    "coverLine1": "Giving children the words, the rules and the practice",
+    "coverLine2": "to stay safe and to speak up",
+    "blurb": "Building a named list of adults a child can go to, and the words to use once they get there.",
+    "intro": "Every child should be able to name the grown-ups they can go to. This kit helps your family build that list together, and gives children the words to use once they get there.",
+    "learn": [
+      [
+        "Choosing your five",
+        "Who belongs on the list, and who gets to decide"
+      ],
+      [
+        "Asking out loud",
+        "Simple sentences that still work under pressure"
+      ],
+      [
+        "When no one answers",
+        "Keeping going until somebody listens"
+      ],
+      [
+        "Reviewing the list",
+        "Why it should change as a child grows"
+      ]
+    ],
+    "ages": {
+      "min": 4,
+      "max": 12
+    },
+    "status": "available",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "money-basics",
+    "cat": "life",
+    "motif": "coins",
+    "title": "Money Basics Kit",
+    "coverTitle": "Money Basics",
+    "coverLine1": "Practical skills for the years ahead, taught gently",
+    "coverLine2": "and practised together at home",
+    "blurb": "Earning, saving, spending and waiting, taught with real coins and real decisions.",
+    "intro": "Pocket money is a child's first real decision. This kit turns earning, saving, spending and waiting into something they can practise with real coins and real choices.",
+    "learn": [
+      [
+        "Where money comes from",
+        "Work, time and the trade a wage represents"
+      ],
+      [
+        "Save, spend, give",
+        "Three jars and a decision a child makes themselves"
+      ],
+      [
+        "Wants and needs",
+        "A sorting exercise that survives contact with a toy aisle"
+      ],
+      [
+        "Waiting for something",
+        "Setting a goal and tracking it to the end"
+      ]
+    ],
+    "ages": {
+      "min": 5,
+      "max": 14
+    },
+    "status": "coming_soon",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "kitchen-skills",
+    "cat": "life",
+    "motif": "bowls",
+    "title": "Kitchen Skills Kit",
+    "coverTitle": "Kitchen Skills",
+    "coverLine1": "Practical skills for the years ahead, taught gently",
+    "coverLine2": "and practised together at home",
+    "blurb": "Knives, heat, hygiene and a first meal cooked start to finish, staged by age.",
+    "intro": "Cooking together is where a great deal of confidence gets built. This kit covers knives, heat, hygiene and a first meal made start to finish, staged to suit the age of the child holding the spoon.",
+    "learn": [
+      [
+        "Safe hands",
+        "Washing, cross-contamination and the habits that come first"
+      ],
+      [
+        "Cutting and heat",
+        "Age-appropriate steps towards a knife and a hot pan"
+      ],
+      [
+        "Reading a recipe",
+        "Order, timing and what to do before you start"
+      ],
+      [
+        "One whole meal",
+        "A dish a child can make alone, chosen for their age"
+      ]
+    ],
+    "ages": {
+      "min": 5,
+      "max": 14
+    },
+    "status": "coming_soon",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "time-and-routines",
+    "cat": "life",
+    "motif": "clock",
+    "title": "Time & Routines Kit",
+    "coverTitle": "Time & Routines",
+    "coverLine1": "Practical skills for the years ahead, taught gently",
+    "coverLine2": "and practised together at home",
+    "blurb": "Mornings, homework and bedtime, built into a rhythm a child can run without being chased.",
+    "intro": "Mornings do not have to be a negotiation. This kit helps a child build their own rhythm for getting up, getting homework done and getting to bed, so the day runs without anyone being chased.",
+    "learn": [
+      [
+        "What time feels like",
+        "Building a sense of duration before a clock means anything"
+      ],
+      [
+        "A morning that runs itself",
+        "A visual sequence a child owns rather than obeys"
+      ],
+      [
+        "Starting a hard thing",
+        "Breaking a task down until the first step is easy"
+      ],
+      [
+        "Adjusting the plan",
+        "Reviewing a routine together instead of enforcing it"
+      ]
+    ],
+    "ages": {
+      "min": 4,
+      "max": 12
+    },
+    "status": "coming_soon",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "big-feelings",
+    "cat": "life",
+    "motif": "feelings",
+    "title": "Big Feelings Kit",
+    "coverTitle": "Big Feelings",
+    "coverLine1": "Practical skills for the years ahead, taught gently",
+    "coverLine2": "and practised together at home",
+    "blurb": "A vocabulary for what is happening inside, and a plan made in advance for when it spills over.",
+    "intro": "Big feelings are easier to manage with a name and a plan. This kit builds a vocabulary for what is happening inside, and agrees what to do about it before it spills over.",
+    "learn": [
+      [
+        "A bigger vocabulary",
+        "Moving past the same four feeling words"
+      ],
+      [
+        "What a body does first",
+        "The signals that arrive before a child can name a feeling"
+      ],
+      [
+        "A plan made while calm",
+        "Deciding what helps before it is needed"
+      ],
+      [
+        "Repair",
+        "What happens after, and why it matters more than the moment itself"
+      ]
+    ],
+    "ages": {
+      "min": 4,
+      "max": 12
+    },
+    "status": "coming_soon",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  },
+  {
+    "id": "screens-and-sleep",
+    "cat": "life",
+    "motif": "screen",
+    "title": "Screens & Sleep Kit",
+    "coverTitle": "Screens & Sleep",
+    "coverLine1": "Practical skills for the years ahead, taught gently",
+    "coverLine2": "and practised together at home",
+    "blurb": "A practical, non-judgemental look at evening habits and a rhythm that helps the whole house wind down.",
+    "intro": "Evenings and screens are a standing argument in most houses. This kit takes a practical, non-judgemental look at the habits around them and helps the whole family land on a rhythm that works.",
+    "learn": [
+      [
+        "Notice the pattern",
+        "How timing and context shape an evening more than total minutes do"
+      ],
+      [
+        "Light and winding down",
+        "What helps a body notice the day is ending"
+      ],
+      [
+        "A family plan",
+        "Habits the adults follow too, or they will not hold"
+      ],
+      [
+        "Try and adjust",
+        "A small experiment rather than a perfect rule"
+      ]
+    ],
+    "ages": {
+      "min": 5,
+      "max": 14
+    },
+    "status": "coming_soon",
+    "files": [
+      "Presentation (PPTX)",
+      "Presentation (PDF)",
+      "Activity 1 (PDF)",
+      "Activity 2 (PDF)",
+      "Parent and Carer Guide (PDF)",
+      "Viewing Guide (PDF)"
+    ]
+  }
 ]

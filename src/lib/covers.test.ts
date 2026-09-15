@@ -37,6 +37,11 @@ describe('catalogue integrity', () => {
       expect(kit.id).toMatch(/^[a-z0-9-]+$/);
       expect(kit.title.length).toBeGreaterThan(3);
       expect(kit.blurb.length).toBeGreaterThan(20);
+      // blurb is the <meta description>; search engines truncate around 160.
+      expect(kit.blurb.length, `${kit.id} blurb is too long for a search snippet`).toBeLessThanOrEqual(160);
+      // intro is the warm opening the product page shows, so it has room.
+      expect(kit.intro.length, `${kit.id} has no intro`).toBeGreaterThan(80);
+      expect(kit.intro).not.toBe(kit.blurb);
       expect(kit.learn).toHaveLength(4);
       expect(kit.files.length).toBeGreaterThan(0);
       expect(kit.ages.min).toBeLessThanOrEqual(kit.ages.max);
@@ -45,9 +50,12 @@ describe('catalogue integrity', () => {
   });
 
   it('has every kit reachable by at least one age band', () => {
+    // Bands are open-ended now: a band shows every kit a child of that age is
+    // old enough to start. A kit whose minimum sits above the highest band is
+    // unreachable from the shop, which is the failure this guards.
     for (const kit of kits as SeedKit[]) {
-      const reachable = ageBands.some((b) => kit.ages.min <= b.max && kit.ages.max >= b.min);
-      expect(reachable, `${kit.id} matches no age filter`).toBe(true);
+      const reachable = ageBands.some((band) => kit.ages.min <= band.min);
+      expect(reachable, `${kit.id} starts above every age filter`).toBe(true);
     }
   });
 });
@@ -94,18 +102,26 @@ describe('the real Canva catalogue', () => {
     const byCat = (cat: string) => kits.filter((kit: SeedKit) => kit.cat === cat).map((kit: SeedKit) => kit.id);
     expect(byCat('food')).toEqual(['seed-oils', 'refined-sugar', 'artificial-colours', 'artificial-flavours', 'preservatives']);
     expect(byCat('home')).toEqual(['emfs', 'aluminium', 'forever-chemicals', 'microplastics', 'artificial-fragrances']);
-    expect(byCat('safety')).toEqual(['getting-lost', 'unsafe-secrets', 'unsafe-touch', 'personal-space', 'trusted-adults']);
+    expect(byCat('safety')).toEqual(['getting-lost', 'safe-secrets', 'safe-touch', 'personal-space', 'trusted-adults']);
   });
 
-  it('lists the five assets every Canva kit folder holds, and no PPTX', () => {
-    // Canva presentations export as PDF. Promising a PPTX would be a promise we
-    // could not keep, and the Viewing Guide was missing entirely.
+  it('lists the six documents every delivered kit archive holds', () => {
+    // An earlier version of this test asserted five files "and no PPTX", on the
+    // reasoning that Canva exports PDF and a PowerPoint would be a promise we
+    // could not keep. The delivered archives disprove it: each ships the deck
+    // twice, as an editable .pptx and as a .pdf that opens anywhere. Verified
+    // against the supplied aluminium, artificial-colours, artificial-flavours,
+    // artificial-fragrances and emfs archives.
+    //
+    // The names here are what a buyer reads before paying, so they have to match
+    // what is inside the ZIP. README.txt is a helper, not a deliverable.
     for (const kit of kits as SeedKit[]) {
       expect(kit.files, kit.id).toEqual([
+        'Presentation (PPTX)',
         'Presentation (PDF)',
         'Activity 1 (PDF)',
         'Activity 2 (PDF)',
-        'Parent & Carer Guide (PDF)',
+        'Parent and Carer Guide (PDF)',
         'Viewing Guide (PDF)',
       ]);
     }

@@ -34,11 +34,13 @@ variable named `PUBLIC_TURNSTILE_SITE_KEY`. `PUBLIC_CF_BEACON_TOKEN` is also opt
 
 1. Use an Australian Stripe account with AUD enabled.
 2. Enable Apple Pay, Google Pay, and Link under Payment methods.
-3. Add webhook endpoint `https://raisingnoble.com/api/webhooks/stripe` for:
-   `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
-   `checkout.session.expired`, and `checkout.session.async_payment_failed`.
+3. Add webhook endpoint `https://raisingnoble.com/api/webhooks/stripe` for exactly
+   these four events: `checkout.session.completed`,
+   `checkout.session.async_payment_succeeded`, `checkout.session.expired`, and
+   `checkout.session.async_payment_failed`. The handler ignores anything else.
 4. Create a restricted secret key with Checkout Sessions write/read, Coupons write, and
    Refunds write permissions.
+5. Do not create products or prices. Amounts come from `src/lib/pricing.ts`.
 
 ## Resend
 
@@ -49,6 +51,5 @@ variable named `PUBLIC_TURNSTILE_SITE_KEY`. `PUBLIC_CF_BEACON_TOKEN` is also opt
 
 ## Owner-provided items
 
-- The street address to replace `{{SELLER_ADDRESS}}` in Privacy and Terms.
 - Kit ZIP files and matching `kit.json` files.
 - Optional Turnstile keys.

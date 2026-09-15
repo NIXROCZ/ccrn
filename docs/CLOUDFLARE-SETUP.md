@@ -46,8 +46,8 @@ Name each archive `<id>.zip` and the upload script does the rest.
 | Microplastics Kit | `microplastics.zip` | `kits/microplastics/kit.zip` |
 | Artificial Fragrances Kit | `artificial-fragrances.zip` | `kits/artificial-fragrances/kit.zip` |
 | Getting Lost & Staying Safe Kit | `getting-lost.zip` | `kits/getting-lost/kit.zip` |
-| Safe vs Unsafe Secrets Kit | `unsafe-secrets.zip` | `kits/unsafe-secrets/kit.zip` |
-| Safe vs Unsafe Touch Kit | `unsafe-touch.zip` | `kits/unsafe-touch/kit.zip` |
+| Safe vs Unsafe Secrets Kit | `safe-secrets.zip` | `kits/safe-secrets/kit.zip` |
+| Safe vs Unsafe Touch Kit | `safe-touch.zip` | `kits/safe-touch/kit.zip` |
 | Personal Space & Body Consent Kit | `personal-space.zip` | `kits/personal-space/kit.zip` |
 | Trusted Adults & Asking For Help Kit | `trusted-adults.zip` | `kits/trusted-adults/kit.zip` |
 
@@ -55,20 +55,27 @@ Put all fifteen in one folder, say `~/raising-noble-kits/`.
 
 ### 1.2 What goes inside each ZIP
 
-The product pages promise exactly five files. Match them, because the buyer
-sees that list before paying:
+The product pages list six documents, and the buyer sees that list before
+paying, so match it. This is the structure of the archives already produced:
 
 ```
 seed-oils.zip
-├── 0. Seed Oils — Presentation.pdf
+├── 0. Seed Oils - Presentation.pptx    editable deck
+├── 1. Seed Oils - Presentation.pdf     same deck, opens anywhere
 ├── 2. Activity 1.pdf
 ├── 3. Activity 2.pdf
 ├── 4. Parent and Carer Guide.pdf
-└── 5. Viewing Guide.pdf
+├── 5. Viewing Guide.pdf
+└── README.txt                          what is here, and how to use it
 ```
 
-A folder inside the ZIP is fine too. What matters is that the five documents are
-there and open.
+A folder inside the ZIP is fine too. What matters is that the six documents are
+there and open. `README.txt` is a helper, not a deliverable, so it is not
+counted in the "6 files" pill on the product page.
+
+If you change this structure, change `files` in `src/data/kits.base.json` to
+match. Describing contents the buyer does not receive is misleading conduct
+under the Australian Consumer Law, quite apart from the support email it earns.
 
 ### 1.3 Three things to get right
 
@@ -247,10 +254,14 @@ purchase is safe and the file is not ready yet — but no one should ever see it
 2. **Settings → Payments** → enable Apple Pay, Google Pay and Link.
 3. **Developers → Webhooks → Add endpoint:**
    - URL: `https://<your-domain>/api/webhooks/stripe`
-   - Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
-     `checkout.session.async_payment_failed`, `checkout.session.expired`,
-     `charge.refunded`
+   - Events — exactly these four, and nothing else:
+     `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+     `checkout.session.async_payment_failed`, `checkout.session.expired`
    - Copy the **signing secret** (`whsec_…`).
+
+   Earlier drafts also listed `charge.refunded`. The handler in
+   `src/pages/api/webhooks/stripe.ts` does not act on it — subscribing is
+   harmless but does nothing, so leave it off and keep the list honest.
 
 No products or prices need creating. The Worker builds line items per order, so
 the three-for-$89 rule stays in one place in the code.

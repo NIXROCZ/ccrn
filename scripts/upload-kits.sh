@@ -6,6 +6,10 @@
 # Expects one file per kit named <id>.zip in the directory you pass. Uploads to
 # kits/<id>/kit.zip, which is the key the download route reads. Re-running is
 # safe: R2 overwrites by key, so a failed run can just be repeated.
+#
+# An optional <id>.json next to it uploads as kits/<id>/kit.json, which is what
+# the catalogue sync reads to decide whether a kit is on sale. An optional
+# <id>.webp uploads as the kit's cover image. Neither is required.
 set -euo pipefail
 
 SRC="${1:-}"
@@ -24,11 +28,31 @@ IDS=$(node -e "
 
 missing=0
 for id in $IDS; do
-  [ -f "$SRC/$id.zip" ] || { echo "MISSING  $SRC/$id.zip"; missing=1; }
+  [ -f "$SRC/$id.zip" ] && continue
+  missing=1
+  # A near-miss is far more common than a genuinely absent kit: the archive is
+  # there under a name that reads the same to a person and not at all to the
+  # download route, which reads kits/<id>/kit.zip and nothing else. Point at it
+  # rather than leaving "MISSING" to be puzzled over.
+  hint=""
+  for candidate in "$SRC"/*.zip; do
+    [ -e "$candidate" ] || continue
+    stem=$(basename "$candidate" .zip)
+    case "$id" in *"$stem"*) hint="$stem" ;; esac
+    case "$stem" in *"$id"*) hint="$stem" ;; esac
+    [ -n "$hint" ] && break
+  done
+  if [ -n "$hint" ]; then
+    echo "MISSING  $id.zip  — did you mean $hint.zip?  mv '$SRC/$hint.zip' '$SRC/$id.zip'"
+  else
+    echo "MISSING  $SRC/$id.zip"
+  fi
 done
 if [ "$missing" -ne 0 ]; then
   echo
-  echo "Nothing uploaded. Name every file after its kit id and run again." >&2
+  echo "Nothing uploaded. The filename is the product id: the download route" >&2
+  echo "reads kits/<id>/kit.zip, so a kit under any other name is a 503 at a" >&2
+  echo "paying customer. Rename every file above and run again." >&2
   exit 1
 fi
 
@@ -47,6 +71,19 @@ for id in $IDS; do
   echo "→ $id ($size)"
   npx wrangler r2 object put "$BUCKET/kits/$id/kit.zip" \
     --file "$SRC/$id.zip" --content-type application/zip $REMOTE
+  # scripts/sync-catalogue.mjs decides a kit's on-sale status from kits/<id>/kit.json,
+  # so a kit with no kit.json keeps whatever status kits.base.json gives it and the
+  # "coming soon" safety catch never engages. Ship one when the source folder has it.
+  if [ -f "$SRC/$id.json" ]; then
+    echo "  + kit.json"
+    npx wrangler r2 object put "$BUCKET/kits/$id/kit.json" \
+      --file "$SRC/$id.json" --content-type application/json $REMOTE
+  fi
+  if [ -f "$SRC/$id.webp" ]; then
+    echo "  + cover.webp"
+    npx wrangler r2 object put "$BUCKET/kits/$id/cover.webp" \
+      --file "$SRC/$id.webp" --content-type image/webp $REMOTE
+  fi
 done
 
 echo
