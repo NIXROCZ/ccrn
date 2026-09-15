@@ -4,9 +4,16 @@
 # so a broken commit reached customers before anyone knew.
 name: CI
 
+# A pull request from a branch in this repository fires both `push` and
+# `pull_request`, which runs the whole job twice for one change. This repo is
+# private, so that bills double the Actions minutes for no extra signal. Pushes are
+# therefore watched only on the branches that deploy; every other branch is
+# covered by its pull request.
 on:
   push:
-    branches: ['**']
+    branches:
+      - 'devin/**'   # the current default branch
+      - main
   pull_request:
 
 # A second push to the same branch makes the first run irrelevant.
@@ -24,9 +31,9 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           # Matches the Node that Workers Builds runs, and the @types/node major.
           node-version: '22'

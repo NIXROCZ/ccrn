@@ -7,9 +7,9 @@
     "dev": "node scripts/sync-catalogue.mjs && astro dev",
     "build": "node scripts/sync-catalogue.mjs && node scripts/write-headers.mjs && astro build",
     "preview": "wrangler dev",
-    "check": "astro check && tsc --noEmit",
+    "check": "node scripts/sync-catalogue.mjs && astro check && tsc --noEmit",
     "lint": "eslint src scripts eslint.config.js",
-    "test": "vitest run",
+    "test": "node scripts/sync-catalogue.mjs && vitest run",
     "deploy": "wrangler d1 migrations apply raising-noble --remote && wrangler deploy"
   },
   "dependencies": {
