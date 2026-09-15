@@ -47,6 +47,7 @@ npx wrangler deploy
 | | |
 |---|---|
 | [`docs/GO-LIVE.md`](docs/GO-LIVE.md) | **Start here.** Empty accounts → live store, step by step. |
+| [`docs/CHANGING-IMAGES.md`](docs/CHANGING-IMAGES.md) | Swapping kit covers and page photography. No code. |
 | [`docs/CLOUDFLARE-SETUP.md`](docs/CLOUDFLARE-SETUP.md) | Kit ZIP preparation, R2 upload, symptom-to-cause table. |
 | [`docs/HANDOVER.md`](docs/HANDOVER.md) | Moving between accounts; what currently points where. |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | How the pieces fit. |
