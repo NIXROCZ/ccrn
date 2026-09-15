@@ -28,11 +28,31 @@ IDS=$(node -e "
 
 missing=0
 for id in $IDS; do
-  [ -f "$SRC/$id.zip" ] || { echo "MISSING  $SRC/$id.zip"; missing=1; }
+  [ -f "$SRC/$id.zip" ] && continue
+  missing=1
+  # A near-miss is far more common than a genuinely absent kit: the archive is
+  # there under a name that reads the same to a person and not at all to the
+  # download route, which reads kits/<id>/kit.zip and nothing else. Point at it
+  # rather than leaving "MISSING" to be puzzled over.
+  hint=""
+  for candidate in "$SRC"/*.zip; do
+    [ -e "$candidate" ] || continue
+    stem=$(basename "$candidate" .zip)
+    case "$id" in *"$stem"*) hint="$stem" ;; esac
+    case "$stem" in *"$id"*) hint="$stem" ;; esac
+    [ -n "$hint" ] && break
+  done
+  if [ -n "$hint" ]; then
+    echo "MISSING  $id.zip  — did you mean $hint.zip?  mv '$SRC/$hint.zip' '$SRC/$id.zip'"
+  else
+    echo "MISSING  $SRC/$id.zip"
+  fi
 done
 if [ "$missing" -ne 0 ]; then
   echo
-  echo "Nothing uploaded. Name every file after its kit id and run again." >&2
+  echo "Nothing uploaded. The filename is the product id: the download route" >&2
+  echo "reads kits/<id>/kit.zip, so a kit under any other name is a 503 at a" >&2
+  echo "paying customer. Rename every file above and run again." >&2
   exit 1
 fi
 
