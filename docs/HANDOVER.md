@@ -85,10 +85,14 @@ npx wrangler d1 migrations apply raising-noble --remote
 ## 3. Stripe
 
 1. Activate the new account (business details and a bank account).
-2. Create the products. Prices are read from Stripe, so this is what sets them.
+2. **Do not create any products or prices.** Every amount is set in
+   `src/lib/pricing.ts` — $35 a kit, $89 for any three — and the Worker builds
+   each Checkout line item on the fly. A price created in Stripe is simply never
+   read. To change what you charge, edit `pricing.ts` and redeploy.
 3. **Developers → Webhooks → Add endpoint:**
    - URL: `https://<your-worker>.workers.dev/api/webhooks/stripe`
-   - Events: `checkout.session.completed`, `checkout.session.expired`,
+   - Events — exactly these four, which are the only ones the handler acts on:
+     `checkout.session.completed`, `checkout.session.expired`,
      `checkout.session.async_payment_succeeded`,
      `checkout.session.async_payment_failed`
    - Copy the signing secret (`whsec_…`). **Without it the endpoint refuses
@@ -176,23 +180,44 @@ catch, so an accidental upload cannot put an unfinished kit on sale.
 
 ---
 
-## Before you start: the bindings in `wrangler.jsonc` are not resolvable
+## The bindings in `wrangler.jsonc` do resolve
 
-`wrangler.jsonc` references D1 `5a99511d-8046-43a4-9a26-c94c77354baa`, KV
-`513fec7d…` and `006ec100…`. **None of these exist in the Cloudflare account
-reachable from this repo's tooling**, which holds only `raising-noble`
-(`343d4d33…`), `raisingnoble` (`21240288…`) and an unrelated database.
+An earlier draft of this document warned that the committed ids pointed at
+nothing. That was checked again on 14 September 2026 against the live account
+and it is wrong — every one of them exists:
 
-So one of two things is true, and it is worth knowing which before you deploy:
+| Binding | Id | State |
+|---|---|---|
+| D1 `raising-noble` | `5a99511d-8046-43a4-9a26-c94c77354baa` | both migrations applied, all tables present |
+| KV `raising-noble-kv` | `513fec7d089d45f8961addde1f6161db` | exists |
+| KV `raising-noble-catalogue` | `006ec100a9e648a09343de0944f0fdbf` | exists |
+| R2 `raising-noble-kits` | — | exists |
+| Worker | `raising-noble-preview` | deployed |
 
-- the preview at `raising-noble-preview.nishi2nix.workers.dev` is deployed from a
-  **different Cloudflare account**, and those IDs are real there; or
-- the IDs were never real, in which case the first `wrangler deploy` against them
-  fails with "binding not found".
+So the repository as committed deploys against that account as it stands. None
+of this changes step 1 above: moving to a different account still means creating
+fresh resources there and pasting the new ids in, because **Cloudflare cannot
+move a D1 database, a KV namespace or an R2 bucket between accounts.** There is
+no transfer button for them and no API that does it. See `docs/GO-LIVE.md`.
 
-Either way it resolves itself when you follow step 1 above: create the resources
-in your new account and paste the fresh IDs in. Do not assume the current values
-work.
+### Preview and production currently share one database
+
+Both blocks in `wrangler.jsonc` name the same D1 id, the same two KV namespaces
+and the same bucket. A test purchase against preview therefore writes a row into
+the same `orders` table the real store reads, and a gift card issued in preview
+is spendable on the live site.
+
+That is fine while nothing is live. Before taking real money, give preview its
+own D1 and KV:
+
+```bash
+npx wrangler d1 create raising-noble-preview
+npx wrangler kv namespace create KV --preview
+node scripts/set-bindings.mjs --preview-d1 <new id> --preview-kv <new id>
+npx wrangler d1 migrations apply raising-noble-preview --remote
+```
+
+Leave the R2 bucket shared — the kit files are read-only and identical.
 
 ## Resources you can delete
 

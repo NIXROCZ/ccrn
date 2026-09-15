@@ -247,10 +247,14 @@ purchase is safe and the file is not ready yet — but no one should ever see it
 2. **Settings → Payments** → enable Apple Pay, Google Pay and Link.
 3. **Developers → Webhooks → Add endpoint:**
    - URL: `https://<your-domain>/api/webhooks/stripe`
-   - Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
-     `checkout.session.async_payment_failed`, `checkout.session.expired`,
-     `charge.refunded`
+   - Events — exactly these four, and nothing else:
+     `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+     `checkout.session.async_payment_failed`, `checkout.session.expired`
    - Copy the **signing secret** (`whsec_…`).
+
+   Earlier drafts also listed `charge.refunded`. The handler in
+   `src/pages/api/webhooks/stripe.ts` does not act on it — subscribing is
+   harmless but does nothing, so leave it off and keep the list honest.
 
 No products or prices need creating. The Worker builds line items per order, so
 the three-for-$89 rule stays in one place in the code.

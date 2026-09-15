@@ -6,6 +6,10 @@
 # Expects one file per kit named <id>.zip in the directory you pass. Uploads to
 # kits/<id>/kit.zip, which is the key the download route reads. Re-running is
 # safe: R2 overwrites by key, so a failed run can just be repeated.
+#
+# An optional <id>.json next to it uploads as kits/<id>/kit.json, which is what
+# the catalogue sync reads to decide whether a kit is on sale. An optional
+# <id>.webp uploads as the kit's cover image. Neither is required.
 set -euo pipefail
 
 SRC="${1:-}"
@@ -47,6 +51,19 @@ for id in $IDS; do
   echo "→ $id ($size)"
   npx wrangler r2 object put "$BUCKET/kits/$id/kit.zip" \
     --file "$SRC/$id.zip" --content-type application/zip $REMOTE
+  # scripts/sync-catalogue.mjs decides a kit's on-sale status from kits/<id>/kit.json,
+  # so a kit with no kit.json keeps whatever status kits.base.json gives it and the
+  # "coming soon" safety catch never engages. Ship one when the source folder has it.
+  if [ -f "$SRC/$id.json" ]; then
+    echo "  + kit.json"
+    npx wrangler r2 object put "$BUCKET/kits/$id/kit.json" \
+      --file "$SRC/$id.json" --content-type application/json $REMOTE
+  fi
+  if [ -f "$SRC/$id.webp" ]; then
+    echo "  + cover.webp"
+    npx wrangler r2 object put "$BUCKET/kits/$id/cover.webp" \
+      --file "$SRC/$id.webp" --content-type image/webp $REMOTE
+  fi
 done
 
 echo
