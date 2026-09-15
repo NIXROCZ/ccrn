@@ -100,15 +100,23 @@ describe('the real Canva catalogue', () => {
     expect(byCat('safety')).toEqual(['getting-lost', 'unsafe-secrets', 'unsafe-touch', 'personal-space', 'trusted-adults']);
   });
 
-  it('lists the five assets every Canva kit folder holds, and no PPTX', () => {
-    // Canva presentations export as PDF. Promising a PPTX would be a promise we
-    // could not keep, and the Viewing Guide was missing entirely.
+  it('lists the six documents every delivered kit archive holds', () => {
+    // An earlier version of this test asserted five files "and no PPTX", on the
+    // reasoning that Canva exports PDF and a PowerPoint would be a promise we
+    // could not keep. The delivered archives disprove it: each ships the deck
+    // twice, as an editable .pptx and as a .pdf that opens anywhere. Verified
+    // against the supplied aluminium, artificial-colours, artificial-flavours,
+    // artificial-fragrances and emfs archives.
+    //
+    // The names here are what a buyer reads before paying, so they have to match
+    // what is inside the ZIP. README.txt is a helper, not a deliverable.
     for (const kit of kits as SeedKit[]) {
       expect(kit.files, kit.id).toEqual([
+        'Presentation (PPTX)',
         'Presentation (PDF)',
         'Activity 1 (PDF)',
         'Activity 2 (PDF)',
-        'Parent & Carer Guide (PDF)',
+        'Parent and Carer Guide (PDF)',
         'Viewing Guide (PDF)',
       ]);
     }

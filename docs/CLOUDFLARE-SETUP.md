@@ -55,20 +55,27 @@ Put all fifteen in one folder, say `~/raising-noble-kits/`.
 
 ### 1.2 What goes inside each ZIP
 
-The product pages promise exactly five files. Match them, because the buyer
-sees that list before paying:
+The product pages list six documents, and the buyer sees that list before
+paying, so match it. This is the structure of the archives already produced:
 
 ```
 seed-oils.zip
-├── 0. Seed Oils — Presentation.pdf
+├── 0. Seed Oils - Presentation.pptx    editable deck
+├── 1. Seed Oils - Presentation.pdf     same deck, opens anywhere
 ├── 2. Activity 1.pdf
 ├── 3. Activity 2.pdf
 ├── 4. Parent and Carer Guide.pdf
-└── 5. Viewing Guide.pdf
+├── 5. Viewing Guide.pdf
+└── README.txt                          what is here, and how to use it
 ```
 
-A folder inside the ZIP is fine too. What matters is that the five documents are
-there and open.
+A folder inside the ZIP is fine too. What matters is that the six documents are
+there and open. `README.txt` is a helper, not a deliverable, so it is not
+counted in the "6 files" pill on the product page.
+
+If you change this structure, change `files` in `src/data/kits.base.json` to
+match. Describing contents the buyer does not receive is misleading conduct
+under the Australian Consumer Law, quite apart from the support email it earns.
 
 ### 1.3 Three things to get right
 
