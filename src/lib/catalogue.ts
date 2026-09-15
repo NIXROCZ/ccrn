@@ -3,7 +3,13 @@ import { categories } from '../data/collections';
 import { BUNDLE_PRICE_CENTS, BUNDLE_SIZE, formatAud, KIT_PRICE_CENTS } from './pricing';
 export type Kit = {
   id: string; cat: string; title: string; coverTitle: string; coverLine1: string; coverLine2: string;
-  blurb: string; learn: [string, string][]; ages: { min: number; max: number }; motif: string;
+  /** Short and factual. This is the page's <meta description>, which search
+   *  engines truncate around 160 characters. */
+  blurb: string;
+  /** The warm, benefit-led opening the product page shows. Longer than the
+   *  blurb on purpose: it is read by someone already on the page. */
+  intro: string;
+  learn: [string, string][]; ages: { min: number; max: number }; motif: string;
   status: 'available' | 'coming_soon'; files: string[]; best?: boolean; sensitive?: boolean;
   realCover?: boolean; cover?: string;
 };

@@ -37,6 +37,11 @@ describe('catalogue integrity', () => {
       expect(kit.id).toMatch(/^[a-z0-9-]+$/);
       expect(kit.title.length).toBeGreaterThan(3);
       expect(kit.blurb.length).toBeGreaterThan(20);
+      // blurb is the <meta description>; search engines truncate around 160.
+      expect(kit.blurb.length, `${kit.id} blurb is too long for a search snippet`).toBeLessThanOrEqual(160);
+      // intro is the warm opening the product page shows, so it has room.
+      expect(kit.intro.length, `${kit.id} has no intro`).toBeGreaterThan(80);
+      expect(kit.intro).not.toBe(kit.blurb);
       expect(kit.learn).toHaveLength(4);
       expect(kit.files.length).toBeGreaterThan(0);
       expect(kit.ages.min).toBeLessThanOrEqual(kit.ages.max);
