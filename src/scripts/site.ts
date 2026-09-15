@@ -295,16 +295,15 @@ if (shopGrid && shopCount) {
 
   const applyFilters = (pushUrl: boolean) => {
     const band = chips.find((chip) => chip.dataset.facet === 'age' && chip.dataset.value === activeAge);
-    const bandMin = Number(band?.dataset.min ?? 0);
-    const bandMax = Number(band?.dataset.max ?? 99);
+    const bandAge = Number(band?.dataset.min ?? 0);
     let shown = 0;
 
     for (const card of cards) {
       const inCat = activeCat === 'all' || card.dataset.cat === activeCat;
       const min = Number(card.dataset.min);
-      const max = Number(card.dataset.max);
-      // A kit matches a band when their age ranges overlap at all.
-      const inAge = activeAge === 'all' || (min <= bandMax && max >= bandMin);
+      // Age bands are open-ended, so a kit matches whenever the child is old
+      // enough to start it. Nothing ages out.
+      const inAge = activeAge === 'all' || min <= bandAge;
       const visible = inCat && inAge;
       card.hidden = !visible;
       if (visible) shown += 1;

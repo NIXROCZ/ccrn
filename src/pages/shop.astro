@@ -1,10 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import KitCard from '../components/KitCard.astro';
+import Stars from '../components/Stars.astro';
 import MediaSlot from '../components/MediaSlot.astro';
-import { bundle, getKits } from '../lib/catalogue';
+import { getKits } from '../lib/catalogue';
 import { categories, ageBands } from '../data/collections';
-import { formatAud } from '../lib/pricing';
 import { testimonialsFor } from '../data/testimonials';
 
 /**
@@ -15,11 +15,10 @@ import { testimonialsFor } from '../data/testimonials';
  * reason.
  */
 const kits = getKits();
-const offer = bundle();
 const quotes = testimonialsFor();
 const countFor = (id: string) => kits.filter((kit) => kit.cat === id).length;
-const countForAge = (min: number, max: number) =>
-  kits.filter((kit) => kit.ages.min <= max && kit.ages.max >= min).length;
+/** Open-ended: a child of `age` can use any kit that starts at or below it. */
+const countForAge = (age: number) => kits.filter((kit) => kit.ages.min <= age).length;
 ---
 <Layout title="Shop family education kits | Raising Noble">
   <section class="phero">
@@ -58,11 +57,10 @@ const countForAge = (min: number, max: number) =>
               data-facet="age"
               data-value={band.id}
               data-min={band.min}
-              data-max={band.max}
               aria-pressed="false"
             >
               {band.label}
-              <span class="n">{countForAge(band.min, band.max)}</span>
+              <span class="n">{countForAge(band.min)}</span>
             </button>
           ))
         }
@@ -96,12 +94,16 @@ const countForAge = (min: number, max: number) =>
   {quotes.length > 0 && (
     <section class="band band-soft">
       <div class="wrap sec">
-        <div class="phead"><p class="kicker">In their words</p><h2 class="h2">What Families Are Saying</h2></div>
+        <div class="phead"><h2 class="h2 h2-quiet">What Families Are Saying</h2></div>
         <div class="quotes">
           {quotes.map((entry) => (
             <figure class="quote reveal">
               <blockquote>{entry.quote}</blockquote>
-              <figcaption>{entry.who}</figcaption>
+              <figcaption>
+                <span class="quote-who">{entry.who}</span>
+                {entry.where && <span class="quote-where">{entry.where}</span>}
+              </figcaption>
+              <Stars />
             </figure>
           ))}
         </div>
@@ -110,16 +112,18 @@ const countForAge = (min: number, max: number) =>
   )}
 
   <section class="wrap sec">
-    <div class="promo reveal">
-      <div>
-        <p class="kicker">Not sure where to start?</p>
+    <div class="promo promo-gift reveal">
+      <img
+        class="promo-card"
+        src="/images/gift-card-front.png"
+        alt="A Raising Noble gift card."
+        width="1063" height="650"
+        loading="lazy" decoding="async"
+      />
+      <div class="promo-copy">
         <h2 class="h2">A Gift With Meaning</h2>
-        <p class="lede">Let them choose the conversation they are ready for. Gift cards are delivered by email with your own message, and stay valid for three years.</p>
-        <p><a class="btn" href="/gift-card">Send a gift card</a> <a class="btn ghost" href="/bundle">Build a bundle &mdash; any three for {formatAud(offer.priceCents)}</a></p>
-      </div>
-      <div class="promo-art" aria-hidden="true">
-        <span class="gift-art-kicker">Raising Noble</span>
-        <span class="gift-art-title">Gift Card</span>
+        <p class="lede">Give a gift that brings families closer and creates more opportunities to explore, learn and enjoy together.</p>
+        <p><a class="btn" href="/gift-card">Send a gift card</a></p>
       </div>
     </div>
   </section>

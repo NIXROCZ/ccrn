@@ -45,9 +45,12 @@ describe('catalogue integrity', () => {
   });
 
   it('has every kit reachable by at least one age band', () => {
+    // Bands are open-ended now: a band shows every kit a child of that age is
+    // old enough to start. A kit whose minimum sits above the highest band is
+    // unreachable from the shop, which is the failure this guards.
     for (const kit of kits as SeedKit[]) {
-      const reachable = ageBands.some((b) => kit.ages.min <= b.max && kit.ages.max >= b.min);
-      expect(reachable, `${kit.id} matches no age filter`).toBe(true);
+      const reachable = ageBands.some((band) => kit.ages.min <= band.min);
+      expect(reachable, `${kit.id} starts above every age filter`).toBe(true);
     }
   });
 });

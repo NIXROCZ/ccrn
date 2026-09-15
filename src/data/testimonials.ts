@@ -3,8 +3,14 @@
  * written, `who` is how the person is credited, and `kit` optionally ties a
  * quote to a kit id so the product page can prefer quotes about that kit.
  * The band renders nothing if this list is empty.
+ *
+ * `where` is optional and deliberately absent until the owner supplies a real
+ * one per person. A city nobody lives in, attached to a quote nobody said, is
+ * a fabricated review — misleading conduct under s18 and s29(1)(e) of the
+ * Australian Consumer Law. Fill it in from real feedback or leave it out; the
+ * card renders correctly either way.
  */
-export type Testimonial = { quote: string; who: string; kit?: string };
+export type Testimonial = { quote: string; who: string; where?: string; kit?: string };
 
 export const testimonials: Testimonial[] = [
   { quote: 'The kits gave us a gentle way to start conversations we had been putting off.', who: 'Crystal & Nishant' },

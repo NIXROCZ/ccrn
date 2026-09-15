@@ -4,9 +4,9 @@ import { supportLines, telHref } from '../data/support';
 <footer class="foot">
   <div class="wrap foot-in">
     <div><img class="logo" src="/images/logo-sage.png" alt="Raising Noble"><p class="muted">Thoughtful resources for curious families. Made in Wollongong.</p></div>
-    <div><h4>Explore</h4><ul><li><a href="/shop">Shop</a></li><li><a href="/bundle">Bundle</a></li><li><a href="/gift-card">Gift Card</a></li><li><a href="/about">About</a></li></ul></div>
-    <div><h4>Help</h4><ul><li><a href="/faqs">FAQs</a></li><li><a href="/contact">Contact</a></li><li><a href="/downloads">Downloads</a></li><li><a href="/refunds">Refunds</a></li></ul></div>
-    <div><h4>Legal</h4><ul><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li><li><a href="/refunds">Refunds</a></li></ul></div>
+    <div><h4>Shop</h4><ul><li><a href="/shop">Shop all</a></li><li><a href="/bundle">Bundle</a></li><li><a href="/gift-card">Gift Cards</a></li></ul></div>
+    <div><h4>Support</h4><ul><li><a href="/faqs">FAQ</a></li><li><a href="/refunds">Refunds</a></li><li><a href="/contact">Contact Us</a></li></ul></div>
+    <div><h4>Explore</h4><ul><li><a href="/about">About Us</a></li><li><a href="/about#philosophy">Our Philosophy</a></li></ul></div>
   </div>
   <section class="wrap foot-support" aria-labelledby="foot-support-title">
     <div class="foot-support-head">
@@ -26,5 +26,12 @@ import { supportLines, telHref } from '../data/support';
       ))}
     </ul>
   </section>
-  <div class="wrap foot-base"><span>© 2026 Raising Noble · Wollongong NSW, Australia · Prices in AUD</span><span>Pexels imagery: cottonbro studio, Kampus Production, Ketut Subiyanto, Yan Krukau</span></div>
+  {/* Downloads is where a paying customer collects what they bought, and the
+      legal pages have to stay reachable from every page, so the three the
+      column spec leaves out live here rather than nowhere. */}
+  <div class="wrap foot-base">
+    <span>© 2026 Raising Noble · Wollongong NSW, Australia · Prices in AUD</span>
+    <span class="foot-base-links"><a href="/downloads">Downloads</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></span>
+    <span>Pexels imagery: cottonbro studio, Kampus Production, Ketut Subiyanto, Yan Krukau</span>
+  </div>
 </footer>
